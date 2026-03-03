@@ -7,55 +7,47 @@
 
 We are a team based in the [School of Computing, National University of Singapore](http://www.comp.nus.edu.sg).
 
-You can reach us at the email `seer[at]comp.nus.edu.sg`
+You can reach us at the email `e1459283@u.nus.edu`
 
 ## Project team
 
-### John Doe
+### Anugrah Bagla
 
-<img src="images/johndoe.png" width="200px">
+<img src="images/baglaanugrah.png" width="200px">
 
-[[homepage](http://www.comp.nus.edu.sg/~damithch)]
-[[github](https://github.com/johndoe)]
-[[portfolio](team/johndoe.md)]
-
+[[github](https://github.com/baglaanugrah)]
 * Role: Project Advisor
+### Zhou Jinhao
 
-### Jane Doe
+<img src="images/chulan142857.png" width="200px">
 
-<img src="images/johndoe.png" width="200px">
+[[github](http://github.com/chulan142857)]
 
-[[github](http://github.com/johndoe)]
-[[portfolio](team/johndoe.md)]
-
-* Role: Team Lead
+* Role: Developer
 * Responsibilities: UI
 
-### Johnny Doe
+### Debopam Roy
 
-<img src="images/johndoe.png" width="200px">
+<img src="images/debopamroy1.png" width="200px">
 
-[[github](http://github.com/johndoe)] [[portfolio](team/johndoe.md)]
+[[github](https://github.com/DebopamRoy1)]
 
 * Role: Developer
 * Responsibilities: Data
 
-### Jean Doe
+### Han Shangda
+<img src="images/Shangda777.png" width="200px">
 
-<img src="images/johndoe.png" width="200px">
-
-[[github](http://github.com/johndoe)]
-[[portfolio](team/johndoe.md)]
+[[github](http://github.com/Shangda777)]
 
 * Role: Developer
-* Responsibilities: Dev Ops + Threading
+* Responsibilities: Develop
 
-### James Doe
+### Manya Agarwal
 
-<img src="images/johndoe.png" width="200px">
+<img src="images/15-manya.png" width="200px">
 
-[[github](http://github.com/johndoe)]
-[[portfolio](team/johndoe.md)]
+[[github](https://github.com/15-Manya)]
 
-* Role: Developer
-* Responsibilities: UI
+* Role: Team Lead
+* Responsibilities: Responsible for overall project coordination.
