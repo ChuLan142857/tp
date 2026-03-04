@@ -274,27 +274,47 @@ _{Explain here how the data archiving feature will be implemented}_
 
 **Target user profile**:
 
-* has a need to manage a significant number of contacts
-* prefer desktop apps over other types
-* can type fast
-* prefers typing to mouse interactions
-* is reasonably comfortable using CLI apps
+* Tech meetup organizers managing small-to-medium events (20–150 participants) in Singapore
+* Manages multiple events per month with varying participant lists
+* Needs to perform live check-ins and track real-time attendance during events
+* Prefers desktop applications for stability and offline capability during events
+* Types fast and prefers keyboard shortcuts over mouse navigation
+* Comfortable with command-line interfaces and text-based input
+* Requires instant filtering and searching capabilities (by RSVP, attendance, team, dietary needs)
+* Manages hackathon team assignments and participant skill tracking
+* Values data accuracy and quick error correction during live events
 
-**Value proposition**: manage contacts faster than a typical mouse/GUI driven app
+**Value proposition**: 
+
+Enable tech event organizers to manage participants. Optimized for live event scenarios with keyboard-first commands for rapid check-ins, instant search, real-time filtering, and on-the-spot team assignments—all without requiring an internet connection.
 
 
 ### User stories
 
 Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
 
-| Priority | As a …​                                    | I want to …​                 | So that I can…​                                                        |
-|----------|--------------------------------------------|------------------------------|------------------------------------------------------------------------|
-| `* * *`  | new user                                   | see usage instructions       | refer to instructions when I forget how to use the App                 |
-| `* * *`  | user                                       | add a new person             |                                                                        |
-| `* * *`  | user                                       | delete a person              | remove entries that I no longer need                                   |
-| `* * *`  | user                                       | find a person by name        | locate details of persons without having to go through the entire list |
-| `* *`    | user                                       | hide private contact details | minimize chance of someone else seeing them by accident                |
-| `*`      | user with many persons in the address book | sort persons by name         | locate a person easily                                                 |
+| Priority | As a …​                                    | I want to …​                                                          | So that I can…​                                                    |
+|----------|-----------------------------------------------|------------------------------------------------------------------------|--------------------------------------------------------------------|
+| `* * *`  | new user                                      | see usage instructions and command examples                            | learn the app quickly and refer back when needed                   |
+| `* * *`  | meetup organizer                              | add a participant with name, contact, GitHub username, and RSVP status | build my participant list rapidly before events                    |
+| `* * *`  | meetup organizer                              | edit participant details using quick commands                          | fix typos or update information instantly during registration      |
+| `* * *`  | meetup organizer                              | delete a participant                                                   | remove cancellations, duplicates, or test entries                  |
+| `* * *`  | meetup organizer                              | search participants by name, email, or GitHub username                 | locate specific attendees in seconds during events                 |
+| `* * *`  | entrance desk organizer                       | mark a participant as checked-in with one command                      | process arrivals quickly without slowing the entry queue           |
+| `* * *`  | meetup organizer                              | list all participants with a single command                            | get a complete overview after filtering or searching               |
+| `* * *`  | meetup organizer                              | undo my last action                                                    | quickly recover from accidental deletions or edits                 |
+| `* *`    | hackathon organizer                           | assign participants to teams                                           | organize team-based events efficiently                             |
+| `* *`    | meetup organizer                              | filter participants by RSVP status (Yes/No/Pending)                    | know exactly who's confirmed and follow up with pending responses  |
+| `* *`    | meetup organizer                              | filter participants by check-in status                                 | identify no-shows and track actual attendance vs RSVPs             |
+| `* *`    | hackathon organizer                           | filter participants by team assignment                                 | view and manage team rosters quickly                               |
+| `* *`    | meetup organizer with catering responsibilities | filter participants by dietary requirements                          | ensure accurate meal planning and allergen management              |
+| `* *`    | meetup organizer                              | tag participants with custom labels                                    | categorize attendees (e.g., speaker, volunteer, VIP)               |
+| `* *`    | frequent organizer                            | import participant lists from CSV files                                | migrate data from previous tools quickly                           |
+| `* *`    | frequent organizer                            | export participant data to CSV                                         | share reports with co-organizers or sponsors                       |
+| `*`      | meetup organizer                              | view attendance statistics and RSVP conversion rates                   | analyze event turnout and improve future planning                  |
+| `*`      | hackathon organizer                           | automatically balance teams by declared skills                         | create fair teams without manual sorting                           |
+| `*`      | meetup organizer                              | see a timeline of recent actions                                       | track what changes were made during busy check-in periods          |
+| `*`      | meetup organizer with accessibility needs     | use keyboard shortcuts for all operations                              | manage events efficiently without relying on mouse input           |
 
 *{More to be added}*
 
