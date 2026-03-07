@@ -338,8 +338,12 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 ### Glossary
 
 * **Mainstream OS**: Windows, Linux, Unix, MacOS
-* **Private contact detail**: A contact detail that is not meant to be shared with others
-
+* **Participant**: A person who has registered to be part of the event.
+* **Participant Record**: The complete set of information stored about the participant.
+* **RSVP**: A participant's response indicating whether they will attend the event or not.
+* **Prefix**: A shorthand label used in commands to indicate specific fields (e.g. `n/` for name)
+* **Duplicate Participant**: A participant entry that matches another participant’s unique identifying fields.
+* **CSV (Comma-Separated Values)**: A file format used to store tabular data.
 --------------------------------------------------------------------------------------------------------------------
 
 ## **Appendix: Instructions for manual testing**
