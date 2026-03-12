@@ -68,10 +68,31 @@ public class NameContainsKeywordsPredicateTest {
         predicate = new NameContainsKeywordsPredicate(Arrays.asList("Carol"));
         assertFalse(predicate.test(new PersonBuilder().withName("Alice Bob").build()));
 
-        // Keywords match phone, email and address, but does not match name
-        predicate = new NameContainsKeywordsPredicate(Arrays.asList("12345", "alice@email.com", "Main", "Street"));
+        // Keywords match phone and address, but do not match name, email, or GitHub username
+        predicate = new NameContainsKeywordsPredicate(Arrays.asList("12345", "Main", "Street"));
         assertFalse(predicate.test(new PersonBuilder().withName("Alice").withPhone("12345")
                 .withEmail("alice@email.com").withAddress("Main Street").build()));
+    }
+
+    @Test
+    public void test_emailAndGitHubContainKeywords_returnsTrue() {
+        PersonBuilder builder = new PersonBuilder().withName("Alice Bob")
+                .withEmail("alice@example.com")
+                .withGitHub("alice-hub");
+
+        NameContainsKeywordsPredicate predicate = new NameContainsKeywordsPredicate(
+                Collections.singletonList("ALICE@EXAMPLE.COM"));
+        assertTrue(predicate.test(builder.build()));
+
+        predicate = new NameContainsKeywordsPredicate(Collections.singletonList("HUB"));
+        assertTrue(predicate.test(builder.build()));
+    }
+
+    @Test
+    public void test_missingGitHubDoesNotMatchGitHubKeyword_returnsFalse() {
+        NameContainsKeywordsPredicate predicate = new NameContainsKeywordsPredicate(
+                Collections.singletonList("alicehub"));
+        assertFalse(predicate.test(new PersonBuilder().withName("Alice Bob").withGitHub(null).build()));
     }
 
     @Test
