@@ -17,6 +17,7 @@ import java.util.stream.Stream;
 import seedu.address.logic.commands.AddCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Address;
+import seedu.address.model.person.Attendance;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.GitHub;
 import seedu.address.model.person.Name;
@@ -61,7 +62,8 @@ public class AddCommandParser implements Parser<AddCommand> {
         RsvpStatus rsvpStatus = argMultimap.getValue(PREFIX_RSVP).isPresent()
                 ? ParserUtil.parseRsvpStatus(argMultimap.getValue(PREFIX_RSVP).get()) : new RsvpStatus("pending");
 
-        Person person = new Person(name, phone, email, address, team, tagList, github, rsvpStatus);
+        Person person = new Person(name, phone, email, address, team, tagList,
+                new Attendance(), github, rsvpStatus);
 
         return new AddCommand(person);
     }

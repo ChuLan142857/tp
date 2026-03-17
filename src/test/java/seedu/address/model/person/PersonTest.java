@@ -98,9 +98,9 @@ public class PersonTest {
                 + ", address=" + ALICE.getAddress()
                 + ", team=" + ALICE.getTeam().orElse(null)
                 + ", tags=" + ALICE.getTags()
+                + ", status=" + ALICE.getCheckInStatus()
                 + ", github=" + ALICE.getGitHub().orElse(null)
                 + ", rsvpStatus=" + ALICE.getRsvpStatus() + "}";
         assertEquals(expected, ALICE.toString());
     }
-
 }

@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import seedu.address.model.person.Address;
+import seedu.address.model.person.Attendance;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.GitHub;
 import seedu.address.model.person.Name;
@@ -32,6 +33,7 @@ public class PersonBuilder {
     private Address address;
     private Optional<Team> team;
     private Set<Tag> tags;
+    private Attendance status;
     private GitHub github;
     private RsvpStatus rsvpStatus;
 
@@ -45,6 +47,7 @@ public class PersonBuilder {
         address = new Address(DEFAULT_ADDRESS);
         team = Optional.empty();
         tags = new HashSet<>();
+        status = new Attendance();
         github = null;
         rsvpStatus = new RsvpStatus(DEFAULT_RSVP);
     }
@@ -59,6 +62,7 @@ public class PersonBuilder {
         address = personToCopy.getAddress();
         team = personToCopy.getTeam();
         tags = new HashSet<>(personToCopy.getTags());
+        status = personToCopy.getCheckInStatus();
         github = personToCopy.getGitHub().orElse(null);
         rsvpStatus = personToCopy.getRsvpStatus();
     }
@@ -136,8 +140,16 @@ public class PersonBuilder {
         return this;
     }
 
+    /**
+     * Sets the {@code status}  of the {@code Person} that we are building.
+     */
+    public PersonBuilder withStatus(Attendance status) {
+        this.status = status;
+        return this;
+    };
+
     public Person build() {
-        return new Person(name, phone, email, address, team, tags, github, rsvpStatus);
+        return new Person(name, phone, email, address, team, tags, status, github, rsvpStatus);
     }
 
 }

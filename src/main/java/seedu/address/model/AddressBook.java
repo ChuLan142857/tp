@@ -6,6 +6,7 @@ import java.util.List;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.util.ToStringBuilder;
+import seedu.address.model.person.Attendance;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.UniquePersonList;
 
@@ -73,6 +74,24 @@ public class AddressBook implements ReadOnlyAddressBook {
      */
     public void addPerson(Person p) {
         persons.add(p);
+    }
+
+    /**
+     * Checks in the given person
+     * The person must alreadu exist in the address book.
+     */
+    public void checkInPerson(Person person) {
+        requireNonNull(person);
+        Person checkedInPerson = new Person(
+                person.getName(),
+                person.getPhone(),
+                person.getEmail(),
+                person.getAddress(),
+                person.getTags(),
+                new Attendance(true),
+                person.getGitHub().get(),
+                person.getRsvpStatus());
+        setPerson(person, checkedInPerson);
     }
 
     /**

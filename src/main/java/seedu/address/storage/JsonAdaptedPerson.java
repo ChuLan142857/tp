@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.model.person.Address;
+import seedu.address.model.person.Attendance;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.GitHub;
 import seedu.address.model.person.Name;
@@ -33,6 +34,7 @@ class JsonAdaptedPerson {
     private final String email;
     private final String address;
     private final String team;
+    private final Boolean status;
     private final String github;
     private final String rsvpStatus;
     private final List<JsonAdaptedTag> tags = new ArrayList<>();
@@ -44,12 +46,14 @@ class JsonAdaptedPerson {
     public JsonAdaptedPerson(@JsonProperty("name") String name, @JsonProperty("phone") String phone,
             @JsonProperty("email") String email, @JsonProperty("address") String address,
             @JsonProperty("team") String team, @JsonProperty("github") String github,
-            @JsonProperty("rsvpStatus") String rsvpStatus, @JsonProperty("tags") List<JsonAdaptedTag> tags) {
+            @JsonProperty("rsvpStatus") String rsvpStatus, @JsonProperty("tags") List<JsonAdaptedTag> tags,
+            @JsonProperty("status") Boolean status) {
         this.name = name;
         this.phone = phone;
         this.email = email;
         this.address = address;
         this.team = team;
+        this.status = status;
         this.github = github;
         this.rsvpStatus = rsvpStatus;
         if (tags != null) {
@@ -66,6 +70,7 @@ class JsonAdaptedPerson {
         email = source.getEmail().value;
         address = source.getAddress().value;
         team = source.getTeam().map(t -> t.teamName).orElse(null);
+        status = source.getCheckInStatus().getStatus();
         github = source.getGitHub().map(g -> g.value).orElse(null);
         rsvpStatus = source.getRsvpStatus().toString();
         tags.addAll(source.getTags().stream()
@@ -133,8 +138,10 @@ class JsonAdaptedPerson {
                 ? new RsvpStatus(rsvpStatus) : new RsvpStatus("pending");
 
         final Set<Tag> modelTags = new HashSet<>(personTags);
+        final Attendance modelAttendance = status == null ? new Attendance() : new Attendance(status);
+
         return new Person(modelName, modelPhone, modelEmail, modelAddress, modelTeam, modelTags,
-                modelGitHub, modelRsvpStatus);
+            modelAttendance, modelGitHub, modelRsvpStatus);
     }
 
 }
