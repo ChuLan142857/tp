@@ -24,6 +24,7 @@ public class Person {
 
     // Data fields
     private final Address address;
+    private final Attendance status;
     private final Set<Tag> tags = new HashSet<>();
     private final GitHub github;
     private final RsvpStatus rsvpStatus;
@@ -32,21 +33,21 @@ public class Person {
      * Every field must be present and not null.
      */
     public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags) {
-        this(name, phone, email, address, tags, null, new RsvpStatus("pending"));
+        this(name, phone, email, address, tags, new Attendance(), null, new RsvpStatus("pending"));
     }
 
     /**
-     * Constructor with optional github and explicit rsvpStatus.
-     * Github may be null if not provided.
+     * Every field must be present and not null.
      */
-    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags,
+    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags, Attendance status,
                   GitHub github, RsvpStatus rsvpStatus) {
-        requireAllNonNull(name, phone, email, address, tags, rsvpStatus);
+        requireAllNonNull(name, phone, email, address, tags, status, rsvpStatus);
         this.name = name;
         this.phone = phone;
         this.email = email;
         this.address = address;
         this.tags.addAll(tags);
+        this.status = status;
         this.github = github;
         this.rsvpStatus = rsvpStatus;
     }
@@ -65,6 +66,10 @@ public class Person {
 
     public Address getAddress() {
         return address;
+    }
+
+    public Attendance getCheckInStatus() {
+        return status;
     }
 
     /**
@@ -117,6 +122,7 @@ public class Person {
                 && email.equals(otherPerson.email)
                 && address.equals(otherPerson.address)
                 && tags.equals(otherPerson.tags)
+                && status.equals(otherPerson.status)
                 && Objects.equals(github, otherPerson.github)
                 && rsvpStatus.equals(otherPerson.rsvpStatus);
     }
@@ -124,7 +130,7 @@ public class Person {
     @Override
     public int hashCode() {
         // use this method for custom fields hashing instead of implementing your own
-        return Objects.hash(name, phone, email, address, tags, github, rsvpStatus);
+        return Objects.hash(name, phone, email, address, tags, status, github, rsvpStatus);
     }
 
     @Override
@@ -135,6 +141,7 @@ public class Person {
                 .add("email", email)
                 .add("address", address)
                 .add("tags", tags)
+                .add("status", status)
                 .add("github", github)
                 .add("rsvpStatus", rsvpStatus)
                 .toString();

@@ -36,7 +36,7 @@ You can reach us at the email `e1459283@u.nus.edu`
 * Responsibilities: Data
 
 ### Han Shangda
-<img src="images/Shangda777.png" width="200px">
+<img src="images/shangda777.png" width="200px">
 
 [[github](http://github.com/Shangda777)]
 
