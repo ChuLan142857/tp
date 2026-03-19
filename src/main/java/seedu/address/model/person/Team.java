@@ -12,8 +12,8 @@ import java.util.Objects;
 public class Team {
 
     public static final String MESSAGE_CONSTRAINTS =
-            "Team names should only contain alphanumeric characters and spaces, and it should not be blank";
-    public static final String VALIDATION_REGEX = "[\\p{Alnum}][\\p{Alnum} ]*";
+        "Team name must be alphanumeric and under 15 characters.";
+    public static final String VALIDATION_REGEX = "[A-Za-z0-9]{1,15}";
 
     public final String teamName;
 

@@ -114,6 +114,19 @@ Examples:
 *  `edit 1 p/91234567 e/johndoe@example.com` Edits the phone number and email address of the 1st person to be `91234567` and `johndoe@example.com` respectively.
 *  `edit 2 n/Betsy Crower t/` Edits the name of the 2nd person to be `Betsy Crower` and clears all existing tags.
 
+### Assigning a team : `assign`
+
+Assigns a participant to a specific hackathon team.
+
+Format: `assign INDEX team/TEAM_NAME`
+
+* The index refers to the index number shown in the displayed person list.
+* `TEAM_NAME` must be alphanumeric and at most 15 characters.
+
+Examples:
+* `assign 2 team/Alpha`
+* `assign 1 team/Team7`
+
 ### Locating persons by name, email, or GitHub username: `search`
 
 Finds persons whose names, emails, or GitHub usernames match any of the given keywords.
@@ -202,6 +215,7 @@ Action     | Format, Examples
 **Clear**  | `clear`
 **Delete** | `delete INDEX`<br> e.g., `delete 3`
 **Edit**   | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com`
+**Assign** | `assign INDEX team/TEAM_NAME`<br> e.g., `assign 2 team/Alpha`
 **Search** | `search KEYWORD [MORE_KEYWORDS]`<br> e.g., `search James Jake`
 **List**   | `list`
 **Help**   | `help`
