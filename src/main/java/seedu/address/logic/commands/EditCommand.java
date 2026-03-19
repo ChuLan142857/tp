@@ -3,8 +3,10 @@ package seedu.address.logic.commands;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_GITHUB;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_RSVP;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TEAM;
 import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
@@ -23,10 +25,13 @@ import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.person.Address;
+import seedu.address.model.person.Attendance;
 import seedu.address.model.person.Email;
+import seedu.address.model.person.GitHub;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.RsvpStatus;
 import seedu.address.model.person.Team;
 import seedu.address.model.tag.Tag;
 
@@ -45,6 +50,8 @@ public class EditCommand extends Command {
             + "[" + PREFIX_PHONE + "PHONE] "
             + "[" + PREFIX_EMAIL + "EMAIL] "
             + "[" + PREFIX_ADDRESS + "ADDRESS] "
+            + "[" + PREFIX_GITHUB + "GITHUB_USERNAME] "
+            + "[" + PREFIX_RSVP + "RSVP_STATUS] "
             + "[" + PREFIX_TEAM + "TEAM] "
             + "[" + PREFIX_TAG + "TAG]...\n"
             + "Example: " + COMMAND_WORD + " 1 "
@@ -104,8 +111,12 @@ public class EditCommand extends Command {
         Address updatedAddress = editPersonDescriptor.getAddress().orElse(personToEdit.getAddress());
         Optional<Team> updatedTeam = editPersonDescriptor.getTeam().orElse(personToEdit.getTeam());
         Set<Tag> updatedTags = editPersonDescriptor.getTags().orElse(personToEdit.getTags());
+        Attendance updatedStatus = personToEdit.getCheckInStatus();
+        GitHub updatedGitHub = editPersonDescriptor.getGitHub().orElse(personToEdit.getGitHub().orElse(null));
+        RsvpStatus updatedRsvpStatus = editPersonDescriptor.getRsvpStatus().orElse(personToEdit.getRsvpStatus());
 
-        return new Person(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTeam, updatedTags);
+        return new Person(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTeam,
+                updatedTags, updatedStatus, updatedGitHub, updatedRsvpStatus);
     }
 
     @Override
@@ -143,6 +154,8 @@ public class EditCommand extends Command {
         private Address address;
         private Optional<Team> team;
         private Set<Tag> tags;
+        private GitHub github;
+        private RsvpStatus rsvpStatus;
 
         public EditPersonDescriptor() {}
 
@@ -157,13 +170,15 @@ public class EditCommand extends Command {
             setAddress(toCopy.address);
             setTeam(toCopy.team);
             setTags(toCopy.tags);
+            setGitHub(toCopy.github);
+            setRsvpStatus(toCopy.rsvpStatus);
         }
 
         /**
          * Returns true if at least one field is edited.
          */
         public boolean isAnyFieldEdited() {
-            return CollectionUtil.isAnyNonNull(name, phone, email, address, team, tags);
+            return CollectionUtil.isAnyNonNull(name, phone, email, address, team, tags, github, rsvpStatus);
         }
 
         public void setName(Name name) {
@@ -223,6 +238,22 @@ public class EditCommand extends Command {
             return (tags != null) ? Optional.of(Collections.unmodifiableSet(tags)) : Optional.empty();
         }
 
+        public void setGitHub(GitHub github) {
+            this.github = github;
+        }
+
+        public Optional<GitHub> getGitHub() {
+            return Optional.ofNullable(github);
+        }
+
+        public void setRsvpStatus(RsvpStatus rsvpStatus) {
+            this.rsvpStatus = rsvpStatus;
+        }
+
+        public Optional<RsvpStatus> getRsvpStatus() {
+            return Optional.ofNullable(rsvpStatus);
+        }
+
         @Override
         public boolean equals(Object other) {
             if (other == this) {
@@ -240,7 +271,9 @@ public class EditCommand extends Command {
                     && Objects.equals(email, otherEditPersonDescriptor.email)
                     && Objects.equals(address, otherEditPersonDescriptor.address)
                     && Objects.equals(team, otherEditPersonDescriptor.team)
-                    && Objects.equals(tags, otherEditPersonDescriptor.tags);
+                    && Objects.equals(tags, otherEditPersonDescriptor.tags)
+                    && Objects.equals(github, otherEditPersonDescriptor.github)
+                    && Objects.equals(rsvpStatus, otherEditPersonDescriptor.rsvpStatus);
         }
 
         @Override
@@ -252,6 +285,8 @@ public class EditCommand extends Command {
                     .add("address", address)
                     .add("team", team)
                     .add("tags", tags)
+                    .add("github", github)
+                    .add("rsvpStatus", rsvpStatus)
                     .toString();
         }
     }
