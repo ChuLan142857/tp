@@ -69,6 +69,7 @@ public class EditCommandParser implements Parser<EditCommand> {
         if (argMultimap.getValue(PREFIX_RSVP).isPresent()) {
             editPersonDescriptor.setRsvpStatus(
                     ParserUtil.parseRsvpStatus(argMultimap.getValue(PREFIX_RSVP).get()));
+        }
         if (argMultimap.getValue(PREFIX_TEAM).isPresent()) {
             String teamValue = argMultimap.getValue(PREFIX_TEAM).get();
             editPersonDescriptor.setTeam(teamValue.isEmpty()
