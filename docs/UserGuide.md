@@ -20,8 +20,8 @@ TeamEventPro is a **desktop app for managing tech meetup attendees**, optimized 
 4. Open a command terminal, `cd` into the folder containing the jar file, and run `java -jar addressbook.jar`.  
 
   A GUI similar to the below should appear in a few seconds.   
-    
-   Ui
+
+![Ui](images/Ui.png)
 5. Type commands in the command box and press Enter to execute them. For example, typing `help` and pressing Enter opens the help window.  
 
   Some example commands you can try:
@@ -217,15 +217,6 @@ TeamEventPro data are saved automatically as a JSON file `[JAR file location]/da
 If your changes to the data file make its format invalid, TeamEventPro will discard all data and start with an empty data file at the next run. Hence, it is recommended to take a backup of the file before editing it.  
   
 Furthermore, certain edits can cause TeamEventPro to behave in unexpected ways (e.g., if a value entered is outside the acceptable range). Therefore, edit the data file only if you are confident that you can update it correctly.  
-
-
-
-
-
-
-### Archiving data files `[coming in v2.0]`
-
-*Details coming soon ...*
 
 ---
 
