@@ -8,7 +8,7 @@ import seedu.address.model.Model;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 
 /**
- * Searches and lists all persons in the address book whose name, email, or GitHub username
+ * Searches and lists all persons in the address book whose visible fields
  * contains any of the argument keywords.
  * Keyword matching is case insensitive.
  */
@@ -17,7 +17,7 @@ public class SearchCommand extends Command {
     public static final String COMMAND_WORD = "search";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD
-            + ": Finds all persons whose names & emails & github-usernames contain any of "
+            + ": Finds all persons whose visible fields contain any of "
             + "the specified keywords (case-insensitive) and displays them as a list with index numbers.\n"
             + "Parameters: KEYWORD [MORE_KEYWORDS]...\n"
             + "Example: " + COMMAND_WORD + " alice alice@example.com alicehub ";
