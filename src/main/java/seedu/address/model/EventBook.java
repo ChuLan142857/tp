@@ -53,6 +53,15 @@ public class EventBook implements ReadOnlyEventBook {
         events.add(event);
     }
 
+    /**
+     * Replaces the given {@code target} event in the list with {@code editedEvent}.
+     */
+    public void setEvent(Event target, Event editedEvent) {
+        requireNonNull(target);
+        requireNonNull(editedEvent);
+        events.setEvent(target, editedEvent);
+    }
+
     public void removeEvent(Event event) {
         events.remove(event);
     }

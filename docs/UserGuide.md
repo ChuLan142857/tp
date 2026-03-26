@@ -29,12 +29,16 @@ your event management tasks done faster than traditional GUI apps.
 5. Type commands in the command box and press Enter to execute them. For example, typing `help` and pressing Enter opens the help window.  
 
   Some example commands you can try:
-  - `list` : Lists all applicants.
+  - `addevent n/Tech Meetup d/2026-06-15 l/NUS Techno Edge desc/Annual networking session` : Adds an event.
+  - `enter event 1` : Enters the 1st event so applicant commands operate on that event's participant list.
+  - `deleteevent 2` : Deletes the 2nd event and its participant list.
+  - `list` : Lists all applicants in the current event.
   - `add n/John Doe p/98765432 e/johnd@example.com a/311, Clementi Ave 2, #02-25 tm/Dev g/johndoe r/yes` : Adds an applicant with team, GitHub, and RSVP status.
   - `filter r/yes` : Filters to show only applicants who have RSVP'd yes.
   - `checkin 1` : Marks the 1st applicant in the current list as checked in.
   - `assign 2 team/Alpha` : Assigns the 2nd applicant to team Alpha.
   - `delete 3` : Deletes the 3rd applicant shown in the current list.
+  - `leave` : Returns to the event list.
   - `exit` : Exits the app.
 6. Refer to the [Features](#features) below for details of each command.
 
@@ -70,12 +74,81 @@ Shows a message explaining how to access the help page.
 
 Format: `help`
 
+### Adding an event : `addevent`
+
+Adds an event to the event book.
+
+Format: `addevent n/NAME d/DATE [l/LOCATION] [desc/DESCRIPTION]`
+
+- `DATE` must be in `YYYY-MM-DD` format.
+- You must be in the event list view to use this command.
+
+Examples:
+
+- `addevent n/Tech Meetup d/2026-06-15`
+- `addevent n/Hack Night d/2026-08-20 l/NUS COM1 desc/Bring your laptop`
+
+### Editing an event : `editevent`
+
+Edits an existing event in the event list. Existing values will be overwritten by the input values.
+
+Format: `editevent INDEX [n/NAME] [d/DATE] [l/LOCATION] [desc/DESCRIPTION]`
+
+- Edits the event at the specified `INDEX`. The index refers to the index number shown in the displayed event list.
+- The index **must be a positive integer** 1, 2, 3, …
+- At least one optional field must be provided.
+- You must be in the event list view to use this command.
+- You can clear the location by typing `l/` with nothing after it.
+- You can clear the description by typing `desc/` with nothing after it.
+
+Examples:
+
+- `editevent 1 n/Tech Meetup 2026`
+- `editevent 2 d/2026-09-01 l/NUS Innovation 4.0`
+- `editevent 3 l/ desc/`
+
+### Deleting an event : `deleteevent`
+
+Deletes an existing event from the event list. The participant list stored under that event will be deleted together
+with it.
+
+Format: `deleteevent INDEX`
+
+- Deletes the event at the specified `INDEX`. The index refers to the index number shown in the displayed event list.
+- The index **must be a positive integer** 1, 2, 3, …
+- You must be in the event list view to use this command.
+
+Examples:
+
+- `deleteevent 1`
+- `deleteevent 3`
+
+### Entering an event : `enter`
+
+Switches the app into the participant list of the selected event.
+
+Format: `enter event INDEX`
+
+- The index refers to the index number shown in the displayed event list.
+- The index **must be a positive integer** 1, 2, 3, …
+
+Example:
+
+- `enter event 1`
+
+### Leaving an event : `leave`
+
+Returns from the participant list view to the event list.
+
+Format: `leave`
+
 ### Adding an applicant: `add`
 
 Adds an applicant to the address book. Supports GitHub username and RSVP status in addition to core contact fields.
 
 Format: `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [tm/TEAM] [g/GITHUB_USERNAME] [r/RSVP_STATUS] [t/TAG]…​`
 
+- You must enter an event first using `enter event INDEX`.
 - `RSVP_STATUS` must be `yes`, `no`, or `pending` (case-insensitive).
 - `TEAM` must be alphanumeric and at most 15 characters.
 
@@ -99,6 +172,8 @@ Lists all the people in the directory.
 
 Format: `list`
 
+- You must enter an event first using `enter event INDEX`.
+
 ### Editing an applicant : `edit`
 
 Edits an existing applicant in the address book. (Renamed from `modify`.) Updates an applicant using their list index; you can change one or more fields in a single command.
@@ -111,6 +186,7 @@ Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [tm/TEAM] [g/GITHUB
 - When editing tags, the existing tags of the applicant will be replaced (tags are not cumulative).
 - You can remove all the applicant's tags by typing `t/` without specifying any tags after it.
 - You can clear the team by typing `tm/` with nothing after it.
+- You must enter an event first using `enter event INDEX`.
 
 Examples:
 
@@ -127,6 +203,7 @@ Format: `assign INDEX team/TEAM_NAME`
 - The index refers to the index number shown in the displayed applicant list.
 - The index **must be a positive integer** 1, 2, 3, …​
 - `TEAM_NAME` must be alphanumeric and at most 15 characters.
+- You must enter an event first using `enter event INDEX`.
 
 Examples:
 
@@ -141,6 +218,7 @@ Format: `filter r/RSVP_STATUS` or `filter t/TAG`
 
 - `RSVP_STATUS` must be `yes`, `no`, or `pending` (case-insensitive).
 - Use exactly one criterion per command.
+- You must enter an event first using `enter event INDEX`.
 
 Examples:
 
@@ -156,6 +234,7 @@ Format: `checkin INDEX`
 
 - The index refers to the index number shown in the displayed applicant list.
 - The index **must be a positive integer** 1, 2, 3, …​
+- You must enter an event first using `enter event INDEX`.
 
 Examples:
 
@@ -174,6 +253,7 @@ Format: `search KEYWORD [MORE_KEYWORDS]`
 - Names use full-word matching e.g. `Han` will not match `Hans`
 - Email and GitHub username matches use case-insensitive substring matching.
 - Applicants matching at least one keyword will be returned (i.e. `OR` search).
+- You must enter an event first using `enter event INDEX`.
 
 Examples:
 
@@ -189,6 +269,7 @@ Format: `delete INDEX`
 - Deletes the applicant at the specified `INDEX`.
 - The index refers to the index number shown in the displayed applicant list.
 - The index **must be a positive integer** 1, 2, 3, …​
+- You must enter an event first using `enter event INDEX`.
 
 Examples:
 
@@ -200,6 +281,8 @@ Examples:
 Clears all entries from the address book.
 
 Format: `clear`
+
+- You must enter an event first using `enter event INDEX`.
 
 ### Exiting the program : `exit`
 
@@ -244,6 +327,11 @@ Furthermore, certain edits can cause TeamEventPro to behave in unexpected ways (
 
 | Action      | Format, Examples                                                                                                                                                                          |
 | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **AddEvent** | `addevent n/NAME d/DATE [l/LOCATION] [desc/DESCRIPTION]` e.g., `addevent n/Tech Meetup d/2026-06-15 l/NUS Techno Edge desc/Annual networking session`                                   |
+| **EditEvent** | `editevent INDEX [n/NAME] [d/DATE] [l/LOCATION] [desc/DESCRIPTION]` e.g., `editevent 1 d/2026-09-01 l/NUS Innovation 4.0`                                                            |
+| **DeleteEvent** | `deleteevent INDEX` e.g., `deleteevent 2`                                                                                                                                             |
+| **Enter**   | `enter event INDEX` e.g., `enter event 1`                                                                                                                                                 |
+| **Leave**   | `leave`                                                                                                                                                                                   |
 | **Add**     | `add n/NAME p/PHONE e/EMAIL a/ADDRESS [tm/TEAM] [g/GITHUB] [r/RSVP] [t/TAG]…​` e.g., `add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd tm/Dev g/jamesho r/yes t/Python` |
 | **Assign**  | `assign INDEX team/TEAM_NAME` e.g., `assign 2 team/Alpha`                                                                                                                                 |
 | **CheckIn** | `checkin INDEX` e.g., `checkin 1`                                                                                                                                                         |
@@ -255,5 +343,3 @@ Furthermore, certain edits can cause TeamEventPro to behave in unexpected ways (
 | **Search**  | `search KEYWORD [MORE_KEYWORDS]` e.g., `search James Jake`                                                                                                                                |
 | **Help**    | `help`                                                                                                                                                                                    |
 | **Exit**    | `exit`                                                                                                                                                                                    |
-
-

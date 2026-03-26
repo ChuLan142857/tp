@@ -99,6 +99,23 @@ public interface Model {
     void addEvent(Event event);
 
     /**
+     * Replaces the given event {@code target} with {@code editedEvent}.
+     * {@code target} must exist in the event book.
+     * The event identity of {@code editedEvent} must not be the same as another existing event in the event book.
+     */
+    default void setEvent(Event target, Event editedEvent) {
+        // Default is a no-op for test stubs.
+    }
+
+    /**
+     * Deletes the given event.
+     * The event must exist in the event book.
+     */
+    default void deleteEvent(Event target) {
+        // Default is a no-op for test stubs.
+    }
+
+    /**
      * Returns true if an event with the same identity as {@code event} exists in the event book.
      */
     boolean hasEvent(Event event);

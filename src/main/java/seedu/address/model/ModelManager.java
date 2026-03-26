@@ -210,6 +210,26 @@ public class ModelManager implements Model {
     }
 
     @Override
+    public void setEvent(Event target, Event editedEvent) {
+        requireAllNonNull(target, editedEvent);
+        eventBook.setEvent(target, editedEvent);
+        if (activeEvent == target) {
+            activeEvent = editedEvent;
+            filteredPersons = new FilteredList<>(activeEvent.getParticipants().getPersonList());
+            updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
+        }
+    }
+
+    @Override
+    public void deleteEvent(Event target) {
+        requireNonNull(target);
+        eventBook.removeEvent(target);
+        if (activeEvent == target) {
+            leaveEvent();
+        }
+    }
+
+    @Override
     public boolean hasEvent(Event event) {
         requireNonNull(event);
         return eventBook.hasEvent(event);
