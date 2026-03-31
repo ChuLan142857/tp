@@ -21,7 +21,7 @@ public class StatisticsCommand extends Command {
             + ": Displays a summary of participant statistics.\n"
             + "Example: " + COMMAND_WORD;
 
-    public static final String MESSAGE_SUCCESS = "Showing participant statistics summary.";
+    public static final String MESSAGE_SUCCESS = "Showing the event's statistics summary.";
 
     @Override
     public CommandResult execute(Model model) throws CommandException {
