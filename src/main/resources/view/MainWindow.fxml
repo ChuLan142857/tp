@@ -52,6 +52,10 @@
           <!-- Full-page content area; we toggle which placeholder is visible/managed -->
           <StackPane fx:id="eventListPanelPlaceholder" VBox.vgrow="ALWAYS"/>
           <StackPane fx:id="personListPanelPlaceholder" VBox.vgrow="ALWAYS"/>
+
+          <!-- Full-page statistics view; initially hidden -->
+          <StackPane fx:id="statisticsPanelPlaceholder" VBox.vgrow="ALWAYS"
+                     visible="false" managed="false" />
         </StackPane>
 
 

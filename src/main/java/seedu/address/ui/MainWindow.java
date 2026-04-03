@@ -61,6 +61,9 @@ public class MainWindow extends UiPart<Stage> {
     @FXML
     private StackPane eventListPanelPlaceholder;
 
+    @FXML
+    private StackPane statisticsPanelPlaceholder;
+
     /**
      * Creates a {@code MainWindow} with the given {@code Stage} and {@code Logic}.
      */
@@ -135,6 +138,8 @@ public class MainWindow extends UiPart<Stage> {
 
         CommandBox commandBox = new CommandBox(this::executeCommand, this::handleCommandTextChanged);
         commandBoxPlaceholder.getChildren().add(commandBox.getRoot());
+
+        statisticsPanel = new StatisticsPanel();
 
         updateModeView();
     }
@@ -217,12 +222,24 @@ public class MainWindow extends UiPart<Stage> {
         StatisticsCalculator calculator = new StatisticsCalculator();
         StatisticsSummary summary = calculator.calculate(logic.getAddressBook().getPersonList());
         statisticsPanel.update(summary);
-        personListPanelPlaceholder.getChildren().clear();
-        personListPanelPlaceholder.getChildren().add(statisticsPanel.getRoot());
+        statisticsPanelPlaceholder.getChildren().setAll(statisticsPanel.getRoot());
+
+        // Show statistics full-page; hide events/participants lists (same content area as StackPane siblings).
+        eventListPanelPlaceholder.setVisible(false);
+        eventListPanelPlaceholder.setManaged(false);
+        personListPanelPlaceholder.setVisible(false);
+        personListPanelPlaceholder.setManaged(false);
+        statisticsPanelPlaceholder.setVisible(true);
+        statisticsPanelPlaceholder.setManaged(true);
     }
 
     /** Shows the person list panel. */
     private void handleShowPersonList() {
+        statisticsPanelPlaceholder.setVisible(false);
+        statisticsPanelPlaceholder.setManaged(false);
+
+        updateModeView();
+
         personListPanelPlaceholder.getChildren().clear();
         personListPanelPlaceholder.getChildren().add(personListPanel.getRoot());
     }
