@@ -44,7 +44,11 @@ public class MainWindow extends UiPart<Stage> {
     private ResultDisplay resultDisplay;
     private HelpWindow helpWindow;
     private StatisticsPanel statisticsPanel;
+    private OnboardingPanel onboardingPanel;
     private OnboardingCoordinator onboardingCoordinator;
+
+    @FXML
+    private StackPane onboardingPlaceholder;
 
     @FXML
     private StackPane commandBoxPlaceholder;
@@ -149,13 +153,27 @@ public class MainWindow extends UiPart<Stage> {
 
         updateModeView();
 
+        onboardingPanel = new OnboardingPanel();
+        onboardingPlaceholder.getChildren().setAll(onboardingPanel.getRoot());
         if (!logic.isOnboardingCompleted()) {
             onboardingCoordinator = new OnboardingCoordinator();
-            resultDisplay.setFeedbackToUser(onboardingCoordinator.getWelcomeMessage());
+            onboardingPanel.setMessage(onboardingCoordinator.getWelcomeMessage(logic));
+            showOnboardingPlaceholder();
         } else {
             onboardingCoordinator = null;
+            hideOnboardingPlaceholder();
         }
         refreshOnboardingMenu();
+    }
+
+    private void showOnboardingPlaceholder() {
+        onboardingPlaceholder.setVisible(true);
+        onboardingPlaceholder.setManaged(true);
+    }
+
+    private void hideOnboardingPlaceholder() {
+        onboardingPlaceholder.setVisible(false);
+        onboardingPlaceholder.setManaged(false);
     }
 
     private void refreshOnboardingMenu() {
@@ -173,21 +191,27 @@ public class MainWindow extends UiPart<Stage> {
         }
         logic.setOnboardingCompleted(true);
         onboardingCoordinator = null;
+        hideOnboardingPlaceholder();
         refreshOnboardingMenu();
         resultDisplay.setFeedbackToUser("Onboarding skipped. You can explore commands from the Help menu.");
     }
 
-    private String mergeOnboardingFeedback(String commandText, boolean commandSucceeded, String baseFeedback) {
+    /**
+     * Updates the onboarding panel only; command feedback and errors stay in {@link ResultDisplay}.
+     */
+    private void processOnboardingAfterCommand(String commandText, boolean commandSucceeded) {
         if (onboardingCoordinator == null) {
-            return baseFeedback;
+            return;
         }
-        Optional<String> extra = onboardingCoordinator.onCommandExecuted(commandText, commandSucceeded);
+        Optional<String> panelText = onboardingCoordinator.onCommandExecuted(commandText, commandSucceeded, logic);
         if (onboardingCoordinator.isFlowFinishedInSession()) {
             logic.setOnboardingCompleted(true);
             onboardingCoordinator = null;
             refreshOnboardingMenu();
+            hideOnboardingPlaceholder();
+            return;
         }
-        return extra.map(s -> baseFeedback + "\n\n" + s).orElse(baseFeedback);
+        panelText.ifPresent(text -> onboardingPanel.setMessage(text));
     }
 
     private void updateModeView() {
@@ -302,9 +326,9 @@ public class MainWindow extends UiPart<Stage> {
     private CommandResult executeCommand(String commandText) throws CommandException, ParseException {
         try {
             CommandResult commandResult = logic.execute(commandText);
-            String feedback = mergeOnboardingFeedback(commandText, true, commandResult.getFeedbackToUser());
             logger.info("Result: " + commandResult.getFeedbackToUser());
-            resultDisplay.setFeedbackToUser(feedback);
+            resultDisplay.setFeedbackToUser(commandResult.getFeedbackToUser());
+            processOnboardingAfterCommand(commandText, true);
 
             updateModeView();
 
@@ -325,8 +349,8 @@ public class MainWindow extends UiPart<Stage> {
             return commandResult;
         } catch (CommandException | ParseException e) {
             logger.info("An error occurred while executing command: " + commandText);
-            String err = mergeOnboardingFeedback(commandText, false, e.getMessage());
-            resultDisplay.setFeedbackToUser(err);
+            resultDisplay.setFeedbackToUser(e.getMessage());
+            processOnboardingAfterCommand(commandText, false);
             throw e;
         }
     }

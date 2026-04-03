@@ -10,15 +10,19 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import seedu.address.logic.Logic;
 import seedu.address.logic.commands.AddCommand;
 import seedu.address.logic.commands.AddEventCommand;
 import seedu.address.logic.commands.AssignTeamCommand;
 import seedu.address.logic.commands.EnterEventCommand;
 import seedu.address.logic.commands.SearchCommand;
+import seedu.address.model.event.Event;
+import seedu.address.model.person.Person;
 
 /**
  * Tracks first-launch onboarding steps and produces supplemental UI messages.
  * Command matching uses the first word of input (same convention as {@link seedu.address.logic.parser.AddressBookParser}).
+ * Messages are personalised using the user's events and participants from {@link Logic} when available.
  */
 public class OnboardingCoordinator {
 
@@ -28,67 +32,77 @@ public class OnboardingCoordinator {
     private OnboardingStep currentStep = OnboardingStep.ADD_EVENT;
     private boolean flowFinishedInSession;
 
+    /** Filled after a successful {@code addevent} during onboarding. */
+    private String tutorialEventName;
+    private int tutorialEventIndex = 1;
+
+    /** Filled after a successful {@code add} during onboarding. */
+    private String tutorialParticipantName;
+
+    /** Filled after a successful {@code assign} during onboarding. */
+    private String tutorialTeamName;
+
     /**
      * Shown once when the main window loads and onboarding is still active.
      */
-    public String getWelcomeMessage() {
+    public String getWelcomeMessage(Logic logic) {
         return "Welcome! This short tutorial walks you through five commands.\n\n"
-                + currentStepReminder();
+                + currentStepReminder(logic);
     }
 
     /**
      * Reminder for the current step (used after parse/execution errors).
      */
-    public String getCurrentStepReminder() {
-        return currentStepReminder();
+    public String getCurrentStepReminder(Logic logic) {
+        return currentStepReminder(logic);
     }
 
-    private String currentStepReminder() {
-        return "Onboarding — Step " + currentStep.stepNumber() + "/" + TOTAL_STEPS + ":\n" + currentStep.getInstruction();
+    private String currentStepReminder(Logic logic) {
+        return "Onboarding — Step " + currentStep.stepNumber() + "/" + TOTAL_STEPS + ":\n"
+                + instructionForCurrentStep(logic);
     }
 
     /**
      * @param commandText raw user input
      * @param commandSucceeded whether parsing and execution succeeded
-     * @return supplemental text to append under the command feedback (empty if none)
+     * @param logic current app logic (for personalised copy)
+     * @return text to show in the onboarding panel (empty if none)
      */
-    public Optional<String> onCommandExecuted(String commandText, boolean commandSucceeded) {
+    public Optional<String> onCommandExecuted(String commandText, boolean commandSucceeded, Logic logic) {
         if (flowFinishedInSession) {
             return Optional.empty();
         }
         if (!commandSucceeded) {
-            return Optional.of(currentStepReminder());
+            return Optional.of(currentStepReminder(logic));
         }
 
         Optional<String> commandWordOpt = extractCommandWord(commandText);
         if (commandWordOpt.isEmpty()) {
-            return Optional.of(currentStepReminder());
+            return Optional.of(currentStepReminder(logic));
         }
         String commandWord = commandWordOpt.get();
 
         if (!currentStep.matchesCommandWord(commandWord)) {
             return Optional.of("You've completed another action, but the tutorial still expects this step:\n"
-                    + currentStepReminder());
+                    + currentStepReminder(logic));
         }
 
         switch (currentStep) {
         case ADD_EVENT:
+            refreshTutorialEventFromModel(logic);
             currentStep = OnboardingStep.ENTER_EVENT;
-            return Optional.of("Event created.\n\nNext — Step " + currentStep.stepNumber() + "/" + TOTAL_STEPS + ":\n"
-                    + currentStep.getInstruction());
+            return Optional.of(buildMessageAfterEventCreated(logic));
         case ENTER_EVENT:
             currentStep = OnboardingStep.ADD_PARTICIPANT;
-            return Optional.of("You're now viewing this event's participants.\n\n"
-                    + "Next — Step " + currentStep.stepNumber() + "/" + TOTAL_STEPS + ":\n"
-                    + currentStep.getInstruction());
+            return Optional.of(buildMessageAfterEnteredEvent(logic));
         case ADD_PARTICIPANT:
+            refreshTutorialParticipantFromModel(logic);
             currentStep = OnboardingStep.ASSIGN_TEAM;
-            return Optional.of("Participant added.\n\nNext — Step " + currentStep.stepNumber() + "/" + TOTAL_STEPS + ":\n"
-                    + currentStep.getInstruction());
+            return Optional.of(buildMessageAfterParticipantAdded(logic));
         case ASSIGN_TEAM:
+            refreshTutorialTeamFromModel(logic);
             currentStep = OnboardingStep.SEARCH;
-            return Optional.of("Team assigned.\n\nLast step — Step " + currentStep.stepNumber() + "/" + TOTAL_STEPS + ":\n"
-                    + currentStep.getInstruction());
+            return Optional.of(buildMessageAfterTeamAssigned(logic));
         case SEARCH:
             flowFinishedInSession = true;
             return Optional.of("Tutorial complete! You're ready to use the app.\n"
@@ -100,6 +114,107 @@ public class OnboardingCoordinator {
 
     public boolean isFlowFinishedInSession() {
         return flowFinishedInSession;
+    }
+
+    private void refreshTutorialEventFromModel(Logic logic) {
+        var events = logic.getFilteredEventList();
+        if (events.isEmpty()) {
+            return;
+        }
+        Event last = events.get(events.size() - 1);
+        tutorialEventName = last.getName().fullName;
+        tutorialEventIndex = events.indexOf(last) + 1;
+    }
+
+    private void refreshTutorialParticipantFromModel(Logic logic) {
+        var persons = logic.getFilteredPersonList();
+        if (persons.isEmpty()) {
+            return;
+        }
+        Person last = persons.get(persons.size() - 1);
+        tutorialParticipantName = last.getName().fullName;
+    }
+
+    private void refreshTutorialTeamFromModel(Logic logic) {
+        for (Person p : logic.getFilteredPersonList()) {
+            if (p.getTeam().isPresent()) {
+                tutorialTeamName = p.getTeam().get().teamName;
+                return;
+            }
+        }
+    }
+
+    private String eventNameOrPlaceholder() {
+        return tutorialEventName != null && !tutorialEventName.isBlank() ? tutorialEventName : "your event";
+    }
+
+    private String participantNameOrPlaceholder() {
+        return tutorialParticipantName != null && !tutorialParticipantName.isBlank()
+                ? tutorialParticipantName : "your participant";
+    }
+
+    private String buildMessageAfterEventCreated(Logic logic) {
+        return "Event created: \"" + eventNameOrPlaceholder() + "\".\n\n"
+                + "Next — Step " + currentStep.stepNumber() + "/" + TOTAL_STEPS + ":\n"
+                + instructionForCurrentStep(logic);
+    }
+
+    private String buildMessageAfterEnteredEvent(Logic logic) {
+        return "You're now viewing participants for \"" + eventNameOrPlaceholder() + "\".\n\n"
+                + "Next — Step " + currentStep.stepNumber() + "/" + TOTAL_STEPS + ":\n"
+                + instructionForCurrentStep(logic);
+    }
+
+    private String buildMessageAfterParticipantAdded(Logic logic) {
+        return "Participant added: \"" + participantNameOrPlaceholder() + "\".\n\n"
+                + "Next — Step " + currentStep.stepNumber() + "/" + TOTAL_STEPS + ":\n"
+                + instructionForCurrentStep(logic);
+    }
+
+    private String buildMessageAfterTeamAssigned(Logic logic) {
+        String team = tutorialTeamName != null && !tutorialTeamName.isBlank() ? tutorialTeamName : "your team";
+        return "Team assigned: \"" + team + "\" for \"" + participantNameOrPlaceholder() + "\".\n\n"
+                + "Last step — Step " + currentStep.stepNumber() + "/" + TOTAL_STEPS + ":\n"
+                + instructionForCurrentStep(logic);
+    }
+
+    private String instructionForCurrentStep(Logic logic) {
+        switch (currentStep) {
+        case ADD_EVENT:
+            return "Create an event:\n"
+                    + AddEventCommand.COMMAND_WORD + " "
+                    + PREFIX_NAME + "Orientation Day "
+                    + PREFIX_DATE + "2026-08-20 "
+                    + PREFIX_LOCATION + "COM1 "
+                    + PREFIX_DESCRIPTION + "Welcome session";
+        case ENTER_EVENT:
+            return "Open \"" + eventNameOrPlaceholder() + "\" to manage participants:\n"
+                    + EnterEventCommand.COMMAND_WORD + " event " + tutorialEventIndex + "\n"
+                    + "(Index matches the event list; yours is shown above.)";
+        case ADD_PARTICIPANT:
+            return "Add someone to \"" + eventNameOrPlaceholder() + "\":\n"
+                    + AddCommand.COMMAND_WORD + " "
+                    + PREFIX_NAME + "Jane Doe "
+                    + "p/91234567 e/jane@example.com a/Blk 123";
+        case ASSIGN_TEAM:
+            return "Put \"" + participantNameOrPlaceholder() + "\" on a team (use their list index):\n"
+                    + AssignTeamCommand.COMMAND_WORD + " 1 " + PREFIX_ASSIGN_TEAM + "Alpha";
+        case SEARCH:
+            return "Try searching by keyword (matches name, phone, email, team, etc.):\n"
+                    + SearchCommand.COMMAND_WORD + " " + searchKeywordSuggestion();
+        default:
+            return "";
+        }
+    }
+
+    private String searchKeywordSuggestion() {
+        if (tutorialParticipantName != null && !tutorialParticipantName.isBlank()) {
+            return tutorialParticipantName.trim().split("\\s+")[0];
+        }
+        if (tutorialTeamName != null && !tutorialTeamName.isBlank()) {
+            return tutorialTeamName;
+        }
+        return "Jane";
     }
 
     /**
@@ -118,48 +233,11 @@ public class OnboardingCoordinator {
     }
 
     private enum OnboardingStep {
-        ADD_EVENT(AddEventCommand.COMMAND_WORD) {
-            @Override
-            String getInstruction() {
-                return "Create an event:\n"
-                        + AddEventCommand.COMMAND_WORD + " "
-                        + PREFIX_NAME + "Orientation Day "
-                        + PREFIX_DATE + "2026-08-20 "
-                        + PREFIX_LOCATION + "COM1 "
-                        + PREFIX_DESCRIPTION + "Welcome session";
-            }
-        },
-        ENTER_EVENT(EnterEventCommand.COMMAND_WORD) {
-            @Override
-            String getInstruction() {
-                return "Open that event's participant list:\n"
-                        + EnterEventCommand.COMMAND_WORD + " event 1\n"
-                        + "(Use the index shown in the event list if it is not 1.)";
-            }
-        },
-        ADD_PARTICIPANT(AddCommand.COMMAND_WORD) {
-            @Override
-            String getInstruction() {
-                return "Add someone to this event:\n"
-                        + AddCommand.COMMAND_WORD + " "
-                        + PREFIX_NAME + "Jane Doe "
-                        + "p/91234567 e/jane@example.com a/Blk 123";
-            }
-        },
-        ASSIGN_TEAM(AssignTeamCommand.COMMAND_WORD) {
-            @Override
-            String getInstruction() {
-                return "Put them on a team:\n"
-                        + AssignTeamCommand.COMMAND_WORD + " 1 " + PREFIX_ASSIGN_TEAM + "Alpha";
-            }
-        },
-        SEARCH(SearchCommand.COMMAND_WORD) {
-            @Override
-            String getInstruction() {
-                return "Try searching by keyword (matches name, phone, email, etc.):\n"
-                        + SearchCommand.COMMAND_WORD + " Jane";
-            }
-        };
+        ADD_EVENT(AddEventCommand.COMMAND_WORD),
+        ENTER_EVENT(EnterEventCommand.COMMAND_WORD),
+        ADD_PARTICIPANT(AddCommand.COMMAND_WORD),
+        ASSIGN_TEAM(AssignTeamCommand.COMMAND_WORD),
+        SEARCH(SearchCommand.COMMAND_WORD);
 
         private final String expectedCommandWord;
 
@@ -174,7 +252,5 @@ public class OnboardingCoordinator {
         boolean matchesCommandWord(String commandWord) {
             return expectedCommandWord.equals(commandWord);
         }
-
-        abstract String getInstruction();
     }
 }
