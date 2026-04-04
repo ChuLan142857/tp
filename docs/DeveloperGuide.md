@@ -485,6 +485,46 @@ testers are expected to do more *exploratory* testing.
 
 1. _{ more test cases …​ }_
 
+### Filtering applicants
+
+1. Filtering while inside an event
+
+   1. Prerequisites: Launch the app, select an event with `enter event INDEX` so the participant list is shown. Ensure the list has a mix of RSVP values, tags, team assignments, and check-in states (use sample data or add/edit participants as needed).
+
+   1. Test case: `filter r/yes`<br>
+      Expected: Only participants whose RSVP is “yes” remain visible; the status message shows how many persons are listed; list updates immediately.
+
+   1. Test case: `filter t/` followed by a tag that at least one participant has (e.g. `filter t/python` if such a tag exists).<br>
+      Expected: Only participants with that tag are shown; count in the message matches the visible list.
+
+   1. Test case: `filter team/TEAMNAME` where `TEAMNAME` matches an assigned team.<br>
+      Expected: Only participants on that team are shown.
+
+   1. Test case: `filter checkin/yes` or `filter checkin/no` (values as supported by the app).<br>
+      Expected: List narrows to checked-in or not checked-in participants accordingly.
+
+   1. Test case: `list` after a successful filter.<br>
+      Expected: Full participant list for the current event is shown again (filter predicate cleared as per normal `list` behavior).
+
+1. Invalid filter input
+
+   1. Prerequisites: Same as above—must be inside an event with participants listed.
+
+   1. Test case: `filter` with no arguments, or with two criteria in one command (e.g. `filter r/yes t/python`).<br>
+      Expected: No change to the filtered list (or error message); user sees invalid command / usage feedback.
+
+   1. Test case: `filter r/invalid` (or other malformed RSVP value).<br>
+      Expected: Parse error; list unchanged.
+
+1. Filtering without entering an event first
+
+   1. Prerequisites: Launch the app but do **not** run `enter event`; stay at the event selection view if applicable.
+
+   1. Test case: `filter r/yes`<br>
+      Expected: Command fails with a message indicating the user must enter an event first; participant list not updated.
+
+1. _{ more test cases …​ }_
+
 ### Saving data
 
 1. Dealing with missing/corrupted data files
