@@ -1,7 +1,5 @@
 package seedu.address.logic.parser;
 
-import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
-import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
 
 import org.junit.jupiter.api.Test;
@@ -18,8 +16,13 @@ public class ImportCommandParserTest {
     }
 
     @Test
-    public void parse_emptyArgs_failure() {
-        assertParseFailure(parser, "   ",
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, ImportCommand.MESSAGE_USAGE));
+    public void parse_emptyArgs_listsCsvFiles() {
+        assertParseSuccess(parser, "   ", new ImportCommand(true));
+    }
+
+    @Test
+    public void parse_listKeyword_listsCsvFiles() {
+        assertParseSuccess(parser, " list ", new ImportCommand(true));
+        assertParseSuccess(parser, " --list ", new ImportCommand(true));
     }
 }

@@ -178,10 +178,11 @@ Format: `list`
 
 Imports applicants from a CSV file into the currently entered event.
 
-Format: `import FILE_PATH`
+Format: `import FILE_PATH` or `import list`
 
 - You must enter an event first using `enter event INDEX`.
 - The file path must point to a `.csv` file.
+- Use `import list` (or `import` with no path) to list discoverable `.csv` files and their directories.
 - Required CSV headers: `name,phone,email,address`.
 - Optional CSV headers: `team,github,rsvpStatus,tags,checkinStatus`.
 - Duplicate applicants are skipped.
@@ -206,6 +207,7 @@ Jane Tan,91234567,jane@example.com,5 Sports Hub Ave,,,no,,false
 Example:
 
 - `import data/participants.csv`
+- `import list`
 
 ### Exporting applicants to CSV : `export`
 
@@ -387,7 +389,7 @@ Furthermore, certain edits can cause TeamEventPro to behave in unexpected ways (
 | **Delete**  | `delete INDEX` e.g., `delete 3`                                                                                                                                                           |
 | **Edit**    | `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [tm/TEAM] [g/GITHUB] [r/RSVP] [t/TAG]…​` e.g., `edit 2 n/James Lee e/jameslee@example.com`                                           |
 | **Filter**  | `filter r/RSVP` or `filter t/TAG` e.g., `filter r/yes`, `filter t/Python`                                                                                                                 |
-| **Import**  | `import FILE_PATH` e.g., `import data/participants.csv`                                                                                                                                     |
+| **Import**  | `import FILE_PATH` or `import list` e.g., `import data/participants.csv`, `import list`                                                                                                   |
 | **List**    | `list`                                                                                                                                                                                    |
 | **Export**  | `export [FILE_PATH]` e.g., `export`, `export data/exports/hacknight.csv`                                                                                                                  |
 | **Search**  | `search KEYWORD [MORE_KEYWORDS]` e.g., `search James Jake`                                                                                                                                |

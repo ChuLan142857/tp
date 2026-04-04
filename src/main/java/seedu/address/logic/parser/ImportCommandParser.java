@@ -10,12 +10,24 @@ import seedu.address.logic.parser.exceptions.ParseException;
  */
 public class ImportCommandParser implements Parser<ImportCommand> {
 
+    private static final String LIST_KEYWORD = "list";
+    private static final String LIST_FLAG = "--list";
+
     @Override
     public ImportCommand parse(String args) throws ParseException {
-        if (args == null || args.trim().isEmpty()) {
+        if (args == null) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, ImportCommand.MESSAGE_USAGE));
         }
 
-        return new ImportCommand(args.trim());
+        String trimmedArgs = args.trim();
+        if (trimmedArgs.isEmpty()) {
+            return new ImportCommand(true);
+        }
+
+        if (trimmedArgs.equalsIgnoreCase(LIST_KEYWORD) || trimmedArgs.equalsIgnoreCase(LIST_FLAG)) {
+            return new ImportCommand(true);
+        }
+
+        return new ImportCommand(trimmedArgs);
     }
 }

@@ -7,6 +7,7 @@ import static seedu.address.logic.commands.CommandTestUtil.enterDefaultEvent;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -63,5 +64,26 @@ public class ImportCommandTest {
             .findFirst()
             .orElseThrow();
         assertTrue(importedPerson.getCheckInStatus().getStatus());
+    }
+
+    @Test
+    public void execute_listMode_listsCsvFiles() throws Exception {
+        Path csvPath = Paths.get("data", "import-list-test.csv");
+        Files.createDirectories(csvPath.getParent());
+        Files.writeString(csvPath, "name,phone,email,address" + System.lineSeparator());
+
+        try {
+            Model model = new ModelManager();
+            enterDefaultEvent(model);
+            ImportCommand command = new ImportCommand(true);
+
+            CommandResult result = command.execute(model);
+
+            assertTrue(result.getFeedbackToUser().contains("Found"));
+            assertTrue(result.getFeedbackToUser().contains("import-list-test.csv"));
+            assertTrue(result.getFeedbackToUser().contains("directory:"));
+        } finally {
+            Files.deleteIfExists(csvPath);
+        }
     }
 }
