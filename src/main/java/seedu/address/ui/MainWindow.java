@@ -160,6 +160,7 @@ public class MainWindow extends UiPart<Stage> {
         boolean showDetail = inParticipantsMode && logic.getPersonToView().isPresent();
 
         personListPanel.setPersonList(logic.getFilteredPersonList());
+        personListPanel.setCompactMode(inParticipantsMode);
 
         if (showDetail) {
             mainSplitPane.setVisible(true);

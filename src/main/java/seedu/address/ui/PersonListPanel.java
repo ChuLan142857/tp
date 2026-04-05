@@ -21,6 +21,7 @@ public class PersonListPanel extends UiPart<Region> {
     @FXML
     private ListView<Person> personListView;
     private List<String> highlightKeywords = List.of();
+    private boolean compactMode;
 
     /**
      * Creates a {@code PersonListPanel} with the given {@code ObservableList}.
@@ -44,6 +45,14 @@ public class PersonListPanel extends UiPart<Region> {
     }
 
     /**
+     * Enables compact cards for participants mode where full details are shown in the detail pane.
+     */
+    public void setCompactMode(boolean compactMode) {
+        this.compactMode = compactMode;
+        personListView.refresh();
+    }
+
+    /**
      * Custom {@code ListCell} that displays the graphics of a {@code Person} using a {@code PersonCard}.
      */
     class PersonListViewCell extends ListCell<Person> {
@@ -55,7 +64,7 @@ public class PersonListPanel extends UiPart<Region> {
                 setGraphic(null);
                 setText(null);
             } else {
-                setGraphic(new PersonCard(person, getIndex() + 1, highlightKeywords).getRoot());
+                setGraphic(new PersonCard(person, getIndex() + 1, highlightKeywords, compactMode).getRoot());
             }
         }
     }

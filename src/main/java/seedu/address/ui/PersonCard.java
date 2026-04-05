@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Locale;
 
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
@@ -31,6 +32,7 @@ public class PersonCard extends UiPart<Region> {
 
     public final Person person;
     private final List<String> highlightKeywords;
+    private final boolean compactMode;
 
     @FXML
     private HBox cardPane;
@@ -60,21 +62,35 @@ public class PersonCard extends UiPart<Region> {
      * Creates a {@code PersonCode} with the given {@code Person} and index to display.
      */
     public PersonCard(Person person, int displayedIndex) {
-        this(person, displayedIndex, List.of());
+        this(person, displayedIndex, List.of(), false);
     }
 
     /**
      * Creates a {@code PersonCode} with highlighted matching text segments.
      */
     public PersonCard(Person person, int displayedIndex, List<String> highlightKeywords) {
+        this(person, displayedIndex, highlightKeywords, false);
+    }
+
+    /**
+     * Creates a {@code PersonCode} with highlighted matching text segments and display mode.
+     */
+    public PersonCard(Person person, int displayedIndex, List<String> highlightKeywords, boolean compactMode) {
         super(FXML);
         this.person = person;
+        this.compactMode = compactMode;
         this.highlightKeywords = highlightKeywords.stream()
                 .map(keyword -> keyword.toLowerCase(Locale.ROOT))
                 .filter(keyword -> !keyword.isBlank())
                 .toList();
         id.setText(displayedIndex + ". ");
         setHighlightedLabelText(name, person.getName().fullName);
+
+        if (compactMode) {
+            showCompactCard(person);
+            return;
+        }
+
         setHighlightedLabelText(phone, person.getPhone().value);
         setHighlightedLabelText(address, person.getAddress().value);
         setHighlightedLabelText(email, person.getEmail().value);
@@ -103,6 +119,35 @@ public class PersonCard extends UiPart<Region> {
             checkInStatus.getStyleClass().add("not-checked-in");
         }
 
+    }
+
+    private void showCompactCard(Person person) {
+        hideNode(phone);
+        hideNode(address);
+        hideNode(email);
+        hideNode(github);
+        hideNode(tags);
+
+        if (person.getTeam().isPresent()) {
+            setHighlightedLabelText(team, "Team: " + person.getTeam().get().teamName);
+        } else {
+            hideNode(team);
+        }
+
+        setPlainLabelText(rsvpStatus, "RSVP: " + person.getRsvpStatus().value);
+
+        if (person.getCheckInStatus().getStatus()) {
+            setStatusLabelText("Checked-In");
+            checkInStatus.getStyleClass().add("checked-in");
+        } else {
+            setStatusLabelText("Not Checked-In");
+            checkInStatus.getStyleClass().add("not-checked-in");
+        }
+    }
+
+    private void hideNode(Node node) {
+        node.setVisible(false);
+        node.setManaged(false);
     }
 
     private Label createTagLabel(String value) {
