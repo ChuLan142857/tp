@@ -129,6 +129,33 @@ public class ParserUtil {
     }
 
     /**
+     * Parses a delimited string of tags into a {@code Set<Tag>}.
+     * Leading and trailing whitespaces around each tag will be trimmed.
+     * Empty tokens are ignored.
+     *
+     * @param tagsString The string containing delimited tags (can be null or empty).
+     * @param delimiter The delimiter separating tags (e.g., ";", ",").
+     * @return A set of parsed Tag objects, or an empty set if input is null/blank.
+     * @throws ParseException if any tag name is invalid.
+     */
+    public static Set<Tag> parseDelimitedTags(String tagsString, String delimiter) throws ParseException {
+        if (tagsString == null || tagsString.isBlank()) {
+            return new HashSet<>();
+        }
+
+        Collection<String> tagNames = new HashSet<>();
+        String[] tokens = tagsString.split(delimiter);
+        for (String token : tokens) {
+            String trimmed = token.trim();
+            if (!trimmed.isEmpty()) {
+                tagNames.add(trimmed);
+            }
+        }
+
+        return parseTags(tagNames);
+    }
+
+    /**
      * Parses a {@code String team} into a {@code Team}.
      * Leading and trailing whitespaces will be trimmed.
      *
@@ -206,15 +233,18 @@ public class ParserUtil {
     /**
      * Parses a {@code String attendance} into a {@code Attendance}.
      * Leading and trailing whitespaces will be trimmed.
+     * Accepts various formats: "yes", "checked-in", "true" for checked in,
+     * and "no", "not checked-in", "false" for not checked in.
      *
      * @throws ParseException if the given {@code attendance} is invalid.
      */
     public static Attendance parseAttendance(String attendance) throws ParseException {
         requireNonNull(attendance);
-        String trimmed = attendance.trim();
-        if (trimmed.equalsIgnoreCase("yes")) {
+        String trimmed = attendance.trim().toLowerCase();
+
+        if (trimmed.equals("yes") || trimmed.equals("checked-in") || trimmed.equals("true")) {
             return new Attendance(true);
-        } else if (trimmed.equalsIgnoreCase("no")) {
+        } else if (trimmed.equals("no") || trimmed.equals("not checked-in") || trimmed.equals("false")) {
             return new Attendance(false);
         } else {
             throw new ParseException(Attendance.MESSAGE_CONSTRAINTS);
