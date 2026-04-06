@@ -88,4 +88,29 @@ public class AddEventCommandParserTest {
                         + PREFIX_DATE + "2026-02-30",
                 EventDate.MESSAGE_CONSTRAINTS);
     }
+
+    @Test
+    public void parse_unknownPrefixAfterDate_failure() {
+        assertParseFailure(parser,
+                " " + PREFIX_NAME + "Tech Meetup "
+                        + PREFIX_DATE + "2026-06-15 "
+                        + "I/YIH "
+                        + PREFIX_DESCRIPTION + "Annual networking",
+                EventCommandParserUtil.getUnknownPrefixMessage("I/"));
+    }
+
+    @Test
+    public void parse_descriptionContainingSlash_success() {
+        Event expected = new Event(
+                new EventName("Tech Meetup"),
+                new EventDate("2026-06-15"),
+                Optional.empty(),
+                Optional.of("A/B testing showcase"));
+
+        assertParseSuccess(parser,
+                " " + PREFIX_NAME + "Tech Meetup "
+                        + PREFIX_DATE + "2026-06-15 "
+                        + PREFIX_DESCRIPTION + "A/B testing showcase",
+                new AddEventCommand(expected));
+    }
 }

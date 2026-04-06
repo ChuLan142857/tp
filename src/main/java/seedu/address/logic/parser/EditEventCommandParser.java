@@ -27,6 +27,7 @@ public class EditEventCommandParser implements Parser<EditEventCommand> {
      */
     public EditEventCommand parse(String args) throws ParseException {
         requireNonNull(args);
+        EventCommandParserUtil.validateNoUnknownPrefixes(args, true);
         ArgumentMultimap argMultimap =
                 ArgumentTokenizer.tokenize(args, PREFIX_NAME, PREFIX_DATE, PREFIX_LOCATION, PREFIX_DESCRIPTION);
 

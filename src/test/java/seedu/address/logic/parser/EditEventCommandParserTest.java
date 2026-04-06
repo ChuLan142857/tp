@@ -48,6 +48,16 @@ public class EditEventCommandParserTest {
     }
 
     @Test
+    public void parse_unknownPrefixAfterDate_failure() {
+        assertParseFailure(parser,
+                "1 " + PREFIX_NAME + "Welcome Tea "
+                        + PREFIX_DATE + "2026-02-04 "
+                        + "I/YIH "
+                        + PREFIX_DESCRIPTION + "Networking event",
+                EventCommandParserUtil.getUnknownPrefixMessage("I/"));
+    }
+
+    @Test
     public void parse_allFieldsSpecified_success() {
         EditEventDescriptor descriptor = new EditEventDescriptor();
         descriptor.setName(new EventName("Builder Session"));
@@ -88,6 +98,18 @@ public class EditEventCommandParserTest {
 
         assertParseSuccess(parser,
                 " 1 " + PREFIX_LOCATION + " " + PREFIX_DESCRIPTION,
+                expectedCommand);
+    }
+
+    @Test
+    public void parse_descriptionContainingSlash_success() {
+        EditEventDescriptor descriptor = new EditEventDescriptor();
+        descriptor.setDescription(Optional.of("A/B testing showcase"));
+
+        EditEventCommand expectedCommand = new EditEventCommand(Index.fromOneBased(1), descriptor);
+
+        assertParseSuccess(parser,
+                " 1 " + PREFIX_DESCRIPTION + "A/B testing showcase",
                 expectedCommand);
     }
 
