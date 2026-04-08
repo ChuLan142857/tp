@@ -1,0 +1,79 @@
+@startuml
+!include style.puml
+skinparam ArrowFontStyle plain
+
+box Logic LOGIC_COLOR_T1
+participant ":LogicManager" as LogicManager LOGIC_COLOR
+participant ":AddressBookParser" as AddressBookParser LOGIC_COLOR
+participant ":AssignTeamCommandParser" as AssignTeamCommandParser LOGIC_COLOR
+participant "c:AssignTeamCommand" as AssignTeamCommand LOGIC_COLOR
+participant "r:CommandResult" as CommandResult LOGIC_COLOR
+end box
+
+box Model MODEL_COLOR_T1
+participant "m:Model" as Model MODEL_COLOR
+end box
+
+[-> LogicManager : execute("assign 2 team/Alpha")
+activate LogicManager
+
+LogicManager -> AddressBookParser : parseCommand("assign 2 team/Alpha")
+activate AddressBookParser
+
+create AssignTeamCommandParser
+AddressBookParser -> AssignTeamCommandParser
+activate AssignTeamCommandParser
+
+AssignTeamCommandParser --> AddressBookParser
+deactivate AssignTeamCommandParser
+
+AddressBookParser -> AssignTeamCommandParser : parse("2 team/Alpha")
+activate AssignTeamCommandParser
+
+create AssignTeamCommand
+AssignTeamCommandParser -> AssignTeamCommand
+activate AssignTeamCommand
+
+AssignTeamCommand --> AssignTeamCommandParser :
+deactivate AssignTeamCommand
+
+AssignTeamCommandParser --> AddressBookParser : c
+deactivate AssignTeamCommandParser
+'Hidden arrow to position the destroy marker below the end of the activation bar.
+AssignTeamCommandParser -[hidden]-> AddressBookParser
+destroy AssignTeamCommandParser
+
+AddressBookParser --> LogicManager : c
+deactivate AddressBookParser
+
+LogicManager -> AssignTeamCommand : execute(m)
+activate AssignTeamCommand
+
+AssignTeamCommand -> Model : getFilteredPersonList()
+activate Model
+Model --> AssignTeamCommand : lastShownList
+deactivate Model
+
+AssignTeamCommand -> Model : setPerson(personToAssign, assignedPerson)
+activate Model
+Model --> AssignTeamCommand
+deactivate Model
+
+AssignTeamCommand -> Model : updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS)
+activate Model
+Model --> AssignTeamCommand
+deactivate Model
+
+create CommandResult
+AssignTeamCommand -> CommandResult
+activate CommandResult
+
+CommandResult --> AssignTeamCommand
+deactivate CommandResult
+
+AssignTeamCommand --> LogicManager : r
+deactivate AssignTeamCommand
+
+[<--LogicManager
+deactivate LogicManager
+@enduml
