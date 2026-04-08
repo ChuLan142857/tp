@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - branch-A-FinalUserGuide
 
 jobs:
   build_and_deploy:

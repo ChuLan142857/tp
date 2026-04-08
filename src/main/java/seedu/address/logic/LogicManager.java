@@ -136,6 +136,22 @@ public class LogicManager implements Logic {
         }
     }
 
+    public int getOnboardingTutorialStep() {
+        return model.getUserPrefs().getOnboardingTutorialStep();
+    }
+
+    @Override
+    public void setOnboardingTutorialStep(int onboardingTutorialStep) {
+        UserPrefs prefs = new UserPrefs(model.getUserPrefs());
+        prefs.setOnboardingTutorialStep(onboardingTutorialStep);
+        model.setUserPrefs(prefs);
+        try {
+            storage.saveUserPrefs(prefs);
+        } catch (IOException e) {
+            logger.warning("Could not save onboarding step: " + e.getMessage());
+        }
+    }
+
     @Override
     public ThemeMode getThemeMode() {
         return model.getThemeMode();

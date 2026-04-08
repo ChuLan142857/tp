@@ -66,6 +66,12 @@ public interface Logic {
     /** @return true if the first-launch onboarding tutorial was completed or skipped */
     boolean isOnboardingCompleted();
 
+    /** @return the current onboarding tutorial step number. */
+    int getOnboardingTutorialStep();
+
+    /** Keeps track of the tutorial step the user is on. */
+    void setOnboardingTutorialStep(int step);
+
     /** Persists that onboarding is finished (tutorial completed or skipped). */
     void setOnboardingCompleted(boolean completed);
 

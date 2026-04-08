@@ -117,4 +117,58 @@ public class OnboardingCoordinatorTest {
         c.onCommandExecuted(SearchCommand.COMMAND_WORD + " Alex", true, logic);
         assertTrue(c.isFlowFinishedInSession());
     }
+
+    @Test
+    public void restoreProgress_invalidStoredStep_clampsToFirstStep() {
+        OnboardingCoordinator c = new OnboardingCoordinator();
+        c.setCurrentStep(0);
+
+        String reminder = c.getCurrentStepReminder(logic);
+        assertTrue(reminder.contains("Step 1/5"));
+        assertTrue(reminder.contains(AddEventCommand.COMMAND_WORD));
+    }
+
+    @Test
+    public void restoreProgress_resumesParticipantSteps_withoutAutoEnteringEvent() {
+        Event event = new Event(
+                new EventName("Hack Day"),
+                new EventDate("2026-04-01"),
+                Optional.empty(),
+                Optional.empty());
+        event.addParticipant(new PersonBuilder().withName("Mia Tan").withTeam("Alpha").build());
+        model.addEvent(event);
+
+        OnboardingCoordinator c = new OnboardingCoordinator();
+        c.setCurrentStep(5);
+        c.restoreProgress(logic);
+
+        assertFalse(logic.isInEventParticipantsMode());
+
+        String reminder = c.getCurrentStepReminder(logic);
+        assertTrue(reminder.contains("Step 5/5"));
+        assertTrue(reminder.contains("Resume by reopening"));
+        assertTrue(reminder.contains("Hack Day"));
+    }
+
+    @Test
+    public void onCommandExecuted_enterEventDuringResumedParticipantStep_keepsCurrentStep() {
+        Event event = new Event(
+                new EventName("Hack Day"),
+                new EventDate("2026-04-01"),
+                Optional.empty(),
+                Optional.empty());
+        event.addParticipant(new PersonBuilder().withName("Mia Tan").withTeam("Alpha").build());
+        model.addEvent(event);
+
+        OnboardingCoordinator c = new OnboardingCoordinator();
+        c.setCurrentStep(5);
+        c.restoreProgress(logic);
+
+        model.enterEvent(event);
+        Optional<String> message = c.onCommandExecuted(EnterEventCommand.COMMAND_WORD + " event 1", true, logic);
+
+        assertTrue(message.isPresent());
+        assertTrue(message.get().contains("Step 5/5"));
+        assertFalse(c.isFlowFinishedInSession());
+    }
 }

@@ -17,6 +17,8 @@ public interface ReadOnlyUserPrefs {
     /** @return true if the user has finished or skipped the first-launch onboarding tutorial */
     boolean isOnboardingCompleted();
 
+    int getOnboardingTutorialStep();
+
     ThemeMode getThemeMode();
 
 }

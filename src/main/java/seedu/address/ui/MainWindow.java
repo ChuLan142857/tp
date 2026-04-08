@@ -168,6 +168,8 @@ public class MainWindow extends UiPart<Stage> {
         onboardingPlaceholder.getChildren().setAll(onboardingPanel.getRoot());
         if (!logic.isOnboardingCompleted()) {
             onboardingCoordinator = new OnboardingCoordinator();
+            onboardingCoordinator.setCurrentStep(logic.getOnboardingTutorialStep());
+            onboardingCoordinator.restoreProgress(logic);
             onboardingPanel.setMessage(onboardingCoordinator.getWelcomeMessage(logic));
             showOnboardingPlaceholder();
         } else {

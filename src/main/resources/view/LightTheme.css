@@ -823,3 +823,17 @@
     -fx-fill: #b45309;
     -fx-font-weight: bold;
 }
+
+.onboarding-heading {
+    -fx-font-size: 15pt;
+    -fx-font-family: "Segoe UI Semibold";
+    -fx-text-fill: #4338ca;
+    -fx-padding: 6 0 6 0;
+}
+
+.onboarding-text {
+    -fx-background-color: black;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 11pt;
+    -fx-text-fill: #0f172a;
+}
