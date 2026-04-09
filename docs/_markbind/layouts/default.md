@@ -6,7 +6,7 @@
   <navbar type="dark">
     <a slot="brand" href="{{baseUrl}}/index.html" title="Home" class="navbar-brand">TeamEventPro</a>
     <li><a href="{{baseUrl}}/index.html" class="nav-link">Home</a></li>
-    <li><a href="{{baseUrl}}/UserGuide.html" class="nav-link">User Guide</a></li>
+    <li><a href="{{baseUrl}}/UG.html" class="nav-link">User Guide</a></li>
     <li><a href="{{baseUrl}}/DeveloperGuide.html" class="nav-link">Developer Guide</a></li>
     <li><a href="{{baseUrl}}/AboutUs.html" class="nav-link">About Us</a></li>
     <li><a href="https://github.com/AY2526S2-CS2103T-W11-1/tp" target="_blank" class="nav-link"><md>:fab-github:</md></a>
@@ -27,11 +27,28 @@
     <div class="nav-component slim-scroll">
       <site-nav>
 * [Home]({{ baseUrl }}/index.html)
-* [User Guide]({{ baseUrl }}/UserGuide.html) :expanded:
-  * [Quick Start]({{ baseUrl }}/UserGuide.html#quick-start)
-  * [Features]({{ baseUrl }}/UserGuide.html#features)
-  * [FAQ]({{ baseUrl }}/UserGuide.html#faq)
-  * [Command Summary]({{ baseUrl }}/UserGuide.html#faq)
+* [User Guide]({{ baseUrl }}/UG.html) :expanded:
+  * [Introduction and App Modes]({{ baseUrl }}/UG.html)
+    * [About TeamEventPro]({{ baseUrl }}/UG.html#1-about-teameventpro)
+    * [Quick Start]({{ baseUrl }}/UG.html#2-quick-start)
+    * [Understanding App Modes]({{ baseUrl }}/UG.html#3-understanding-app-modes)
+  * [Common Commands]({{ baseUrl }}/UserGuideCommonCommands.html)
+    * [Commands Available in Both Modes]({{ baseUrl }}/UserGuideCommonCommands.html#1-commands-available-in-both-modes)
+    * [Help command]({{ baseUrl }}/UserGuideCommonCommands.html#2-help-command)
+    * [List command]({{ baseUrl }}/UserGuideCommonCommands.html#3-list-command)
+    * [Search command]({{ baseUrl }}/UserGuideCommonCommands.html#4-search-command)
+    * [Switch Mode command]({{ baseUrl }}/UserGuideCommonCommands.html#5-switch-mode-command)
+  * [Event Commands]({{ baseUrl }}/UserGuideEvents.html)
+    * [Event Creation and Setup]({{ baseUrl }}/UserGuideEvents.html#1-event-creation-and-setup)
+    * [Event Maintenance]({{ baseUrl }}/UserGuideEvents.html#2-event-maintenance)
+    * [Event Navigation]({{ baseUrl }}/UserGuideEvents.html#3-event-navigation)
+    * [Application Exit]({{ baseUrl }}/UserGuideEvents.html#4-application-exit)
+  * [Participant Commands]({{ baseUrl }}/UserGuideParticipants.html)
+    * [Participant Management]({{ baseUrl }}/UserGuideParticipants.html#1-participant-management)
+    * [Team and Attendance Management]({{ baseUrl }}/UserGuideParticipants.html#2-team-and-attendance-management)
+    * [Search, Filtering, and Viewing]({{ baseUrl }}/UserGuideParticipants.html#3-search-filtering-and-viewing)
+    * [Import and Export]({{ baseUrl }}/UserGuideParticipants.html#4-import-and-export)
+    * [Event Navigation]({{ baseUrl }}/UserGuideParticipants.html#5-event-navigation)
 * [Developer Guide]({{ baseUrl }}/DeveloperGuide.html) :expanded:
   * [Acknowledgements]({{ baseUrl }}/DeveloperGuide.html#acknowledgements)
   * [Setting Up]({{ baseUrl }}/DeveloperGuide.html#setting-up-getting-started)

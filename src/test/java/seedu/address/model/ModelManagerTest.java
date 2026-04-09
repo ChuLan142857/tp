@@ -3,6 +3,7 @@ package seedu.address.model;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seedu.address.model.Model.PREDICATE_SHOW_ALL_EVENTS;
 import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.ALICE;
@@ -11,10 +12,15 @@ import static seedu.address.testutil.TypicalPersons.BENSON;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.GuiSettings;
+import seedu.address.model.event.Event;
+import seedu.address.model.event.EventDate;
+import seedu.address.model.event.EventMatchesKeywordsPredicate;
+import seedu.address.model.event.EventName;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.testutil.AddressBookBuilder;
 
@@ -123,6 +129,19 @@ public class ModelManagerTest {
 
         // resets modelManager to initial state for upcoming tests
         modelManager.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
+
+        // different filtered event list -> returns false
+        modelManager.addEvent(new Event(new EventName("Alpha Event"), new EventDate("2026-01-01"),
+                Optional.empty(), Optional.empty()));
+        modelManager.addEvent(new Event(new EventName("Beta Event"), new EventDate("2026-02-02"),
+                Optional.empty(), Optional.empty()));
+        modelManager.updateFilteredEventList(new EventMatchesKeywordsPredicate(Arrays.asList("Alpha")));
+        ModelManager modelManagerWithSameEventBook = new ModelManager(
+                addressBook, modelManager.getEventBook(), userPrefs);
+        assertFalse(modelManager.equals(modelManagerWithSameEventBook));
+
+        // resets modelManager to initial state for upcoming tests
+        modelManager.updateFilteredEventList(PREDICATE_SHOW_ALL_EVENTS);
 
         // different userPrefs -> returns false
         UserPrefs differentUserPrefs = new UserPrefs();

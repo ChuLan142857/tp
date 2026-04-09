@@ -8,6 +8,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.commands.exceptions.CommandException;
+import seedu.address.logic.parser.EventCommandParserUtil;
 import seedu.address.model.Model;
 import seedu.address.model.event.Event;
 
@@ -24,6 +25,7 @@ public class AddEventCommand extends Command {
             + PREFIX_DATE + "DATE "
             + "[" + PREFIX_LOCATION + "LOCATION] "
             + "[" + PREFIX_DESCRIPTION + "DESCRIPTION]\n"
+            + EventCommandParserUtil.VALID_PREFIXES_MESSAGE + "\n"
             + "Example: " + COMMAND_WORD + " "
             + PREFIX_NAME + "Tech Meetup 2026 "
             + PREFIX_DATE + "2026-06-15 "

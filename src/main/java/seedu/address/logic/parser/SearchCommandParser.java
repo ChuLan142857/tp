@@ -6,7 +6,6 @@ import java.util.Arrays;
 
 import seedu.address.logic.commands.SearchCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
-import seedu.address.model.person.NameContainsKeywordsPredicate;
 
 /**
  * Parses input arguments and creates a new SearchCommand object
@@ -27,7 +26,7 @@ public class SearchCommandParser implements Parser<SearchCommand> {
 
         String[] keywords = trimmedArgs.split("\\s+");
 
-        return new SearchCommand(new NameContainsKeywordsPredicate(Arrays.asList(keywords)));
+        return new SearchCommand(Arrays.asList(keywords));
     }
 
 }

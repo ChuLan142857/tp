@@ -9,7 +9,6 @@ import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.SearchCommand;
-import seedu.address.model.person.NameContainsKeywordsPredicate;
 
 public class SearchCommandParserTest {
 
@@ -23,9 +22,8 @@ public class SearchCommandParserTest {
     @Test
     public void parse_validArgs_returnsSearchCommand() {
         // no leading and trailing whitespaces
-        SearchCommand expectedSearchCommand =
-                new SearchCommand(new NameContainsKeywordsPredicate(
-                        Arrays.asList("Alice", "alice@example.com", "alicehub")));
+        SearchCommand expectedSearchCommand = new SearchCommand(
+                Arrays.asList("Alice", "alice@example.com", "alicehub"));
         assertParseSuccess(parser, "Alice alice@example.com alicehub", expectedSearchCommand);
 
         // multiple whitespaces between keywords

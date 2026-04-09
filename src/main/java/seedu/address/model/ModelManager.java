@@ -26,13 +26,14 @@ public class ModelManager implements Model {
     private final UserPrefs userPrefs;
     private FilteredList<Person> filteredPersons;
     private final EventBook eventBook;
+    private final FilteredList<Event> filteredEvents;
     private Event activeEvent;
     private Person personToView;
     /**
      * Initializes a ModelManager with the given addressBook and userPrefs.
      */
     public ModelManager(ReadOnlyAddressBook addressBook, ReadOnlyEventBook eventBook, ReadOnlyUserPrefs userPrefs) {
-        requireAllNonNull(addressBook, userPrefs);
+        requireAllNonNull(addressBook, eventBook, userPrefs);
 
         logger.fine("Initializing with address book: " + addressBook + " and user prefs " + userPrefs);
 
@@ -40,6 +41,7 @@ public class ModelManager implements Model {
         this.eventBook = new EventBook(eventBook);
         this.userPrefs = new UserPrefs(userPrefs);
         filteredPersons = new FilteredList<>(this.addressBook.getPersonList());
+        filteredEvents = new FilteredList<>(this.eventBook.getEventList());
     }
 
     /** Creates a ModelManager with empty data. */
@@ -151,6 +153,7 @@ public class ModelManager implements Model {
         }
         updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
     }
+
     @Override
     public void setPerson(Person target, Person editedPerson) {
         requireAllNonNull(target, editedPerson);
@@ -211,8 +214,10 @@ public class ModelManager implements Model {
 
         ModelManager otherModelManager = (ModelManager) other;
         return addressBook.equals(otherModelManager.addressBook)
+                && eventBook.equals(otherModelManager.eventBook)
                 && userPrefs.equals(otherModelManager.userPrefs)
-                && filteredPersons.equals(otherModelManager.filteredPersons);
+                && filteredPersons.equals(otherModelManager.filteredPersons)
+                && filteredEvents.equals(otherModelManager.filteredEvents);
     }
 
     //============================================ EventBook ===========================================================
@@ -255,7 +260,13 @@ public class ModelManager implements Model {
 
     @Override
     public ObservableList<Event> getFilteredEventList() {
-        return eventBook.getEventList();
+        return filteredEvents;
+    }
+
+    @Override
+    public void updateFilteredEventList(Predicate<Event> predicate) {
+        requireNonNull(predicate);
+        filteredEvents.setPredicate(predicate);
     }
 
     //=========== View Person ==================================================================================

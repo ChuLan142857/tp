@@ -16,6 +16,7 @@ import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.Path;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,9 +27,13 @@ import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.EventBook;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
+import seedu.address.model.event.Event;
+import seedu.address.model.event.EventDate;
+import seedu.address.model.event.EventName;
 import seedu.address.model.person.Person;
 import seedu.address.storage.JsonAddressBookStorage;
 import seedu.address.storage.JsonEventBookStorage;
@@ -73,7 +78,7 @@ public class LogicManagerTest {
     @Test
     public void execute_validCommand_success() throws Exception {
         String listCommand = ListCommand.COMMAND_WORD;
-        assertCommandSuccess(listCommand, ListCommand.MESSAGE_SUCCESS, model);
+        assertCommandSuccess(listCommand, ListCommand.MESSAGE_SUCCESS_PARTICIPANTS, model);
     }
 
     @Test
@@ -94,29 +99,57 @@ public class LogicManagerTest {
     }
 
     @Test
-    public void updateLiveSearch_matchesKeyword_updatesFilteredList() {
-        model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+    public void updateLiveSearch_globalMode_filtersEvents() {
+        EventBook eventBook = new EventBook();
+        Event techMeetup = buildEvent("Tech Meetup", "2026-06-15",
+                Optional.of("COM1"), Optional.of("Frontend sharing"));
+        Event designJam = buildEvent("Design Jam", "2026-08-10",
+                Optional.of("NUS"), Optional.of("UI critique"));
+        eventBook.addEvent(techMeetup);
+        eventBook.addEvent(designJam);
+
+        model = new ModelManager(getTypicalAddressBook(), eventBook, new UserPrefs());
         logic = new LogicManager(model, new StorageManager(
                 new JsonAddressBookStorage(temporaryFolder.resolve("liveSearchAddressBook.json")),
                 new JsonEventBookStorage(temporaryFolder.resolve("liveSearchEventBook.json")),
                 new JsonUserPrefsStorage(temporaryFolder.resolve("liveSearchUserPrefs.json"))));
 
-        logic.updateLiveSearch("johnd@example.com");
-        assertEquals(1, logic.getFilteredPersonList().size());
-        assertEquals(BENSON, logic.getFilteredPersonList().get(0));
+        logic.updateLiveSearch("frontend");
+        assertEquals(1, logic.getFilteredEventList().size());
+        assertEquals(techMeetup, logic.getFilteredEventList().get(0));
     }
 
     @Test
-    public void updateLiveSearch_emptyQuery_resetsFilteredList() {
-        model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+    public void updateLiveSearch_emptyQuery_resetsEvents() {
+        EventBook eventBook = new EventBook();
+        eventBook.addEvent(buildEvent("Tech Meetup", "2026-06-15",
+                Optional.of("COM1"), Optional.of("Frontend sharing")));
+        eventBook.addEvent(buildEvent("Design Jam", "2026-08-10",
+                Optional.of("NUS"), Optional.of("UI critique")));
+
+        model = new ModelManager(getTypicalAddressBook(), eventBook, new UserPrefs());
         logic = new LogicManager(model, new StorageManager(
                 new JsonAddressBookStorage(temporaryFolder.resolve("liveSearchResetAddressBook.json")),
                 new JsonEventBookStorage(temporaryFolder.resolve("liveSearchResetEventBook.json")),
                 new JsonUserPrefsStorage(temporaryFolder.resolve("liveSearchResetUserPrefs.json"))));
 
-        logic.updateLiveSearch("Benson");
+        logic.updateLiveSearch("Tech");
         logic.updateLiveSearch("   ");
-        assertEquals(getTypicalAddressBook().getPersonList().size(), logic.getFilteredPersonList().size());
+        assertEquals(eventBook.getEventList().size(), logic.getFilteredEventList().size());
+    }
+
+    @Test
+    public void updateLiveSearch_eventMode_filtersPersons() {
+        model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+        enterDefaultEvent(model);
+        logic = new LogicManager(model, new StorageManager(
+                new JsonAddressBookStorage(temporaryFolder.resolve("liveSearchParticipantAddressBook.json")),
+                new JsonEventBookStorage(temporaryFolder.resolve("liveSearchParticipantEventBook.json")),
+                new JsonUserPrefsStorage(temporaryFolder.resolve("liveSearchParticipantUserPrefs.json"))));
+
+        logic.updateLiveSearch("johnd@example.com");
+        assertEquals(1, logic.getFilteredPersonList().size());
+        assertEquals(BENSON, logic.getFilteredPersonList().get(0));
     }
 
     /**
@@ -206,5 +239,9 @@ public class LogicManagerTest {
         enterDefaultEvent(expectedModel);
         expectedModel.addPerson(expectedPerson);
         assertCommandFailure(addCommand, CommandException.class, expectedMessage, expectedModel);
+    }
+
+    private Event buildEvent(String name, String date, Optional<String> location, Optional<String> description) {
+        return new Event(new EventName(name), new EventDate(date), location, description);
     }
 }

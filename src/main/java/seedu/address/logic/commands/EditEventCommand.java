@@ -14,6 +14,7 @@ import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.CollectionUtil;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.commands.exceptions.CommandException;
+import seedu.address.logic.parser.EventCommandParserUtil;
 import seedu.address.model.Model;
 import seedu.address.model.event.Event;
 import seedu.address.model.event.EventDate;
@@ -34,6 +35,7 @@ public class EditEventCommand extends Command {
             + "[" + PREFIX_DATE + "DATE] "
             + "[" + PREFIX_LOCATION + "LOCATION] "
             + "[" + PREFIX_DESCRIPTION + "DESCRIPTION]\n"
+            + EventCommandParserUtil.VALID_PREFIXES_MESSAGE + "\n"
             + "Example: " + COMMAND_WORD + " 1 "
             + PREFIX_NAME + "Hack Night "
             + PREFIX_DATE + "2026-08-20 "

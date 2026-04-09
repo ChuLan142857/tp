@@ -47,7 +47,9 @@ public class OnboardingCoordinator {
      * Shown once when the main window loads and onboarding is still active.
      */
     public String getWelcomeMessage(Logic logic) {
-        return "Welcome! This short tutorial walks you through five commands.\n\n"
+        return "Welcome! Thank you for using TeamEventPro. This tutorial will help you get familiar with the app by "
+                + "introducing you to some simple commands. If you are already familiar with the app, you can skip the"
+                + "tutorial by clicking on the button in the Help menu." + "\n\n"
                 + currentStepReminder(logic);
     }
 
@@ -61,6 +63,33 @@ public class OnboardingCoordinator {
     private String currentStepReminder(Logic logic) {
         return "Onboarding — Step " + currentStep.stepNumber() + "/" + TOTAL_STEPS + ":\n"
                 + instructionForCurrentStep(logic);
+    }
+
+    public void setCurrentStep(int currentStep) {
+        this.currentStep = OnboardingStep.fromStepNumber(currentStep);
+    }
+
+    /**
+     * Restores onboarding state from persisted progress and the current model state.
+     */
+    public void restoreProgress(Logic logic) {
+        refreshTutorialEventFromModel(logic);
+
+        if (currentStep.stepNumber() > OnboardingStep.ADD_EVENT.stepNumber() && tutorialEventName == null) {
+            currentStep = OnboardingStep.ADD_EVENT;
+            logic.setOnboardingTutorialStep(currentStep.stepNumber());
+            return;
+        }
+
+        if (logic.isInEventParticipantsMode()) {
+            if (currentStep.stepNumber() >= OnboardingStep.ASSIGN_TEAM.stepNumber()
+                    || currentStep == OnboardingStep.SEARCH) {
+                refreshTutorialParticipantFromModel(logic);
+            }
+            if (currentStep == OnboardingStep.SEARCH) {
+                refreshTutorialTeamFromModel(logic);
+            }
+        }
     }
 
     /**
@@ -83,6 +112,11 @@ public class OnboardingCoordinator {
         }
         String commandWord = commandWordOpt.get();
 
+        if (shouldAllowEventReentry(commandWord, logic)) {
+            restoreProgress(logic);
+            return Optional.of(currentStepReminder(logic));
+        }
+
         if (!currentStep.matchesCommandWord(commandWord)) {
             return Optional.of("You've completed another action, but the tutorial still expects this step:\n"
                     + currentStepReminder(logic));
@@ -92,17 +126,21 @@ public class OnboardingCoordinator {
         case ADD_EVENT:
             refreshTutorialEventFromModel(logic);
             currentStep = OnboardingStep.ENTER_EVENT;
+            logic.setOnboardingTutorialStep(currentStep.stepNumber());
             return Optional.of(buildMessageAfterEventCreated(logic));
         case ENTER_EVENT:
             currentStep = OnboardingStep.ADD_PARTICIPANT;
+            logic.setOnboardingTutorialStep(currentStep.stepNumber());
             return Optional.of(buildMessageAfterEnteredEvent(logic));
         case ADD_PARTICIPANT:
             refreshTutorialParticipantFromModel(logic);
             currentStep = OnboardingStep.ASSIGN_TEAM;
+            logic.setOnboardingTutorialStep(currentStep.stepNumber());
             return Optional.of(buildMessageAfterParticipantAdded(logic));
         case ASSIGN_TEAM:
             refreshTutorialTeamFromModel(logic);
             currentStep = OnboardingStep.SEARCH;
+            logic.setOnboardingTutorialStep(currentStep.stepNumber());
             return Optional.of(buildMessageAfterTeamAssigned(logic));
         case SEARCH:
             flowFinishedInSession = true;
@@ -111,10 +149,17 @@ public class OnboardingCoordinator {
         default:
             return Optional.empty();
         }
+
     }
 
     public boolean isFlowFinishedInSession() {
         return flowFinishedInSession;
+    }
+
+    private boolean shouldAllowEventReentry(String commandWord, Logic logic) {
+        return currentStep.stepNumber() >= OnboardingStep.ADD_PARTICIPANT.stepNumber()
+                && EnterEventCommand.COMMAND_WORD.equals(commandWord)
+                && logic.isInEventParticipantsMode();
     }
 
     private void refreshTutorialEventFromModel(Logic logic) {
@@ -180,6 +225,12 @@ public class OnboardingCoordinator {
     }
 
     private String instructionForCurrentStep(Logic logic) {
+        if (requiresEventReentry(logic)) {
+            return "Resume by reopening \"" + eventNameOrPlaceholder() + "\":\n"
+                    + EnterEventCommand.COMMAND_WORD + " event " + tutorialEventIndex + "\n"
+                    + "(Then continue with this onboarding step.)";
+        }
+
         switch (currentStep) {
         case ADD_EVENT:
             return "Create an event:\n"
@@ -218,6 +269,11 @@ public class OnboardingCoordinator {
         return "Jane";
     }
 
+    private boolean requiresEventReentry(Logic logic) {
+        return currentStep.stepNumber() >= OnboardingStep.ADD_PARTICIPANT.stepNumber()
+                && !logic.isInEventParticipantsMode();
+    }
+
     /**
      * Extracts the first word of trimmed input, if any.
      */
@@ -252,6 +308,11 @@ public class OnboardingCoordinator {
 
         boolean matchesCommandWord(String commandWord) {
             return expectedCommandWord.equals(commandWord);
+        }
+
+        static OnboardingStep fromStepNumber(int stepNumber) {
+            int clampedStep = Math.min(Math.max(stepNumber, 1), values().length);
+            return values()[clampedStep - 1];
         }
     }
 }

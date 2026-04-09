@@ -21,6 +21,7 @@ import seedu.address.model.Model;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.event.Event;
+import seedu.address.model.event.EventMatchesKeywordsPredicate;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
 import seedu.address.storage.Storage;
@@ -83,11 +84,19 @@ public class LogicManager implements Logic {
                 .toList();
 
         if (keywords.isEmpty()) {
-            model.updateFilteredPersonList(Model.PREDICATE_SHOW_ALL_PERSONS);
+            if (model.isInEventParticipantsMode()) {
+                model.updateFilteredPersonList(Model.PREDICATE_SHOW_ALL_PERSONS);
+            } else {
+                model.updateFilteredEventList(Model.PREDICATE_SHOW_ALL_EVENTS);
+            }
             return;
         }
 
-        model.updateFilteredPersonList(new NameContainsKeywordsPredicate(keywords));
+        if (model.isInEventParticipantsMode()) {
+            model.updateFilteredPersonList(new NameContainsKeywordsPredicate(keywords));
+        } else {
+            model.updateFilteredEventList(new EventMatchesKeywordsPredicate(keywords));
+        }
     }
 
     @Override
@@ -124,6 +133,22 @@ public class LogicManager implements Logic {
             storage.saveUserPrefs(prefs);
         } catch (IOException e) {
             logger.warning("Could not save onboarding preference: " + e.getMessage());
+        }
+    }
+
+    public int getOnboardingTutorialStep() {
+        return model.getUserPrefs().getOnboardingTutorialStep();
+    }
+
+    @Override
+    public void setOnboardingTutorialStep(int onboardingTutorialStep) {
+        UserPrefs prefs = new UserPrefs(model.getUserPrefs());
+        prefs.setOnboardingTutorialStep(onboardingTutorialStep);
+        model.setUserPrefs(prefs);
+        try {
+            storage.saveUserPrefs(prefs);
+        } catch (IOException e) {
+            logger.warning("Could not save onboarding step: " + e.getMessage());
         }
     }
 
