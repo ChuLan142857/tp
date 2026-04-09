@@ -41,7 +41,6 @@
       "title": "Developer Guide",
       "headings": {
         "ab-3-developer-guide": "AB-3 Developer Guide",
-        "acknowledgements": "Acknowledgements",
         "setting-up-getting-started": "Setting up, getting started",
         "design": "Design",
         "architecture": "Architecture",
@@ -51,9 +50,19 @@
         "storage-component": "Storage component",
         "common-classes": "Common classes",
         "implementation": "Implementation",
+        "add-event-feature": "Add Event Feature",
+        "add-participant-feature": "Add Participant Feature",
+        "edit-participant-feature": "Edit Participant Feature",
+        "filter-participants": "Filter participants",
         "proposed-undo-redo-feature": "[Proposed] Undo/redo feature",
         "proposed-data-archiving": "[Proposed] Data archiving",
         "documentation-logging-testing-configuration-dev-ops": "Documentation, logging, testing, configuration, dev-ops",
+        "acknowledgements": "Acknowledgements",
+        "anugrah-bagla": "Anugrah Bagla",
+        "zhou-jinhao": "Zhou Jinhao",
+        "debopam-roy": "Debopam Roy",
+        "han-shangda": "Han Shangda",
+        "manya-agarwal": "Manya Agarwal",
         "appendix-requirements": "Appendix: Requirements",
         "product-scope": "Product scope",
         "user-stories": "User stories",
@@ -62,8 +71,8 @@
         "glossary": "Glossary",
         "appendix-instructions-for-manual-testing": "Appendix: Instructions for manual testing",
         "launch-and-shutdown": "Launch and shutdown",
-        "deleting-an-applicant": "Deleting an applicant",
-        "filtering-applicants": "Filtering applicants",
+        "deleting-a-participant": "Deleting a participant",
+        "filtering-participants": "Filtering participants",
         "saving-data": "Saving data"
       },
       "headingKeywords": {}
@@ -110,13 +119,11 @@
       "headings": {
         "teameventpro-user-guide": "TeamEventPro User Guide",
         "1-about-teameventpro": "1. About TeamEventPro",
-        "2-quick-start": "2. Quick Start",
-        "3-understanding-app-modes": "3. Understanding App Modes",
-        "3-1-outside-an-event": "3.1 Outside an event",
-        "3-2-inside-an-event": "3.2 Inside an event",
-        "4-notes-about-command-format": "4. Notes About Command Format",
-        "5-commands-available-in-both-modes": "5. Commands Available in Both Modes",
-        "6-next-sections": "6. Next Sections"
+        "2-understanding-app-modes": "2. Understanding App Modes",
+        "2-1-outside-an-event": "2.1 Outside an event",
+        "2-2-inside-an-event": "2.2 Inside an event",
+        "3-commands-available-in-both-modes": "3. Commands Available in Both Modes",
+        "4-next-sections": "4. Next Sections"
       },
       "headingKeywords": {}
     },
@@ -152,6 +159,20 @@
         "faq": "FAQ",
         "known-issues": "Known issues",
         "command-summary": "Command summary"
+      },
+      "headingKeywords": {}
+    },
+    {
+      "src": "UserGuideCommandFundamentals.md",
+      "title": "User Guide - Command Fundamentals",
+      "headings": {
+        "command-fundamentals": "Command Fundamentals",
+        "1-command-notation": "1. Command notation",
+        "2-command-structure-and-modes": "2. Command structure and modes",
+        "3-prefix-reference": "3. Prefix reference",
+        "4-index-and-list-behavior": "4. Index and list behavior",
+        "5-common-mistakes-and-quick-fixes": "5. Common mistakes and quick fixes",
+        "6-navigation": "6. Navigation"
       },
       "headingKeywords": {}
     },
@@ -204,6 +225,19 @@
       "headingKeywords": {}
     },
     {
+      "src": "UserGuideGettingStarted.md",
+      "title": "User Guide - Getting Started",
+      "headings": {
+        "getting-started": "Getting Started",
+        "1-prerequisites": "1. Prerequisites",
+        "2-install-and-launch": "2. Install and launch",
+        "3-first-time-setup": "3. First-time setup",
+        "4-where-to-go-next": "4. Where to go next",
+        "5-navigation": "5. Navigation"
+      },
+      "headingKeywords": {}
+    },
+    {
       "src": "UserGuideParticipants.md",
       "title": "User Guide - Participant Commands",
       "headings": {
@@ -233,7 +267,7 @@
       "src": "index.md",
       "title": "",
       "headings": {
-        "teameventpro": "TeamEventPro"
+        "addressbook-level-3": "AddressBook Level-3"
       },
       "headingKeywords": {}
     },
