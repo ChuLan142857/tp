@@ -76,4 +76,10 @@ deactivate AssignTeamCommand
 
 [<--LogicManager
 deactivate LogicManager
+
+note right of AssignTeamCommand
+	If not in event participants mode,
+	execute throws CommandException
+	(MESSAGE_ENTER_EVENT_FIRST).
+end note
 @enduml
