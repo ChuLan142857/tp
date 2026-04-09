@@ -21,15 +21,18 @@ Used to add an event to the event list by specifying the name, date, and optiona
 
 #### Example Usage
 `addevent n/Tech Meetup 2026 d/2026-06-15 l/NUS Techno Edge desc/Annual tech networking session`
+![Command](images/addevent/command.png)
 
 #### Successful Execution
 `New event added: ...`
+![Command](images/addevent/result.png)
 
 #### Notes
 - Can only be used outside an event.
-- Event name should be concise.
-- Date must follow `YYYY-MM-DD`.
-- Location and description are optional.
+- `NAME` must start with an alphanumeric character and can only contain alphanumeric characters and spaces. It must not be blank.
+- `DATE` must follow the format `YYYY-MM-DD` e.g. `2026-06-15`.
+- `LOCATION` and `DESCRIPTION` are optional.
+- Duplicate events with the same name are not allowed.
 
 ---
 
@@ -129,4 +132,5 @@ The application is exited.
 
 - [Back to Introduction, Modes, and Common Commands](UG.md)
 - [Back to Common Commands](UserGuideCommonCommands.md)
+- [Back to Command Fundamentals](UserGuideCommandFundamentals.md)
 - [Go to Participant Commands](UserGuideParticipants.md)

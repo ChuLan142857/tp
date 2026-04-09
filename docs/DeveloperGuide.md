@@ -11,12 +11,6 @@
 
 --------------------------------------------------------------------------------------------------------------------
 
-## **Acknowledgements**
-
-_{ list here sources of all reused/adapted ideas, code, documentation, and third-party libraries -- include links to the original source as well }_
-
---------------------------------------------------------------------------------------------------------------------
-
 ## **Setting up, getting started**
 
 Refer to the guide [_Setting up and getting started_](SettingUp.md).
@@ -98,6 +92,10 @@ The sequence diagram below illustrates the interactions for assigning a particip
 
 <puml src="diagrams/AssignTeamSequenceDiagram.puml" alt="Interactions Inside the Logic Component for the `assign 2 team/Alpha` Command" />
 
+The class diagram below summarizes the main classes involved in parsing and executing the `assign` command.
+
+<puml src="diagrams/AssignTeamClassDiagram.puml" alt="Main classes involved in the assign command" width="700" />
+
 <box type="info" seamless>
 
 **Note:** The lifeline for `DeleteCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
@@ -161,6 +159,176 @@ Classes used by multiple components are in the `seedu.address.commons` package.
 ## **Implementation**
 
 This section describes some noteworthy details on how certain features are implemented.
+
+### Add Event Feature
+
+#### Implementation
+
+The add event feature is facilitated by `AddEventCommand`. It allows the user to create a new event with a name, date, and optionally a location and description.
+
+The command follows these steps when executed:
+
+1. `AddressBookParser` receives the input and creates an `AddEventCommandParser`.
+2. `AddEventCommandParser` tokenises the input using `ArgumentTokenizer` with prefixes `n/`, `d/`, `l/`, and `desc/`, then constructs an `AddEventCommand` containing the new `Event` object.
+3. `AddEventCommand#execute()` checks that the app is not in event participant mode. If it is, a `CommandException` is thrown.
+4. `AddEventCommand#execute()` checks for duplicates via `Model#hasEvent()`. Two events are considered duplicates if they share the same name. If a duplicate is found, a `CommandException` is thrown.
+5. `Model#addEvent()` is called, adding the event to the `EventBook`. The `EventBook` is then persisted to `data/eventbook.json` via `JsonEventBookStorage`.
+6. A `CommandResult` with the success message is returned.
+
+#### Design Considerations
+
+**Aspect: What constitutes a duplicate event:**
+
+* **Current choice:** Two events are duplicates if they share the same name (case-sensitive).
+    * Pros: Simple and predictable.
+    * Cons: Does not catch near-duplicates such as `Tech Meetup` and `tech meetup`.
+
+* **Alternative:** Case-insensitive name comparison.
+    * Pros: More robust duplicate detection.
+    * Cons: Slightly more complex comparison logic.
+
+---
+
+### Add Participant Feature
+
+#### Implementation
+
+The add participant feature is facilitated by `AddCommand`. It allows the user to add a participant to the currently active event's participant list.
+
+The command follows these steps when executed:
+
+1. `AddressBookParser` receives the input and creates an `AddCommandParser`.
+2. `AddCommandParser` tokenises the input using `ArgumentTokenizer` and constructs a `Person` object from the parsed fields. Required fields are `n/`, `p/`, `e/`, and `a/`. Optional fields are `tm/`, `g/`, `r/`, and `t/`.
+3. `AddCommand#execute()` checks that the app is in event participant mode. If not, a `CommandException` is thrown.
+4. `AddCommand#execute()` checks for duplicates via `Model#hasPerson()`. Duplicate detection is handled by `Person#isSamePerson()`, which returns true if two persons share the same name **and** either the same phone number or the same email address.
+5. `Model#addPerson()` is called, adding the participant to the active event's `AddressBook`.
+6. A `CommandResult` with the formatted success message is returned using `Messages#format()`.
+
+Notable field constraints enforced at the model level:
+
+* `Name`: Must start with an alphanumeric character. Can contain alphanumeric characters (including Unicode letters for accented names), spaces, apostrophes, hyphens, and forward slashes. Maximum 100 characters.
+* `RsvpStatus`: Must be `yes`, `no`, or `pending`. Defaults to `pending` if not provided.
+* `Team`: Must be alphanumeric and at most 15 characters.
+
+The class diagram below shows the `Person` model and all its associated fields:
+
+<puml src="diagrams/AddCommandPersonDiagram.puml" alt="Person Class Diagram" />
+
+The sequence diagram below illustrates the interactions within the `Logic` component when the user executes `add n/John Doe p/98765432 e/johnd@example.com a/311, Clementi Ave 2`:
+
+<puml src="diagrams/AddCommandSequenceDiagram.puml" alt="Add Command Sequence Diagram" />
+
+#### Design Considerations
+
+**Aspect: How duplicate participants are identified:**
+
+* **Current choice:** Same name and same phone, or same name and same email.
+    * Pros: Allows two people with the same name but genuinely different contact details to coexist in the same event.
+    * Cons: Two entries for the same real person with slightly different names would not be caught.
+
+* **Alternative 1 (original AB3 behaviour):** Name-only comparison.
+    * Pros: Simple.
+    * Cons: Too restrictive — common names like `John Tan` would block legitimate separate participants.
+
+* **Alternative 2:** Phone or email alone (without name).
+    * Pros: More reliable since phone numbers and emails are globally unique.
+    * Cons: Would reject a shared office phone number used by two different participants.
+
+---
+
+### Edit Participant Feature
+
+#### Implementation
+
+The edit participant feature is facilitated by `EditCommand`. It allows the user to update one or more fields of an existing participant in the currently active event.
+
+The command follows these steps when executed:
+
+1. `AddressBookParser` receives the input and creates an `EditCommandParser`.
+2. `EditCommandParser` tokenises the input and builds an `EditPersonDescriptor` containing only the fields the user specified. At least one field must be present, otherwise a `ParseException` is thrown.
+3. `EditCommand#execute()` checks that the app is in event participant mode. If not, a `CommandException` is thrown.
+4. The target `Person` is retrieved from the filtered person list using the provided index. If the index is out of bounds, a `CommandException` is thrown.
+5. A new `Person` object is constructed by combining the existing person's fields with the updated fields from `EditPersonDescriptor`.
+6. `EditCommand#execute()` checks that the edited person does not conflict with an existing participant via `Person#isSamePerson()`, using the same duplicate detection logic as `AddCommand`.
+7. `Model#setPerson()` replaces the old participant with the edited one in the active event's `AddressBook`.
+8. A `CommandResult` with the formatted success message is returned using `Messages#format()`.
+
+Notable behaviours:
+
+* Editing tags replaces all existing tags entirely. To clear all tags, use `t/` with no value.
+* Editing team replaces the existing team. To clear the team, use `tm/` with no value.
+* All other field constraints follow the same validation rules as `AddCommand`.
+
+#### Design Considerations
+
+**Aspect: How edited fields are handled:**
+
+* **Current choice:** `EditPersonDescriptor` holds only the fields the user specified. Unspecified fields retain their original values.
+    * Pros: Users can update a single field without re-entering all other details.
+    * Cons: Tags and team behave differently from other fields — they replace rather than append, which may be unintuitive.
+
+* **Alternative:** Cumulative tag editing (append rather than replace).
+    * Pros: More intuitive for users who want to add a tag without removing existing ones.
+    * Cons: Harder to remove specific tags; requires a separate remove-tag command.
+
+### Filter participants
+
+#### Overview
+
+The `filter` command narrows the currently displayed participant list using one criterion per command.
+
+Supported criteria:
+* RSVP: `r/yes`, `r/no`, `r/pending`.
+* Tag: `t/<tag>`.
+* Team: `team/<teamName>`.
+* Check-in: `checkin/yes` or `checkin/no`.
+
+Filtering is valid only in event participant mode. If the user is not inside an event, execution fails with `Please enter an event first.` (`Messages.MESSAGE_ENTER_EVENT_FIRST`).
+
+#### Architecture (key components)
+
+The filter feature is implemented across three main areas:
+* **Parser layer (`FilterCommandParser`)**: validates command format and constructs `PersonMatchesFilterPredicate`.
+* **Command layer (`FilterCommand`)**: checks event context and applies the predicate via `Model#updateFilteredPersonList(...)`.
+* **Model layer (`PersonMatchesFilterPredicate` + `Model`)**: evaluates each `Person` and updates the filtered observable participant list exposed to the UI.
+
+<puml src="diagrams/FilterFeatureClassDiagram.puml" width="500" />
+
+#### Implementation details
+
+1. `AddressBookParser` dispatches `filter ...` input to `FilterCommandParser`.
+2. `FilterCommandParser` tokenizes the arguments and validates that:
+   * input is not empty;
+   * exactly one supported filter prefix is provided (`r/`, `t/`, `team/`, or `checkin/`);
+   * unsupported participant prefixes in the same command (e.g., `n/`, `e/`) are rejected;
+   * duplicate filter prefixes are rejected.
+3. The parser builds a `PersonMatchesFilterPredicate` and returns a `FilterCommand`.
+4. During execution, `FilterCommand` first checks `model.isInEventParticipantsMode()`.
+5. If the check passes, it calls `model.updateFilteredPersonList(predicate)`.
+6. The command then returns a `CommandResult` using the size of `model.getFilteredPersonList()` for feedback.
+
+Failure paths:
+* Invalid filter format/value -> `ParseException` (shows command usage or value constraints).
+* Valid parse but not in event participant mode -> `CommandException` with `Messages.MESSAGE_ENTER_EVENT_FIRST`.
+
+<puml src="diagrams/FilterCommandSequenceDiagram.puml" width="720" alt="Sequence diagram for filter command" />
+
+#### Design considerations
+
+**Aspect: Single-criterion filter input**
+* **Current choice:** accept only one filter criterion per command.
+  * Pros: simpler parsing, clearer error handling, predictable behaviour.
+  * Cons: users cannot compose criteria in one command (e.g., tag + RSVP together).
+
+**Aspect: Event-context restriction**
+* **Current choice:** allow filtering only in event participant mode.
+  * Pros: prevents ambiguity about whether filtering targets events or participants.
+  * Cons: users must explicitly enter an event before filtering participants.
+
+**Aspect: Predicate evaluation strategy**
+* **Current choice:** `PersonMatchesFilterPredicate` supports all four fields internally, while parser currently activates one criterion per command.
+  * Pros: reusable predicate type with a single execution path in `FilterCommand`.
+  * Cons: extra predicate flexibility is not exposed to users under the current single-criterion command syntax.
 
 ### \[Proposed\] Undo/redo feature
 
@@ -272,6 +440,31 @@ _{Explain here how the data archiving feature will be implemented}_
 
 --------------------------------------------------------------------------------------------------------------------
 
+## **Acknowledgements**
+
+### Anugrah Bagla
+
+
+### Zhou Jinhao
+
+
+### Debopam Roy
+
+
+### Han Shangda
+
+
+### Manya Agarwal
+
+Used Cursor (auto mode) for:
+* Designing and refining UI changes across the application.
+* Understanding the codebase architecture while implementing `statistics`, `filter`, and `view` commands.
+* Writing and improving manual test cases for `statistics`, `filter`, and `view` commands.
+* Debugging issues and performing error checking.
+* Reviewing code and documentation quality.
+
+--------------------------------------------------------------------------------------------------------------------
+
 ## **Appendix: Requirements**
 
 ### Product scope
@@ -300,148 +493,168 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | Priority | As a …​                                    | I want to …​                                                          | So that I can…​                                                    |
 |----------|-----------------------------------------------|------------------------------------------------------------------------|--------------------------------------------------------------------|
 | `* * *`  | new user                                      | see usage instructions and command examples                            | learn the app quickly and refer back when needed                   |
+| `* * *`  | meetup organizer                              | add events                                                             | create event records quickly during planning                       |
+| `* * *`  | meetup organizer                              | edit event details                                                     | keep event information accurate when plans change                  |
+| `* * *`  | meetup organizer                              | delete events                                                          | remove canceled or duplicate events cleanly                        |
+| `* * *`  | meetup organizer                              | enter a selected event and return to the event list                    | switch quickly between event-level and participant-level workflows |
 | `* * *`  | meetup organizer                              | add a participant with name, contact, GitHub username, and RSVP status | build my participant list rapidly before events                    |
 | `* * *`  | meetup organizer                              | edit participant details using quick commands                          | fix typos or update information instantly during registration      |
 | `* * *`  | meetup organizer                              | delete a participant                                                   | remove cancellations, duplicates, or test entries                  |
 | `* * *`  | meetup organizer                              | search participants by name, email, or GitHub username                 | locate specific attendees in seconds during events                 |
 | `* * *`  | entrance desk organizer                       | mark a participant as checked-in with one command                      | process arrivals quickly without slowing the entry queue           |
 | `* * *`  | meetup organizer                              | list all participants with a single command                            | get a complete overview after filtering or searching               |
-| `* * *`  | meetup organizer                              | undo my last action                                                    | quickly recover from accidental deletions or edits                 |
+| `* * *`  | meetup organizer                              | exit the app from the command line                                     | close the tool quickly without leaving the keyboard                |
 | `* *`    | hackathon organizer                           | assign participants to teams                                           | organize team-based events efficiently                             |
 | `* *`    | meetup organizer                              | filter participants by RSVP status (Yes/No/Pending)                    | know exactly who's confirmed and follow up with pending responses  |
-| `* *`    | meetup organizer                              | filter participants by check-in status                                 | identify no-shows and track actual attendance vs RSVPs             |
-| `* *`    | hackathon organizer                           | filter participants by team assignment                                 | view and manage team rosters quickly                               |
-| `* *`    | meetup organizer with catering responsibilities | filter participants by dietary requirements                          | ensure accurate meal planning and allergen management              |
 | `* *`    | meetup organizer                              | tag participants with custom labels                                    | categorize attendees (e.g., speaker, volunteer, VIP)               |
 | `* *`    | frequent organizer                            | import participant lists from CSV files                                | migrate data from previous tools quickly                           |
 | `* *`    | frequent organizer                            | export participant data to CSV                                         | share reports with co-organizers or sponsors                       |
-| `*`      | meetup organizer                              | view attendance statistics and RSVP conversion rates                   | analyze event turnout and improve future planning                  |
-| `*`      | hackathon organizer                           | automatically balance teams by declared skills                         | create fair teams without manual sorting                           |
-| `*`      | meetup organizer                              | see a timeline of recent actions                                       | track what changes were made during busy check-in periods          |
-| `*`      | meetup organizer with accessibility needs     | use keyboard shortcuts for all operations                              | manage events efficiently without relying on mouse input           |
+| `*`      | meetup organizer                              | clear all participants for the current event                           | reset quickly when preparing a fresh test dataset                  |
 
 *{More to be added}*
 
 ### Use cases
 
-**Use Case: UC01 - Check-in a participant**
+#### Use case: UC01 - Enter an event
 
-**System**: TeamEventPro
-**Actor**: Organizer
+```
+System: TeamEventPro
+Actor: Organizer
+MSS:
+  1. Organizer requests to enter an event.
+  2. TeamEventPro requests the event index.
+  3. Organizer provides a valid event index.
+  4. TeamEventPro switches to that event's participant view and displays the participant list.
+  Use case ends.
 
-**MSS(Main Success Scenario):**
+Extensions:
+  3a. The index is invalid.
+      3a1. TeamEventPro shows an invalid index error.
+      3a2. Organizer provides another index.
+      Steps 3a1-3a2 are repeated until a valid index is provided.
+      Use case resumes from step 4.
 
-1.  Organizer requests to find participants using a keyword.
-2.  TeamEventPro shows a list of matching participants.
-3.  Organizer requests to check-in a specific participant from the list using their index.
-4.  TeamEventPro updates the attendance status of the participant to "checked-in" and shows a success message.
-
-    Use case ends.
-
-**Extensions**
-
-* 2a. The list of matching participants is empty.
-    * 2a1. TeamEventPro shows a message indicating no participants were found.
-
+  1a. Organizer is already in an event participant view.
+      1a1. TeamEventPro shows an error asking the organizer to leave the current event first.
       Use case ends.
+```
 
-* 3a. The given index is invalid.
+#### Use case: UC02 - Add a participant
 
-    * 3a1. TeamEventPro shows an error message indicating the index is invalid.
+```
+System: TeamEventPro
+Actor: Organizer
+Preconditions: Organizer is in an event participant view.
+MSS:
+  1. Organizer requests to add a participant.
+  2. TeamEventPro requests the participant details.
+  3. Organizer enters valid participant details.
+  4. TeamEventPro adds the participant and shows a success message.
+  Use case ends.
 
-      3a2. Organizer enters a new check-in command with a valid index.
-  
-      Steps resume from step 4.
+Extensions:
+  3a. The entered details are invalid.
+      3a1. TeamEventPro shows the relevant format constraints.
+      3a2. Organizer enters corrected details.
+      Steps 3a1-3a2 are repeated until all details are valid.
+      Use case resumes from step 4.
 
-**Use Case: UC02 - Assign a participant to a team**
-
-**System**: TeamEventPro
-**Actor**: Organizer
-
-**MSS(Main Success Scenario):**
-
-1.  Organizer requests to find participants using a keyword.
-2.  TeamEventPro shows a list of matching participants.
-3.  Organizer requests to assign a specific participant from the list to a team using their index and the team name.
-4.  TeamEventPro updates the participant's team affiliation and shows a success message.
-
-    Use case ends.
-
-**Extensions**
-
-* 2a. The list of matching participants is empty.
-    * 2a1. TeamEventPro shows a message indicating no participants were found.
-
+  3b. A participant with the same identity already exists.
+      3b1. TeamEventPro shows a duplicate participant error.
       Use case ends.
+```
 
-* 3a. The given index is invalid.
+#### Use case: UC03 - Filter participants
 
-    * 3a1. TeamEventPro shows an error message indicating the index is invalid.
+```
+System: TeamEventPro
+Actor: Organizer
+Preconditions: Organizer is in an event participant view.
+MSS:
+  1. Organizer requests to filter participants.
+  2. TeamEventPro requests one filter criterion.
+  3. Organizer provides one valid criterion (RSVP, tag, team, or check-in).
+  4. TeamEventPro displays the filtered participant list and count.
+  Use case ends.
 
-      3a2. Organizer enters a new team assignment command with a valid index.
+Extensions:
+  3a. The filter format or value is invalid.
+      3a1. TeamEventPro shows the filter usage and/or constraints.
+      3a2. Organizer enters a corrected filter command.
+      Use case resumes from step 4.
 
-      Steps resume from step 4.
-
-* 3b. The given team name format is invalid (e.g., contains special characters).
-
-    * 3b1. TeamEventPro shows an error message detailing the team name constraints.
-
-      3b2. Organizer enters a new team assignment command with a valid team name.
-
-      Steps resume from step 4.
-
-**Use Case: UC03 - Delete a participant**
-
-**System**: TeamEventPro
-**Actor**: Organizer
-
-**MSS(Main Success Scenario):**
-
-1.  Organizer requests to find participants using a keyword.
-2.  TeamEventPro shows a list of matching participants.
-3.  Organizer requests to delete a specific participant from the list using their index.
-4.  TeamEventPro deletes the participant and shows a success message.
-
-    Use case ends.
-
-**Extensions**
-
-* 2a. The list of matching participants is empty.
-    * 2a1. TeamEventPro shows a message indicating no participants were found.
-
+  3b. More than one criterion is provided in one command.
+      3b1. TeamEventPro rejects the command and shows correct usage.
       Use case ends.
+```
 
-* 3a. The given index is invalid.
+#### Use case: UC04 - Check in a participant
 
-    * 3a1. TeamEventPro shows an error message indicating the index is invalid.
+```
+System: TeamEventPro
+Actor: Organizer
+Preconditions: Organizer is in an event participant view.
+MSS:
+  1. Organizer requests to check in a participant.
+  2. TeamEventPro requests the participant index.
+  3. Organizer provides a valid participant index.
+  4. TeamEventPro marks the participant as checked in and shows a success message.
+  Use case ends.
 
-      3a2. Organizer enters a new new delete command with a valid index.
+Extensions:
+  3a. The index is invalid.
+      3a1. TeamEventPro shows an invalid index error.
+      3a2. Organizer provides another index.
+      Steps 3a1-3a2 are repeated until a valid index is provided.
+      Use case resumes from step 4.
+```
 
-      Steps resume from step 4.
+#### Use case: UC05 - View event statistics
 
-*{More to be added}*
+```
+System: TeamEventPro
+Actor: Organizer
+Preconditions: Organizer is in an event participant view.
+MSS:
+  1. Organizer requests to view event statistics.
+  2. TeamEventPro computes participant statistics for the current event.
+  3. TeamEventPro displays the statistics dashboard.
+  Use case ends.
+
+Extensions:
+  2a. The event has no participant data for one or more categories.
+      2a1. TeamEventPro shows empty-state output for those categories.
+      Use case resumes from step 3.
+```
 
 ### Non-Functional Requirements
 
-1.  Should work on any _mainstream OS_ as long as it has Java `17` or above installed.
-2.  Should be able to hold up to 1000 persons without a noticeable sluggishness in performance for typical usage.
-3.  A user with above average typing speed for regular English text (i.e. not code, not system admin commands) should be able to accomplish most of the tasks faster using commands than using the mouse.
-4.  Any data entered should be saved locally to a human-readable text file automatically after every valid command execution.
-5.  The system should provide clear, user-friendly error messages when invalid command formats are entered instead of terminating or crashing.
-6.  The system should respond to any search or filtering command within 500 milliseconds even when the database is at maximum capacity (1000 persons).
-7.  The software should be delivered as a single JAR file that does not require an installer.
-8.  The system is only required to support 8-digit Singaporean phone numbers and standard international email formats for participant contact details.
+1. Should work on any _mainstream OS_ as long as it has Java `17` or above installed.
+2. Should be able to hold up to 1000 participants across all events and up to 100 events without any command taking more than 1 second to execute under normal usage.
+3. The application should launch and be ready for use within 5 seconds on any computer meeting the minimum Java `17` requirement.
+4. All `search` and `filter` commands should return results within 500 milliseconds even when the participant list contains 1000 entries.
+5. All data should be saved to disk within 1 second after every valid command execution, with no manual saving required.
+6. A user with above average typing speed for regular English text (i.e. not code, not system admin commands) should be able to accomplish most tasks faster using commands than using the mouse.
+7. The software should be delivered as a single JAR file no larger than 100MB that does not require an installer.
+8. The system should provide clear, user-friendly error messages when invalid command formats are entered, instead of terminating or crashing.
+9. The system must function fully offline with no internet connection required.
+10. Participant names must support Unicode characters to accommodate international names including accented characters (e.g. José, Tomáš), names with apostrophes (e.g. O'Brian), and names with forward slashes (e.g. s/o Kumar).
 
 
 ### Glossary
 
-* **Mainstream OS**: Windows, Linux, Unix, MacOS
-* **Participant**: A person who has registered to be part of the event.
-* **Participant Record**: The complete set of information stored about the participant.
-* **RSVP**: A participant's response indicating whether they will attend the event or not.
-* **Prefix**: A shorthand label used in commands to indicate specific fields (e.g. `n/` for name)
-* **Duplicate Participant**: A participant entry that matches another participant’s unique identifying fields.
-* **CSV (Comma-Separated Values)**: A file format used to store tabular data.
+* **Mainstream OS**: Common desktop operating systems that typical users run applications on, such as Windows, macOS, and Linux.
+* **Organizer**: The primary user of TeamEventPro who manages events and their participants.
+* **Event**: A scheduled activity managed in TeamEventPro, identified by details such as its name, date, location, and description.
+* **Global Event View**: The top-level context in which the organizer browses and manages events before entering a specific event.
+* **Event Participant View**: The in-event context shown after the organizer enters an event, where commands operate on that event's participants.
+* **Participant**: A person registered under a specific event in TeamEventPro.
+* **Participant Record**: The full set of data stored for a participant, such as contact details, tags, team assignment, RSVP status, and check-in status.
+* **RSVP**: A participant's attendance response, recorded as `yes`, `no`, or `pending`.
+* **Check-in Status**: Whether a participant has been marked as present at the event.
+* **Prefix**: A field marker used in command input to indicate how a value should be interpreted by the parser (e.g. `n/` for name).
+* **Duplicate Participant**: A participant entry that the system considers identical to an existing participant according to its duplicate-detection rules.
+* **CSV (Comma-Separated Values)**: A plain-text file format used to store tabular data, where each line represents a row and commas separate values.
 --------------------------------------------------------------------------------------------------------------------
 
 ## **Appendix: Instructions for manual testing**
@@ -461,7 +674,7 @@ testers are expected to do more *exploratory* testing.
 
    1. Download the jar file and copy into an empty folder
 
-   1. Double-click the jar file Expected: Shows the GUI with a set of sample contacts. The window size may not be optimum.
+   1. Double-click the jar file Expected: Shows the GUI with a set of sample events. The window size may not be optimum.
 
 1. Saving window preferences
 
@@ -472,24 +685,24 @@ testers are expected to do more *exploratory* testing.
 
 1. _{ more test cases …​ }_
 
-### Deleting an applicant
+### Deleting a participant
 
-1. Deleting an applicant while all applicants are being shown
+1. Deleting a participant while all participants are being shown
 
-   1. Prerequisites: List all applicants using the `list` command. Multiple applicants in the list.
+   1. Prerequisites: Enter an event so the participant list is shown. Multiple participants in the current event list.
 
    1. Test case: `delete 1`<br>
-      Expected: First contact is deleted from the list. Details of the deleted contact shown in the status message. Timestamp in the status bar is updated.
+      Expected: The first participant is deleted from the list. Details of the deleted participant are shown in the status message. Timestamp in the status bar is updated.
 
    1. Test case: `delete 0`<br>
-      Expected: No applicant is deleted. Error details shown in the status message. Status bar remains the same.
+      Expected: No participant is deleted. Error details shown in the status message. Status bar remains the same.
 
    1. Other incorrect delete commands to try: `delete`, `delete x`, `...` (where x is larger than the list size)<br>
       Expected: Similar to previous.
 
 1. _{ more test cases …​ }_
 
-### Filtering applicants
+### Filtering participants
 
 1. Filtering while inside an event
 
@@ -522,7 +735,7 @@ testers are expected to do more *exploratory* testing.
 
 1. Filtering without entering an event first
 
-   1. Prerequisites: Launch the app but do **not** run `enter event`; stay at the event selection view if applicable.
+   1. Prerequisites: Launch the app but do **not** run `enter event`; stay in the global event view.
 
    1. Test case: `filter r/yes`<br>
       Expected: Command fails with a message indicating the user must enter an event first; participant list not updated.
