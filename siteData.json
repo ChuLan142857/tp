@@ -41,7 +41,6 @@
       "title": "Developer Guide",
       "headings": {
         "ab-3-developer-guide": "AB-3 Developer Guide",
-        "acknowledgements": "Acknowledgements",
         "setting-up-getting-started": "Setting up, getting started",
         "design": "Design",
         "architecture": "Architecture",
@@ -51,9 +50,19 @@
         "storage-component": "Storage component",
         "common-classes": "Common classes",
         "implementation": "Implementation",
+        "add-event-feature": "Add Event Feature",
+        "add-participant-feature": "Add Participant Feature",
+        "edit-participant-feature": "Edit Participant Feature",
+        "filter-participants": "Filter participants",
         "proposed-undo-redo-feature": "[Proposed] Undo/redo feature",
         "proposed-data-archiving": "[Proposed] Data archiving",
         "documentation-logging-testing-configuration-dev-ops": "Documentation, logging, testing, configuration, dev-ops",
+        "acknowledgements": "Acknowledgements",
+        "anugrah-bagla": "Anugrah Bagla",
+        "zhou-jinhao": "Zhou Jinhao",
+        "debopam-roy": "Debopam Roy",
+        "han-shangda": "Han Shangda",
+        "manya-agarwal": "Manya Agarwal",
         "appendix-requirements": "Appendix: Requirements",
         "product-scope": "Product scope",
         "user-stories": "User stories",
@@ -62,8 +71,8 @@
         "glossary": "Glossary",
         "appendix-instructions-for-manual-testing": "Appendix: Instructions for manual testing",
         "launch-and-shutdown": "Launch and shutdown",
-        "deleting-an-applicant": "Deleting an applicant",
-        "filtering-applicants": "Filtering applicants",
+        "deleting-a-participant": "Deleting a participant",
+        "filtering-participants": "Filtering participants",
         "saving-data": "Saving data"
       },
       "headingKeywords": {}
@@ -157,6 +166,20 @@
       "headingKeywords": {}
     },
     {
+      "src": "UserGuideCommandFundamentals.md",
+      "title": "User Guide - Command Fundamentals",
+      "headings": {
+        "command-fundamentals": "Command Fundamentals",
+        "1-command-notation": "1. Command notation",
+        "2-command-structure-and-modes": "2. Command structure and modes",
+        "3-prefix-reference": "3. Prefix reference",
+        "4-index-and-list-behavior": "4. Index and list behavior",
+        "5-common-mistakes-and-quick-fixes": "5. Common mistakes and quick fixes",
+        "6-navigation": "6. Navigation"
+      },
+      "headingKeywords": {}
+    },
+    {
       "src": "UserGuideCommonCommands.md",
       "title": "User Guide - Common Commands",
       "headings": {
@@ -200,6 +223,19 @@
         "3-1-enter-event-command": "3.1 Enter Event command",
         "4-application-exit": "4. Application Exit",
         "4-1-exit-command": "4.1 Exit command",
+        "5-navigation": "5. Navigation"
+      },
+      "headingKeywords": {}
+    },
+    {
+      "src": "UserGuideGettingStarted.md",
+      "title": "User Guide - Getting Started",
+      "headings": {
+        "getting-started": "Getting Started",
+        "1-prerequisites": "1. Prerequisites",
+        "2-install-and-launch": "2. Install and launch",
+        "3-first-time-setup": "3. First-time setup",
+        "4-where-to-go-next": "4. Where to go next",
         "5-navigation": "5. Navigation"
       },
       "headingKeywords": {}
