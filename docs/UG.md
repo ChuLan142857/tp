@@ -8,11 +8,11 @@ pageNav: 3
 
 ## 1. About TeamEventPro
 
-TeamEventPro is a desktop app for organizers who run recurring tech events, hackathons, and workshops. It is optimized for keyboard-first workflows, so common operations can be completed quickly during live event operations.
+TeamEventPro is a desktop event-operations app designed for organizers who need to manage events and participants quickly and accurately.
 
-You can manage both event-level and participant-level work in one place. Outside an event, you can create, edit, search, and manage event records. Inside an event, you can add participants, update details, assign teams, check in attendees, filter/search lists, view statistics, and import or export CSV data.
+It is built for keyboard-first workflows. Most actions can be completed with short commands, which is helpful during live registration, check-in queues, team assignment, and last-minute updates.
 
-TeamEventPro combines the speed of a Command Line Interface (CLI) with the visibility of a Graphical User Interface (GUI), making it suitable for organizers who need fast and accurate updates under time pressure.
+TeamEventPro combines the speed of a Command Line Interface (CLI) with the clarity of a Graphical User Interface (GUI). This allows you to work quickly while still seeing lists and updates clearly on screen.
 
 ![TeamEventPro User Guide Home Page](images/MainPage/MainPage.png)
 
@@ -20,37 +20,39 @@ TeamEventPro combines the speed of a Command Line Interface (CLI) with the visib
 
 ## 2. Quick Start
 
-1. Ensure you have Java `17` or above installed on your computer.
+1. Ensure Java `17` or above is installed.
+   - Mac users should use the project's required JDK version.
+2. Download the latest `.jar` from the project release page.
+3. Place the `.jar` in your preferred TeamEventPro home folder.
+4. Open a terminal in that folder and run `java -jar addressbook.jar`.
+5. Wait a few seconds for the app to launch.
 
-   - Mac users should ensure they are using the precise JDK version required for the project.
-
-2. Download the latest `.jar` file from the project’s release page.
-
-3. Copy the `.jar` file into the folder you want to use as the home folder for TeamEventPro.
-
-4. Open a terminal, navigate to the folder containing the `.jar` file, and run:
-
-   `java -jar addressbook.jar`
-
-5. Wait a few seconds for the application window to open.
-
-   You should see the main page shown below:
+   You should see the application main page below:
 
    ![TeamEventPro Application Main Page](images/MainPage/MainPage_real.png)
 
-6. Type commands into the command box and press Enter to execute them.
+6. Type commands in the command box and press Enter to run them.
+7. If onboarding appears on first launch, complete it once to get familiar with navigation and command flow.
 
-7. An onboarding tutorial will begin when you open the application for the first time. Please go through that to familiarize
-   yourself with the application.
+### 2.1 Suggested First Commands
+
+- `help`
+- `addevent n/Tech Meetup d/2026-06-15 l/NUS COM1 desc/Evening session`
+- `list`
+- `enter event 1`
+- `add n/John Doe p/98765432 e/john@example.com a/311 Clementi Ave 2`
+- `checkin 1`
+- `leave`
+
 ---
 
 ## 3. Understanding App Modes
 
-TeamEventPro has two main modes of use.
+TeamEventPro has two working modes.
 
 ### 3.1 Outside an event
 
-In this mode, you are viewing and managing the list of events.
+You are viewing and managing the event list.
 
 You can use this mode to:
 - create events
@@ -61,7 +63,7 @@ You can use this mode to:
 
 ### 3.2 Inside an event
 
-In this mode, you are managing participants within a selected event.
+You are managing participants for the selected event.
 
 You can use this mode to:
 - add, edit, and delete participants
@@ -76,18 +78,18 @@ You can use this mode to:
 
 ## 4. Notes About Command Format
 
-- Words in `UPPER_CASE` are parameters to be supplied by the user.
+- Words in `UPPER_CASE` are values you provide.
 - Items in square brackets are optional.
-- Items followed by `...` can be used multiple times.
-- Parameters can usually be entered in any order unless stated otherwise.
-- Indexes refer to the numbers shown in the displayed list.
-- Dates should follow the format `YYYY-MM-DD`.
+- Items followed by `...` can be repeated.
+- Parameter order usually does not matter unless otherwise stated.
+- `INDEX` refers to the number shown in the currently displayed list.
+- Dates use `YYYY-MM-DD` format.
 
 ---
 
 ## 5. Commands Available in Both Modes
 
-The following commands can be used regardless of whether you are inside or outside an event:
+These commands are available both inside and outside an event:
 
 - `help`
 - `list`
@@ -100,6 +102,6 @@ Full details for these commands are in [Common Commands](UserGuideCommonCommands
 
 ## 6. Next Sections
 
-- [Common Commands](UserGuideCommonCommands.md)
-- [Event Commands](UserGuideEvents.md)
-- [Participant Commands](UserGuideParticipants.md)
+- [Common Commands](UserGuideCommonCommands.md): Commands shared across both modes.
+- [Event Commands](UserGuideEvents.md): Commands for creating and managing events.
+- [Participant Commands](UserGuideParticipants.md): Commands for managing participants inside an event.
