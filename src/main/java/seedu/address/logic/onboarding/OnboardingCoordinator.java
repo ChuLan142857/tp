@@ -1,10 +1,10 @@
 package seedu.address.logic.onboarding;
 
-import static seedu.address.logic.parser.CliSyntax.PREFIX_ASSIGN_TEAM;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DESCRIPTION;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_LOCATION;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_TEAM;
 
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -275,7 +275,7 @@ public class OnboardingCoordinator {
                     + "p/91234567 e/jane@example.com a/Blk 123";
         case ASSIGN_TEAM:
             return "Put \"" + participantNameOrPlaceholder() + "\" on a team (use their list index):\n"
-                    + AssignTeamCommand.COMMAND_WORD + " 1 " + PREFIX_ASSIGN_TEAM + "Alpha";
+                    + AssignTeamCommand.COMMAND_WORD + " 1 " + PREFIX_TEAM + "Alpha";
         case SEARCH:
             return "Try searching by keyword (matches name, phone, email, team, etc.):\n"
                     + SearchCommand.COMMAND_WORD + " " + searchKeywordSuggestion();

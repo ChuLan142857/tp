@@ -3,7 +3,6 @@ package seedu.address.logic.parser;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_ASSIGN_TEAM;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CHECKIN;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_GITHUB;
@@ -11,6 +10,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_RSVP;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_TEAM;
 
 import java.util.Optional;
 import java.util.Set;
@@ -46,7 +46,7 @@ public class FilterCommandParser implements Parser<FilterCommand> {
         }
 
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_NAME, PREFIX_PHONE, PREFIX_EMAIL,
-            PREFIX_ADDRESS, PREFIX_GITHUB, PREFIX_RSVP, PREFIX_TAG, PREFIX_ASSIGN_TEAM, PREFIX_CHECKIN);
+            PREFIX_ADDRESS, PREFIX_GITHUB, PREFIX_RSVP, PREFIX_TAG, PREFIX_TEAM, PREFIX_CHECKIN);
 
         isValidFormat(argMultimap);
 
@@ -74,8 +74,8 @@ public class FilterCommandParser implements Parser<FilterCommand> {
             rsvpStatus = Optional.of(ParserUtil.parseRsvpStatus(argMultimap.getValue(PREFIX_RSVP).get()));
         } else if (argMultimap.getValue(PREFIX_TAG).isPresent()) {
             tags = ParserUtil.parseTags(argMultimap.getAllValues(PREFIX_TAG));
-        } else if (argMultimap.getValue(PREFIX_ASSIGN_TEAM).isPresent()) {
-            team = Optional.of(ParserUtil.parseTeam(argMultimap.getValue(PREFIX_ASSIGN_TEAM).get()));
+        } else if (argMultimap.getValue(PREFIX_TEAM).isPresent()) {
+            team = Optional.of(ParserUtil.parseTeam(argMultimap.getValue(PREFIX_TEAM).get()));
         } else if (argMultimap.getValue(PREFIX_CHECKIN).isPresent()) {
             checkinStatus = Optional.of(
                     ParserUtil.parseFilterCheckinStatus(argMultimap.getValue(PREFIX_CHECKIN).get()));
@@ -89,12 +89,12 @@ public class FilterCommandParser implements Parser<FilterCommand> {
     private boolean isValidFormat(ArgumentMultimap argMultimap) throws ParseException {
         //check for multiple prefixes
         if (argMultimap.countPrefixes(PREFIX_RSVP, PREFIX_TAG, PREFIX_NAME, PREFIX_PHONE, PREFIX_EMAIL, PREFIX_ADDRESS,
-            PREFIX_GITHUB, PREFIX_ASSIGN_TEAM, PREFIX_CHECKIN) > 1) {
+            PREFIX_GITHUB, PREFIX_TEAM, PREFIX_CHECKIN) > 1) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterCommand.MESSAGE_USAGE));
         }
 
         //checks if correct arguments are provided
-        if (!arePrefixesPresent(argMultimap, PREFIX_RSVP, PREFIX_TAG, PREFIX_ASSIGN_TEAM, PREFIX_CHECKIN)) {
+        if (!arePrefixesPresent(argMultimap, PREFIX_RSVP, PREFIX_TAG, PREFIX_TEAM, PREFIX_CHECKIN)) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterCommand.MESSAGE_USAGE));
         }
 
@@ -103,7 +103,7 @@ public class FilterCommandParser implements Parser<FilterCommand> {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterCommand.MESSAGE_USAGE));
         }
 
-        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_RSVP, PREFIX_TAG, PREFIX_ASSIGN_TEAM, PREFIX_CHECKIN);
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_RSVP, PREFIX_TAG, PREFIX_TEAM, PREFIX_CHECKIN);
 
         return true;
     }

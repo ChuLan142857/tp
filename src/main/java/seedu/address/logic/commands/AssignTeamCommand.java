@@ -1,7 +1,7 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_ASSIGN_TEAM;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_TEAM;
 import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
 
 import java.util.List;
@@ -25,8 +25,8 @@ public class AssignTeamCommand extends Command {
     public static final String MESSAGE_USAGE = COMMAND_WORD
             + ": Assigns a participant to a specific hackathon team. "
             + "Parameters: INDEX (must be a positive integer) "
-            + PREFIX_ASSIGN_TEAM + "TEAM_NAME\n"
-            + "Example: " + COMMAND_WORD + " 2 " + PREFIX_ASSIGN_TEAM + "Alpha";
+            + PREFIX_TEAM + "TEAM_NAME\n"
+            + "Example: " + COMMAND_WORD + " 2 " + PREFIX_TEAM + "Alpha";
 
     public static final String MESSAGE_ASSIGN_TEAM_SUCCESS = "Assigned %1$s to Team %2$s.";
 

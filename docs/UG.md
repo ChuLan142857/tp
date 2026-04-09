@@ -184,8 +184,7 @@ Most commands follow one of these patterns:
 | `p/` | Phone | Digits only, at least 3 digits, e.g. `p/98765432` | Letters/symbols, e.g. `p/98A76`, `p/+6598765432` |
 | `e/` | Email | Standard email format, e.g. `e/john@example.com` | Missing `@` or invalid format, e.g. `e/johnexample.com` |
 | `a/` | Address | Free-text address, e.g. `a/311 Clementi Ave 2` |  |
-| `tm/` | Team (`add`/`edit`) | Alphanumeric team name, 1-15 chars, e.g. `tm/Alpha7` | Spaces/symbols/too-long text, e.g. `tm/Alpha Team`, `tm/Alpha-1` |
-| `team/` | Team (`assign`/`filter`) | Alphanumeric team name, 1-15 chars, e.g. `team/Alpha7` | Using `tm/` in `assign`/`filter`; invalid team format |
+| `team/` | Team (`add`/`edit`/`assign`/`filter`) | Alphanumeric team name, 1-15 chars, e.g. `team/Alpha7` | Spaces/symbols/too-long text, e.g. `team/Alpha Team`, `team/Alpha-1` |
 | `g/` | GitHub username | GitHub-style username, e.g. `g/johndoe`, `g/john-doe` | Leading/trailing hyphen, spaces, e.g. `g/-john`, `g/john-`, `g/john doe` |
 | `r/` | RSVP status | `yes`, `no`, `pending` | Any other value, e.g. `r/maybe` |
 | `t/` | Tag | Alphanumeric tag, repeatable, e.g. `t/python t/ml` | Symbols/spaces, e.g. `t/machine-learning`, `t/data science` |
@@ -217,7 +216,7 @@ The command applies to item `2` in the filtered list, not item `2` from an earli
 
 - Missing required prefix (for example, no `e/` in `add`) -> include all required prefixes.
 - Invalid index -> ensure index is a positive integer within the displayed list range.
-- Wrong team prefix -> use `tm/` for `add` and `edit`, and `team/` for `assign` and `filter`.
+- Wrong team prefix -> use `team/` for all team-related commands (`add`, `edit`, `assign`, and `filter`).
 - Invalid RSVP value -> use only `yes`, `no`, or `pending`.
 - Multiple filter criteria in one command -> use exactly one filter criterion per `filter` command.
 - Using command in wrong mode -> use event commands outside an event, and participant commands inside an event.
@@ -513,11 +512,11 @@ See [Command Fundamentals](#command-fundamentals) for command syntax, prefix rul
 Used to add a participant to the currently entered event.
 
 #### Format
-`add n/[NAME] p/[PHONE] e/[EMAIL] a/[ADDRESS] [tm/TEAM] [g/GITHUB_USERNAME] [r/RSVP_STATUS] [t/TAG]...`
+`add n/[NAME] p/[PHONE] e/[EMAIL] a/[ADDRESS] [team/TEAM] [g/GITHUB_USERNAME] [r/RSVP_STATUS] [t/TAG]...`
 
 #### Example Usage
 ```
-add n/John Doe p/98765432 e/johnd@example.com a/311, Clementi Ave 2, #02-25 tm/Development g/johndoe r/yes t/friends
+add n/John Doe p/98765432 e/johnd@example.com a/311, Clementi Ave 2, #02-25 team/Development g/johndoe r/yes t/friends
 ```
 ![Command](images/add/command.png)
 
@@ -538,7 +537,7 @@ add n/John Doe p/98765432 e/johnd@example.com a/311, Clementi Ave 2, #02-25 tm/D
 Used to edit the details of an existing participant in the current event.
 
 #### Format
-`edit [INDEX] [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [g/GITHUB_USERNAME] [r/RSVP_STATUS] [tm/TEAM] [t/TAG]...`
+`edit [INDEX] [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [g/GITHUB_USERNAME] [r/RSVP_STATUS] [team/TEAM] [t/TAG]...`
 
 #### Example Usage
 ```
@@ -558,7 +557,7 @@ edit 1 p/91234567 e/johndoe@example.com
 - `RSVP_STATUS` must be `yes`, `no`, or `pending` (case-insensitive).
 - `TEAM` must be alphanumeric and at most 15 characters.
 - Clear all tags by typing `t/` with nothing after it.
-- Clear the team by typing `tm/` with nothing after it.
+- Clear the team by typing `team/` with nothing after it.
 - Editing a participant to match another participant's name and phone or email will be rejected as a duplicate.
 
 ### 1.3 Delete Command

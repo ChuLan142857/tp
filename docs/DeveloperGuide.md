@@ -198,7 +198,7 @@ The add participant feature is facilitated by `AddCommand`. It allows the user t
 The command follows these steps when executed:
 
 1. `AddressBookParser` receives the input and creates an `AddCommandParser`.
-2. `AddCommandParser` tokenises the input using `ArgumentTokenizer` and constructs a `Person` object from the parsed fields. Required fields are `n/`, `p/`, `e/`, and `a/`. Optional fields are `tm/`, `g/`, `r/`, and `t/`.
+2. `AddCommandParser` tokenises the input using `ArgumentTokenizer` and constructs a `Person` object from the parsed fields. Required fields are `n/`, `p/`, `e/`, and `a/`. Optional fields are `team/`, `g/`, `r/`, and `t/`.
 3. `AddCommand#execute()` checks that the app is in event participant mode. If not, a `CommandException` is thrown.
 4. `AddCommand#execute()` checks for duplicates via `Model#hasPerson()`. Duplicate detection is handled by `Person#isSamePerson()`, which returns true if two persons share the same name **and** either the same phone number or the same email address.
 5. `Model#addPerson()` is called, adding the participant to the active event's `AddressBook`.
@@ -299,7 +299,7 @@ The command follows these steps when executed:
 Notable behaviours:
 
 * Editing tags replaces all existing tags entirely. To clear all tags, use `t/` with no value.
-* Editing team replaces the existing team. To clear the team, use `tm/` with no value.
+* Editing team replaces the existing team. To clear the team, use `team/` with no value.
 * All other field constraints follow the same validation rules as `AddCommand`.
 
 #### Design Considerations
@@ -728,6 +728,43 @@ testers are expected to do more *exploratory* testing.
 
    1. Other incorrect delete commands to try: `delete`, `delete x`, `...` (where x is larger than the list size)<br>
       Expected: Similar to previous.
+
+1. _{ more test cases …​ }_
+
+### Assigning a participant to a team
+
+1. Assigning team while inside an event
+
+  1. Prerequisites: Launch the app and run `enter event INDEX` so the participant list is shown. Ensure the current event has multiple participants.
+
+  1. Test case: `assign 1 team/Alpha`<br>
+    Expected: The first participant is assigned to team `Alpha`. Success message is shown and participant list reflects the updated team.
+
+  1. Test case: `assign 2 team/Team7`<br>
+    Expected: The second participant is assigned to `Team7`. Success message is shown and list updates immediately.
+
+2. Invalid assign input
+
+  1. Prerequisites: Same as above - must be inside an event with participants listed.
+
+  1. Test case: `assign 0 team/Alpha`<br>
+    Expected: No participant is updated. Error message indicates invalid index.
+
+  1. Test case: `assign 999 team/Alpha` (where 999 is out of range)<br>
+    Expected: No participant is updated. Error message indicates invalid index.
+
+  1. Test case: `assign 1 team/Alpha!`<br>
+    Expected: Parse/validation error because team name must be alphanumeric and within length constraints.
+
+  1. Other incorrect commands to try: `assign`, `assign 1`, `assign x team/Alpha`, `assign 1 team/`<br>
+    Expected: Command fails with usage/validation error and list remains unchanged.
+
+3. Assigning without entering an event first
+
+  1. Prerequisites: Launch the app and remain in the global event view (do not run `enter event`).
+
+  1. Test case: `assign 1 team/Alpha`<br>
+    Expected: Command fails with a message indicating user must enter an event first.
 
 1. _{ more test cases …​ }_
 

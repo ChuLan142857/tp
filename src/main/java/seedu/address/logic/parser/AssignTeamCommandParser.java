@@ -2,7 +2,7 @@ package seedu.address.logic.parser;
 
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_ASSIGN_TEAM;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_TEAM;
 
 import java.util.Optional;
 
@@ -19,15 +19,15 @@ public class AssignTeamCommandParser implements Parser<AssignTeamCommand> {
     @Override
     public AssignTeamCommand parse(String args) throws ParseException {
         requireNonNull(args);
-        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_ASSIGN_TEAM);
+        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_TEAM);
 
         if (argMultimap.getPreamble().isBlank()) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, AssignTeamCommand.MESSAGE_USAGE));
         }
 
-        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_ASSIGN_TEAM);
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_TEAM);
 
-        Optional<String> teamValue = argMultimap.getValue(PREFIX_ASSIGN_TEAM);
+        Optional<String> teamValue = argMultimap.getValue(PREFIX_TEAM);
         if (teamValue.isEmpty() || teamValue.get().isBlank()) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, AssignTeamCommand.MESSAGE_USAGE));
         }
