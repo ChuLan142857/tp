@@ -52,11 +52,26 @@ Used to list all events or all participants depending on the current mode.
 `list`
 
 ### Example Usage
+Outside an event:
+
 `list`
 
+![Command outside an event](images/list/eventcommand.png)
+
+Inside an event:
+
+`list`
+
+![Command inside an event](images/list/participantcommand.png)
+
 ### Successful Execution
-- Outside an event: `Listed all events`
-- Inside an event: `Listed all participants`
+Outside an event: `Listed all events`
+
+![Result outside an event](images/list/eventresult.png)
+
+Inside an event: `Listed all participants`
+
+![Result inside an event](images/list/participantresult.png)
 
 ### Notes
 - Works differently depending on the current mode.
@@ -71,11 +86,26 @@ Used to search for matching events or participants depending on the current mode
 `search [KEYWORD]...`
 
 ### Example Usage
+Outside an event:
+
 `search meetup workshop`
 
+![Command outside an event](images/search/eventcommand.png)
+
+Inside an event:
+
+`search [KEYWORD]...`
+
+![Command inside an event](images/search/participantcommand.png)
+
 ### Successful Execution
-- Outside an event: matching events are shown in the event list.
-- Inside an event: matching participants are shown in the participant list.
+Outside an event: matching events are shown in the event list.
+
+![Result outside an event](images/search/eventresult.png)
+
+Inside an event: matching participants are shown in the participant list.
+
+![Result inside an event](images/search/participantresult.png)
 
 ### Notes
 - Can be used in any mode.
@@ -93,8 +123,12 @@ Used to switch the application theme.
 ### Example Usage
 `switchmode dark`
 
+![Command](images/switchmode/command.png)
+
 ### Successful Execution
 `Switched to dark mode.`
+
+![Result](images/switchmode/result.png)
 
 ### Notes
 - Can be used in any mode.
