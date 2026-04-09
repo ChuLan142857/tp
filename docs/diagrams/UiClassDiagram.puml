@@ -9,12 +9,26 @@ Class "<<interface>>\nUi" as Ui
 Class "{abstract}\nUiPart" as UiPart
 Class UiManager
 Class MainWindow
-Class HelpWindow
-Class ResultDisplay
-Class PersonListPanel
-Class PersonCard
-Class StatusBarFooter
-Class CommandBox
+
+together {
+    Class PersonListPanel
+    Class EventListPanel
+    Class StatisticsPanel
+    Class PersonDetailPanel
+    Class OnboardingPanel
+}
+
+together {
+    Class PersonCard
+    Class EventCard
+}
+
+together {
+    Class HelpWindow
+    Class ResultDisplay
+    Class CommandBox
+    Class StatusBarFooter
+}
 }
 
 package Model <<Rectangle>> {
@@ -30,31 +44,36 @@ HiddenOutside ..> Ui
 
 UiManager .left.|> Ui
 UiManager -down-> "1" MainWindow
-MainWindow *-down->  "1" CommandBox
+MainWindow *-down-> "1" CommandBox
 MainWindow *-down-> "1" ResultDisplay
 MainWindow *-down-> "1" PersonListPanel
+MainWindow *-down-> "1" EventListPanel
+MainWindow *-down-> "1" StatisticsPanel
+MainWindow *-down-> "1" PersonDetailPanel
+MainWindow *-down-> "1" OnboardingPanel
 MainWindow *-down-> "1" StatusBarFooter
 MainWindow --> "0..1" HelpWindow
 
 PersonListPanel -down-> "*" PersonCard
+EventListPanel -down-> "*" EventCard
 
 MainWindow -left-|> UiPart
-
 ResultDisplay --|> UiPart
 CommandBox --|> UiPart
-PersonListPanel --|> UiPart
-PersonCard --|> UiPart
-StatusBarFooter --|> UiPart
 HelpWindow --|> UiPart
+StatusBarFooter --|> UiPart
+PersonListPanel --|> UiPart
+EventListPanel --|> UiPart
+StatisticsPanel --|> UiPart
+PersonDetailPanel --|> UiPart
+OnboardingPanel --|> UiPart
+PersonCard --|> UiPart
+EventCard --|> UiPart
 
 PersonCard ..> Model
+EventCard ..> Model
 UiManager -right-> Logic
 MainWindow -left-> Logic
-
-PersonListPanel -[hidden]left- HelpWindow
-HelpWindow -[hidden]left- CommandBox
-CommandBox -[hidden]left- ResultDisplay
-ResultDisplay -[hidden]left- StatusBarFooter
 
 MainWindow -[hidden]-|> UiPart
 @enduml
