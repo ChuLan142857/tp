@@ -98,6 +98,10 @@ The sequence diagram below illustrates the interactions for assigning a particip
 
 <puml src="diagrams/AssignTeamSequenceDiagram.puml" alt="Interactions Inside the Logic Component for the `assign 2 team/Alpha` Command" />
 
+The class diagram below summarizes the main classes involved in parsing and executing the `assign` command.
+
+<puml src="diagrams/AssignTeamClassDiagram.puml" alt="Main classes involved in the assign command" width="700" />
+
 <box type="info" seamless>
 
 **Note:** The lifeline for `DeleteCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
@@ -300,25 +304,23 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | Priority | As a …​                                    | I want to …​                                                          | So that I can…​                                                    |
 |----------|-----------------------------------------------|------------------------------------------------------------------------|--------------------------------------------------------------------|
 | `* * *`  | new user                                      | see usage instructions and command examples                            | learn the app quickly and refer back when needed                   |
+| `* * *`  | meetup organizer                              | add events                                                             | create event records quickly during planning                       |
+| `* * *`  | meetup organizer                              | edit event details                                                     | keep event information accurate when plans change                  |
+| `* * *`  | meetup organizer                              | delete events                                                          | remove canceled or duplicate events cleanly                        |
+| `* * *`  | meetup organizer                              | enter a selected event and return to the event list                    | switch quickly between event-level and participant-level workflows |
 | `* * *`  | meetup organizer                              | add a participant with name, contact, GitHub username, and RSVP status | build my participant list rapidly before events                    |
 | `* * *`  | meetup organizer                              | edit participant details using quick commands                          | fix typos or update information instantly during registration      |
 | `* * *`  | meetup organizer                              | delete a participant                                                   | remove cancellations, duplicates, or test entries                  |
 | `* * *`  | meetup organizer                              | search participants by name, email, or GitHub username                 | locate specific attendees in seconds during events                 |
 | `* * *`  | entrance desk organizer                       | mark a participant as checked-in with one command                      | process arrivals quickly without slowing the entry queue           |
 | `* * *`  | meetup organizer                              | list all participants with a single command                            | get a complete overview after filtering or searching               |
-| `* * *`  | meetup organizer                              | undo my last action                                                    | quickly recover from accidental deletions or edits                 |
+| `* * *`  | meetup organizer                              | exit the app from the command line                                     | close the tool quickly without leaving the keyboard                |
 | `* *`    | hackathon organizer                           | assign participants to teams                                           | organize team-based events efficiently                             |
 | `* *`    | meetup organizer                              | filter participants by RSVP status (Yes/No/Pending)                    | know exactly who's confirmed and follow up with pending responses  |
-| `* *`    | meetup organizer                              | filter participants by check-in status                                 | identify no-shows and track actual attendance vs RSVPs             |
-| `* *`    | hackathon organizer                           | filter participants by team assignment                                 | view and manage team rosters quickly                               |
-| `* *`    | meetup organizer with catering responsibilities | filter participants by dietary requirements                          | ensure accurate meal planning and allergen management              |
 | `* *`    | meetup organizer                              | tag participants with custom labels                                    | categorize attendees (e.g., speaker, volunteer, VIP)               |
 | `* *`    | frequent organizer                            | import participant lists from CSV files                                | migrate data from previous tools quickly                           |
 | `* *`    | frequent organizer                            | export participant data to CSV                                         | share reports with co-organizers or sponsors                       |
-| `*`      | meetup organizer                              | view attendance statistics and RSVP conversion rates                   | analyze event turnout and improve future planning                  |
-| `*`      | hackathon organizer                           | automatically balance teams by declared skills                         | create fair teams without manual sorting                           |
-| `*`      | meetup organizer                              | see a timeline of recent actions                                       | track what changes were made during busy check-in periods          |
-| `*`      | meetup organizer with accessibility needs     | use keyboard shortcuts for all operations                              | manage events efficiently without relying on mouse input           |
+| `*`      | meetup organizer                              | clear all participants for the current event                           | reset quickly when preparing a fresh test dataset                  |
 
 *{More to be added}*
 

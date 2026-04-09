@@ -1,0 +1,52 @@
+@startuml
+!include style.puml
+skinparam arrowThickness 1.1
+skinparam arrowColor LOGIC_COLOR_T4
+skinparam classBackgroundColor LOGIC_COLOR
+
+package Logic {
+Class "{abstract}\nCommand" as Command
+Class AssignTeamCommand
+
+Class "<<interface>>\nParser" as Parser
+Class AddressBookParser
+Class AssignTeamCommandParser
+Class ParserUtil
+Class ArgumentTokenizer
+Class ArgumentMultimap
+Class CliSyntax
+Class Prefix
+Class Index
+}
+
+package Model {
+Class "<<interface>>\nModel" as Model #MODEL_COLOR
+Class Person #MODEL_COLOR
+Class Team #MODEL_COLOR
+}
+
+Class HiddenOutside #FFFFFF
+HiddenOutside ..> AddressBookParser
+
+AssignTeamCommand -up-|> Command
+AssignTeamCommandParser .up.|> Parser
+
+AddressBookParser ..> AssignTeamCommandParser : <<create>>
+AssignTeamCommandParser ..> AssignTeamCommand : <<create>>
+
+AssignTeamCommandParser ..> ArgumentTokenizer
+AssignTeamCommandParser ..> ArgumentMultimap
+ArgumentTokenizer .down.> ArgumentMultimap
+AssignTeamCommandParser ..> ParserUtil
+AssignTeamCommandParser ..> CliSyntax
+CliSyntax ..> Prefix
+ArgumentTokenizer ..> Prefix
+ParserUtil ..> Index
+ParserUtil ..> Team
+
+AssignTeamCommand .right.> Model : <<call>>
+AssignTeamCommand ..> Team
+AssignTeamCommand ..> Person
+Model --> "~* filtered" Person
+Person --> "0..1" Team
+@enduml
