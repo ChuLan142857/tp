@@ -1,0 +1,87 @@
+@startuml
+!include style.puml
+skinparam ArrowFontStyle plain
+
+box Logic LOGIC_COLOR_T1
+participant ":LogicManager" as LogicManager LOGIC_COLOR
+participant ":AddressBookParser" as AddressBookParser LOGIC_COLOR
+participant ":CheckInCommandParser" as CheckInCommandParser LOGIC_COLOR
+participant "c:CheckInCommand" as CheckInCommand LOGIC_COLOR
+participant "r:CommandResult" as CommandResult LOGIC_COLOR
+end box
+
+box Model MODEL_COLOR_T1
+participant "m:Model" as Model MODEL_COLOR
+end box
+
+[-> LogicManager : execute("checkin 1")
+activate LogicManager
+
+LogicManager -> AddressBookParser : parseCommand("checkin 1")
+activate AddressBookParser
+
+create CheckInCommandParser
+AddressBookParser -> CheckInCommandParser
+activate CheckInCommandParser
+
+CheckInCommandParser --> AddressBookParser
+deactivate CheckInCommandParser
+
+AddressBookParser -> CheckInCommandParser : parse("1")
+activate CheckInCommandParser
+
+CheckInCommandParser -> CheckInCommandParser : tokenize(args)
+activate CheckInCommandParser
+CheckInCommandParser --> CheckInCommandParser
+deactivate CheckInCommandParser
+
+CheckInCommandParser -> CheckInCommandParser : parseIndex(preamble)
+activate CheckInCommandParser
+CheckInCommandParser --> CheckInCommandParser : index
+deactivate CheckInCommandParser
+
+create CheckInCommand
+CheckInCommandParser -> CheckInCommand
+activate CheckInCommand
+
+CheckInCommand --> CheckInCommandParser
+deactivate CheckInCommand
+
+CheckInCommandParser --> AddressBookParser : c
+deactivate CheckInCommandParser
+CheckInCommandParser -[hidden]-> AddressBookParser
+destroy CheckInCommandParser
+
+AddressBookParser --> LogicManager : c
+deactivate AddressBookParser
+
+LogicManager -> CheckInCommand : execute(m)
+activate CheckInCommand
+
+CheckInCommand -> Model : isInEventParticipantsMode()
+activate Model
+Model --> CheckInCommand : true
+deactivate Model
+
+CheckInCommand -> Model : getFilteredPersonList()
+activate Model
+Model --> CheckInCommand : lastShownList
+deactivate Model
+
+CheckInCommand -> Model : checkInPerson(personToCheckIn)
+activate Model
+Model --> CheckInCommand
+deactivate Model
+
+create CommandResult
+CheckInCommand -> CommandResult
+activate CommandResult
+CommandResult --> CheckInCommand
+deactivate CommandResult
+
+CheckInCommand --> LogicManager : r
+deactivate CheckInCommand
+
+[<-- LogicManager
+deactivate LogicManager
+@enduml

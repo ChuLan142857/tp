@@ -1,0 +1,46 @@
+@startuml
+!include style.puml
+skinparam arrowThickness 1.1
+skinparam arrowColor LOGIC_COLOR_T4
+skinparam classBackgroundColor LOGIC_COLOR
+
+package Logic {
+Class "{abstract}\nCommand" as Command
+Class CheckInCommand
+
+Class "<<interface>>\nParser" as Parser
+Class AddressBookParser
+Class CheckInCommandParser
+Class ParserUtil
+Class ArgumentTokenizer
+Class ArgumentMultimap
+Class Index
+}
+
+package Model {
+Class "<<interface>>\nModel" as Model #MODEL_COLOR
+Class Person #MODEL_COLOR
+Class Attendance #MODEL_COLOR
+}
+
+Class HiddenOutside #FFFFFF
+HiddenOutside ..> AddressBookParser
+
+CheckInCommand -up-|> Command
+CheckInCommandParser .up.|> Parser
+
+AddressBookParser ..> CheckInCommandParser : <<create>>
+CheckInCommandParser ..> CheckInCommand : <<create>>
+
+CheckInCommandParser ..> ArgumentTokenizer
+CheckInCommandParser ..> ArgumentMultimap
+ArgumentTokenizer .down.> ArgumentMultimap
+CheckInCommandParser ..> ParserUtil
+ParserUtil ..> Index
+
+CheckInCommand .right.> Model : <<call>>
+CheckInCommand ..> Index
+CheckInCommand ..> Person
+Model --> "~* filtered" Person
+Person --> Attendance
+@enduml

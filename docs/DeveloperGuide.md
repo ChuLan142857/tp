@@ -236,6 +236,49 @@ The sequence diagram below illustrates the interactions within the `Logic` compo
 
 ---
 
+### Check-In Feature
+
+#### Implementation
+
+The check-in feature is facilitated by `CheckInCommand`. It allows the user to mark a participant in the currently active event as checked in.
+
+The command follows these steps when executed:
+
+1. `AddressBookParser` receives the input and creates a `CheckInCommandParser`.
+2. `CheckInCommandParser` tokenises the input and parses the preamble into an `Index`.
+3. `CheckInCommand#execute()` checks that the app is currently in event participant mode. If not, a `CommandException` is thrown.
+4. The target `Person` is retrieved from the filtered participant list using the parsed index. If the index is out of bounds, a `CommandException` is thrown.
+5. `Model#checkInPerson()` is called to update the participant's attendance status in the active event.
+6. A `CommandResult` with the formatted success message is returned using `Messages#format()`.
+
+The class diagram below summarizes the main classes involved in parsing and executing the `checkin` command.
+
+<puml src="diagrams/CheckInCommandClassDiagram.puml" alt="Main classes involved in the check-in command" width="650" />
+
+The sequence diagram below illustrates the interactions within the `Logic` component when the user executes `checkin 1`.
+
+<puml src="diagrams/CheckInCommandSequenceDiagram.puml" alt="Sequence diagram for the check-in command" width="720" />
+
+#### Design Considerations
+
+**Aspect: How the target participant is identified:**
+
+* **Current choice:** Use the participant index from the currently displayed list.
+    * Pros: Consistent with other participant-level commands such as `edit`, `delete`, and `assign`.
+    * Cons: Users must be careful that filtered lists can change the visible index ordering.
+
+* **Alternative:** Check in a participant by a unique field such as email.
+    * Pros: Avoids index ambiguity after filtering or reordering.
+    * Cons: More typing and less consistent with the rest of the participant command set.
+
+**Aspect: Where the attendance update happens:**
+
+* **Current choice:** Delegate the actual status update to `Model#checkInPerson()`.
+    * Pros: Keeps `CheckInCommand` focused on command orchestration and validation.
+    * Cons: Requires readers to follow the call into the model layer to see the final state update.
+
+---
+
 ### Edit Participant Feature
 
 #### Implementation
