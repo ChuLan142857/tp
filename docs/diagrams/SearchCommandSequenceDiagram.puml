@@ -1,0 +1,99 @@
+@startuml
+!include style.puml
+skinparam ArrowFontStyle plain
+
+box Logic LOGIC_COLOR_T1
+participant ":LogicManager" as LogicManager LOGIC_COLOR
+participant ":AddressBookParser" as AddressBookParser LOGIC_COLOR
+participant ":SearchCommandParser" as SearchCommandParser LOGIC_COLOR
+participant "s:SearchCommand" as SearchCommand LOGIC_COLOR
+participant "r:CommandResult" as CommandResult LOGIC_COLOR
+end box
+
+box Model MODEL_COLOR_T1
+participant "m:Model" as Model MODEL_COLOR
+end box
+
+[-> LogicManager : execute("search meetup")
+activate LogicManager
+
+LogicManager -> AddressBookParser : parseCommand("search meetup")
+activate AddressBookParser
+
+create SearchCommandParser
+AddressBookParser -> SearchCommandParser
+activate SearchCommandParser
+SearchCommandParser --> AddressBookParser
+deactivate SearchCommandParser
+
+AddressBookParser -> SearchCommandParser : parse(" meetup")
+activate SearchCommandParser
+
+create SearchCommand
+SearchCommandParser -> SearchCommand : SearchCommand(keywords)
+activate SearchCommand
+SearchCommand --> SearchCommandParser : s
+deactivate SearchCommand
+
+SearchCommandParser --> AddressBookParser : s
+deactivate SearchCommandParser
+SearchCommandParser -[hidden]-> AddressBookParser
+destroy SearchCommandParser
+
+AddressBookParser --> LogicManager : s
+deactivate AddressBookParser
+
+LogicManager -> SearchCommand : execute(m)
+activate SearchCommand
+
+SearchCommand -> Model : isInEventParticipantsMode()
+activate Model
+Model --> SearchCommand : true / false
+deactivate Model
+
+alt In event participant mode
+    SearchCommand -> Model : updateFilteredPersonList(NameContainsKeywordsPredicate)
+    activate Model
+    Model --> SearchCommand
+    deactivate Model
+
+    SearchCommand -> Model : getFilteredPersonList()
+    activate Model
+    Model --> SearchCommand
+    deactivate Model
+else In global event view
+    SearchCommand -> Model : updateFilteredEventList(EventMatchesKeywordsPredicate)
+    activate Model
+    Model --> SearchCommand
+    deactivate Model
+
+    SearchCommand -> Model : getFilteredEventList()
+    activate Model
+    Model --> SearchCommand
+    deactivate Model
+end
+
+create CommandResult
+SearchCommand -> CommandResult
+activate CommandResult
+CommandResult --> SearchCommand : r
+deactivate CommandResult
+
+SearchCommand --> LogicManager : r
+deactivate SearchCommand
+
+[<-- LogicManager : r
+deactivate LogicManager
+
+note right of SearchCommandParser
+  Empty input is rejected during parsing
+  and results in a ParseException.
+end note
+
+note right of SearchCommand
+  Search applies different predicates
+  depending on the current app context:
+  EventMatchesKeywordsPredicate for events,
+  NameContainsKeywordsPredicate for participants.
+end note
+@enduml

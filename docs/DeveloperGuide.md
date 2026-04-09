@@ -330,6 +330,70 @@ Failure paths:
   * Pros: reusable predicate type with a single execution path in `FilterCommand`.
   * Cons: extra predicate flexibility is not exposed to users under the current single-criterion command syntax.
 
+### Search Feature
+
+#### Implementation
+
+The search feature is facilitated by `SearchCommand`. It supports dual behaviour based on the current app context:
+
+* In the global event view, it filters the event list using `EventMatchesKeywordsPredicate`.
+* In event participant mode, it filters the participant list using `NameContainsKeywordsPredicate`.
+
+The command follows these steps when executed:
+
+1. `AddressBookParser` receives the input and creates a `SearchCommandParser`.
+2. `SearchCommandParser` trims and validates the arguments. If the user provides no keyword, a `ParseException` is thrown.
+3. `SearchCommandParser` splits the input into keywords and constructs a `SearchCommand`.
+4. `SearchCommand#execute()` checks `model.isInEventParticipantsMode()`.
+5. If the app is in event participant mode, `SearchCommand` applies `NameContainsKeywordsPredicate` through `Model#updateFilteredPersonList(...)`.
+6. Otherwise, it applies `EventMatchesKeywordsPredicate` through `Model#updateFilteredEventList(...)`.
+7. A `CommandResult` is returned using the size of the currently filtered list for user feedback.
+
+<puml src="diagrams/SearchCommandSequenceDiagram.puml" width="760" alt="Sequence diagram for search command" />
+
+#### Design considerations
+
+**Aspect: Reusing one command word across two contexts**
+* **Current choice:** `search` changes target based on whether the user is currently inside an event.
+  * Pros: keeps the command set small and consistent across the app.
+  * Cons: requires users to understand the current app context before predicting the result.
+
+**Aspect: Predicate choice**
+* **Current choice:** event search and participant search use separate predicate classes.
+  * Pros: keeps matching logic close to the corresponding domain model.
+  * Cons: shared matching behaviour, such as case-insensitive substring matching, is duplicated across predicate implementations.
+
+### List Feature
+
+#### Implementation
+
+The list feature is facilitated by `ListCommand`. Like `search`, it is context-aware:
+
+* In the global event view, it resets the event list to show all events.
+* In event participant mode, it resets the participant list to show all participants in the current event.
+
+The command follows these steps when executed:
+
+1. `AddressBookParser` validates that `list` is used without extra arguments and constructs a `ListCommand` directly.
+2. `ListCommand#execute()` checks `model.isInEventParticipantsMode()`.
+3. If the app is in event participant mode, `ListCommand` calls `Model#updateFilteredPersonList(Model.PREDICATE_SHOW_ALL_PERSONS)`.
+4. Otherwise, it calls `Model#updateFilteredEventList(Model.PREDICATE_SHOW_ALL_EVENTS)`.
+5. A `CommandResult` with the appropriate success message is returned.
+
+<puml src="diagrams/ListCommandSequenceDiagram.puml" width="720" alt="Sequence diagram for list command" />
+
+#### Design considerations
+
+**Aspect: Resetting filtered views**
+* **Current choice:** `list` always restores the full list for the current context instead of preserving previous filters.
+  * Pros: provides a quick and predictable way to clear `search` results and return to the full list.
+  * Cons: users cannot recover a previous filtered state after issuing `list`.
+
+**Aspect: Using one command for both events and participants**
+* **Current choice:** the same `list` command is used in both app contexts.
+  * Pros: reduces command memorisation and aligns with the app's event-first workflow.
+  * Cons: the success message and visible result depend on context, which may surprise first-time users.
+
 ### \[Proposed\] Undo/redo feature
 
 #### Proposed Implementation
