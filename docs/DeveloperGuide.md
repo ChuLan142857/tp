@@ -447,6 +447,13 @@ _{Explain here how the data archiving feature will be implemented}_
 
 ### Zhou Jinhao
 
+Used Cursor (auto mode) for:
+* Implementing the `assign-team` feature.
+* Implementing `import` and `export` features.
+* Implementing the real-time search feature.
+* Debugging issues and performing error checking.
+* Reviewing code and documentation quality.
+
 
 ### Debopam Roy
 
