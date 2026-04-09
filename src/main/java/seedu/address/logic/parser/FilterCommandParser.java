@@ -77,7 +77,8 @@ public class FilterCommandParser implements Parser<FilterCommand> {
         } else if (argMultimap.getValue(PREFIX_ASSIGN_TEAM).isPresent()) {
             team = Optional.of(ParserUtil.parseTeam(argMultimap.getValue(PREFIX_ASSIGN_TEAM).get()));
         } else if (argMultimap.getValue(PREFIX_CHECKIN).isPresent()) {
-            checkinStatus = Optional.of(ParserUtil.parseAttendance(argMultimap.getValue(PREFIX_CHECKIN).get()));
+            checkinStatus = Optional.of(
+                    ParserUtil.parseFilterCheckinStatus(argMultimap.getValue(PREFIX_CHECKIN).get()));
         } else {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterCommand.MESSAGE_USAGE));
         }
