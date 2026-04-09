@@ -94,7 +94,7 @@ Outside an event:
 
 Inside an event:
 
-`search [KEYWORD]...`
+`search John`
 
 ![Command inside an event](images/search/participantcommand.png)
 
