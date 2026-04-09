@@ -48,8 +48,12 @@ Used to edit the details of an existing event in the event list.
 #### Example Usage
 `editevent 1 n/Hack Night d/2026-08-20 l/NUS COM1 desc/Bring your laptop`
 
+![Command](images/edit-event/command.png)
+
 #### Successful Execution
 `Edited Event: ...`
+
+![Result](images/edit-event/result.png)
 
 #### Notes
 - Can only be used outside an event.
@@ -68,8 +72,12 @@ Used to delete an event from the event list. The participant list stored under t
 #### Example Usage
 `deleteevent 1`
 
+![Command](images/delete-event/command.png)
+
 #### Successful Execution
 `Deleted Event: ... Its participant list was deleted together with the event.`
+
+![Result](images/delete-event/result.png)
 
 #### Notes
 - Can only be used outside an event.
