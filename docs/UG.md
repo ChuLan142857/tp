@@ -8,13 +8,11 @@ pageNav: 3
 
 ## 1. About TeamEventPro
 
-TeamEventPro is a desktop app for organizers who run recurring tech events, hackathons, and workshops. It is optimized for keyboard-first workflows, so common operations can be completed quickly during live event operations.
+TeamEventPro is a desktop application designed to help users manage events and participants efficiently. It is intended for users who prefer typing commands over navigating through menus, allowing them to perform tasks quickly and consistently.
 
-You can manage both event-level and participant-level work in one place. Outside an event, you can create, edit, search, and manage event records. Inside an event, you can add participants, update details, assign teams, check in attendees, filter/search lists, view statistics, and import or export CSV data.
+The application supports two main workflows. First, users can manage events by creating, editing, deleting, searching for, and entering events. Second, once inside an event, users can manage participants by adding or editing their details, assigning teams, checking attendance, viewing statistics, and importing or exporting participant data.
 
-TeamEventPro combines the speed of a Command Line Interface (CLI) with the visibility of a Graphical User Interface (GUI), making it suitable for organizers who need fast and accurate updates under time pressure.
-
-![TeamEventPro User Guide Home Page](images/MainPage/MainPage.png)
+TeamEventPro provides the speed of a Command Line Interface (CLI) while still offering the visual clarity of a Graphical User Interface (GUI). This makes it suitable for users who want a structured and efficient way to handle event and participant management in a single application.
 
 ---
 
@@ -33,10 +31,6 @@ TeamEventPro combines the speed of a Command Line Interface (CLI) with the visib
    `java -jar addressbook.jar`
 
 5. Wait a few seconds for the application window to open.
-
-   You should see the main page shown below:
-
-   ![TeamEventPro Application Main Page](images/MainPage/MainPage_real.png)
 
 6. Type commands into the command box and press Enter to execute them.
 
