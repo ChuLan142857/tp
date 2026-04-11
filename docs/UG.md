@@ -183,7 +183,7 @@ Most commands follow one of these patterns:
 | `n/` | Name | Alphanumeric characters, spaces, hyphens (`-`), slashes (`/`), and apostrophes (`'`), e.g. `n/John Doe`, `n/John-Doe`, `n/John/Ong`, `n/John O'Neil` | Other special characters (for example `@`, `#`, `%`, `!`) |
 | `p/` | Phone | Digits only, at least 3 digits, e.g. `p/98765432` | Letters/symbols, e.g. `p/98A76`, `p/+6598765432` |
 | `e/` | Email | Valid `local-part@domain` format, at most **64 characters** (inclusive), e.g. `e/john@example.com` | Missing `@`, invalid format, or more than 64 characters |
-| `a/` | Address | Free-text address, e.g. `a/311 Clementi Ave 2` |  |
+| `a/` | Address | Free-text address, at most **100 characters** (inclusive), first character cannot be whitespace, e.g. `a/311 Clementi Ave 2` | Blank (only spaces), or more than 100 characters |
 | `tm/` | Team (`add`/`edit`) | Alphanumeric team name, 1-15 chars, e.g. `tm/Alpha7` | Spaces/symbols/too-long text, e.g. `tm/Alpha Team`, `tm/Alpha-1` |
 | `team/` | Team (`assign`/`filter`) | Alphanumeric team name, 1-15 chars, e.g. `team/Alpha7` | Using `tm/` in `assign`/`filter`; invalid team format |
 | `g/` | GitHub username | GitHub-style username, e.g. `g/johndoe`, `g/john-doe` | Leading/trailing hyphen, spaces, e.g. `g/-john`, `g/john-`, `g/john doe` |
@@ -531,6 +531,7 @@ add n/John Doe p/98765432 e/johnd@example.com a/311, Clementi Ave 2, #02-25 tm/D
 - `RSVP_STATUS` must be `yes`, `no`, or `pending` (case-insensitive). Defaults to `pending` if not provided.
 - `TEAM` must be alphanumeric and at most 15 characters.
 - `EMAIL` must satisfy the app's email format rules and **must not exceed 64 characters** (inclusive).
+- `ADDRESS` must not be blank (after trimming) and **must not exceed 100 characters** (inclusive).
 - Two participants are considered duplicates if they share the same name and either the same phone number or the same email. Duplicate participants cannot be added to the same event.
 
 ### 1.2 Edit Command
@@ -559,6 +560,7 @@ edit 1 p/91234567 e/johndoe@example.com
 - `RSVP_STATUS` must be `yes`, `no`, or `pending` (case-insensitive).
 - `TEAM` must be alphanumeric and at most 15 characters.
 - `EMAIL` follows the same rules as in `add` (valid format and at most 64 characters).
+- `ADDRESS` follows the same rules as in `add` (non-blank after trimming, at most 100 characters).
 - Clear all tags by typing `t/` with nothing after it.
 - Clear the team by typing `tm/` with nothing after it.
 - Editing a participant to match another participant's name and phone or email will be rejected as a duplicate.

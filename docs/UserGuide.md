@@ -177,6 +177,7 @@ Format: `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [tm/TEAM] [g/GITHUB_USERNAM
 - `RSVP_STATUS` must be `yes`, `no`, or `pending` (case-insensitive). Defaults to `pending` if not provided.
 - `TEAM` must be alphanumeric and at most 15 characters.
 - `EMAIL` must be a valid `local-part@domain` address as enforced by the app and **must not exceed 64 characters** (including `@` and the domain).
+- `ADDRESS` is free text but **must not be blank** (after trimming) and **must not exceed 100 characters**.
 - Two participants are considered duplicates if they share the same name and either the same phone number or the same email.
 
 
@@ -273,6 +274,7 @@ Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [tm/TEAM] [g/GITHUB
 - You must enter an event first using `enter event INDEX`.
 - - `NAME` follows the same constraints as the `add` command — alphanumeric characters (including accented), spaces, apostrophes, hyphens, and forward slashes. Cannot exceed 100 characters.
 - `EMAIL` follows the same constraints as the `add` command (valid format and at most 64 characters).
+- `ADDRESS` follows the same constraints as the `add` command (non-blank after trimming, at most 100 characters).
 - Editing a participant to match another participant's name and phone or email will be rejected as a duplicate.
 
 Examples:

@@ -26,8 +26,8 @@
                     </columnConstraints>
                     <Label text="PHONE" styleClass="detail-key" GridPane.columnIndex="0" GridPane.rowIndex="0"
                            GridPane.valignment="CENTER"/>
-                    <Label fx:id="phoneValue" styleClass="detail-value detail-value-accent" wrapText="true"
-                           GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.halignment="RIGHT"/>
+                    <Label fx:id="phoneValue" styleClass="detail-value detail-value-accent" maxWidth="Infinity"
+                           wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.halignment="RIGHT"/>
                 </GridPane>
                 <Region styleClass="detail-hairline"/>
             </VBox>
@@ -40,7 +40,7 @@
                     </columnConstraints>
                     <Label text="ADDRESS" styleClass="detail-key" GridPane.columnIndex="0" GridPane.rowIndex="0"
                            GridPane.valignment="TOP"/>
-                    <Label fx:id="addressValue" styleClass="detail-value" wrapText="true"
+                    <Label fx:id="addressValue" styleClass="detail-value" maxWidth="Infinity" wrapText="true"
                            GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.halignment="RIGHT"/>
                 </GridPane>
                 <Region styleClass="detail-hairline"/>
@@ -54,8 +54,8 @@
                     </columnConstraints>
                     <Label text="EMAIL" styleClass="detail-key" GridPane.columnIndex="0" GridPane.rowIndex="0"
                            GridPane.valignment="CENTER"/>
-                    <Label fx:id="emailValue" styleClass="detail-value detail-value-accent" wrapText="true"
-                           GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.halignment="RIGHT"/>
+                    <Label fx:id="emailValue" styleClass="detail-value detail-value-accent" maxWidth="Infinity"
+                           wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.halignment="RIGHT"/>
                 </GridPane>
                 <Region styleClass="detail-hairline"/>
             </VBox>
@@ -68,8 +68,8 @@
                     </columnConstraints>
                     <Label text="GITHUB" styleClass="detail-key" GridPane.columnIndex="0" GridPane.rowIndex="0"
                            GridPane.valignment="CENTER"/>
-                    <Label fx:id="githubValue" styleClass="detail-value detail-value-accent" wrapText="true"
-                           GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.halignment="RIGHT"/>
+                    <Label fx:id="githubValue" styleClass="detail-value detail-value-accent" maxWidth="Infinity"
+                           wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.halignment="RIGHT"/>
                 </GridPane>
                 <Region styleClass="detail-hairline"/>
             </VBox>
@@ -82,7 +82,7 @@
                     </columnConstraints>
                     <Label text="TEAM" styleClass="detail-key" GridPane.columnIndex="0" GridPane.rowIndex="0"
                            GridPane.valignment="CENTER"/>
-                    <Label fx:id="teamValue" styleClass="detail-chip team-pill" wrapText="true"
+                    <Label fx:id="teamValue" styleClass="detail-chip team-pill" maxWidth="Infinity" wrapText="true"
                            GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.halignment="RIGHT"/>
                 </GridPane>
                 <Region styleClass="detail-hairline"/>
@@ -96,7 +96,7 @@
                     </columnConstraints>
                     <Label text="RSVP" styleClass="detail-key" GridPane.columnIndex="0" GridPane.rowIndex="0"
                            GridPane.valignment="CENTER"/>
-                    <Label fx:id="rsvpValue" styleClass="detail-value" wrapText="true"
+                    <Label fx:id="rsvpValue" styleClass="detail-value" maxWidth="Infinity" wrapText="true"
                            GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.halignment="RIGHT"/>
                 </GridPane>
                 <Region styleClass="detail-hairline"/>
@@ -110,7 +110,7 @@
                     </columnConstraints>
                     <Label text="STATUS" styleClass="detail-key" GridPane.columnIndex="0" GridPane.rowIndex="0"
                            GridPane.valignment="CENTER"/>
-                    <Label fx:id="attendanceValue" styleClass="status-label" wrapText="false"
+                    <Label fx:id="attendanceValue" styleClass="status-label" maxWidth="Infinity" wrapText="false"
                            GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.halignment="RIGHT"/>
                 </GridPane>
                 <Region styleClass="detail-hairline"/>
