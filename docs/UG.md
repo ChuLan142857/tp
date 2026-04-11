@@ -118,7 +118,7 @@ For macOS-specific setup guidance, follow the prescribed JDK instructions in the
 
 ## 2. Install and launch
 
-1. Download the latest TeamEventPro `.jar` from the release page.
+1. Download the latest TeamEventPro `.jar` from the [GitHub Releases page](https://github.com/AY2526S2-CS2103T-W11-1/tp/releases).
 2. Place the `.jar` file in your preferred working folder.
 3. Open a terminal in that folder.
 4. Run:
