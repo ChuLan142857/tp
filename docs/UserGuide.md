@@ -122,8 +122,8 @@ Format: `editevent INDEX [n/NAME] [d/DATE] [l/LOCATION] [desc/DESCRIPTION]`
 - The index **must be a positive integer** 1, 2, 3, …
 - At least one optional field must be provided.
 - You must be in the event list view to use this command.
-- You can clear the location by typing `l/` with nothing after it.
-- You can clear the description by typing `desc/` with nothing after it.
+- You can clear the location by typing `l/` with no location text after it. Trailing spaces are ignored, so `l/ ` also clears the location.
+- You can clear the description by typing `desc/` with no description text after it. Trailing spaces are ignored, so `desc/ ` also clears the description.
 
 Examples:
 

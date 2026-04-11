@@ -416,8 +416,8 @@ editevent 1 n/Hack Night d/2026-08-20 l/NUS COM1 desc/Bring your laptop
 - Can only be used outside an event.
 - Index must be a positive integer.
 - At least one field to edit must be provided.
-- Location can be cleared with `l/`.
-- Description can be cleared with `desc/`.
+- Location can be cleared with `l/` followed by no location text. Trailing spaces are ignored, so `l/ ` also clears the location.
+- Description can be cleared with `desc/` followed by no description text. Trailing spaces are ignored, so `desc/ ` also clears the description.
 
 ### 2.2 Delete Event Command
 <a id="cmd-deleteevent"></a>
