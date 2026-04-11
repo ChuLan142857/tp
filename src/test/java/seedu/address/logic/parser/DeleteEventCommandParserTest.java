@@ -23,4 +23,10 @@ public class DeleteEventCommandParserTest {
         assertParseFailure(parser, "a",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteEventCommand.MESSAGE_USAGE));
     }
+
+    @Test
+    public void parse_overflowIndex_throwsInvalidDisplayedIndexException() {
+        assertParseFailure(parser, "10000000000000000000000000000000",
+                DeleteEventCommand.MESSAGE_INVALID_EVENT_DISPLAYED_INDEX);
+    }
 }
