@@ -254,7 +254,6 @@ Used to open the help window and view usage instructions.
 ```
 help
 ```
-![Command](images/help/command.png)
 
 #### Successful Execution
 Opens a new window containing the User Guide link.
@@ -470,7 +469,6 @@ Used to enter an event and switch into participant-management mode for that even
 ```
 enter event 1
 ```
-![Command](images/enter-event/command.png)
 
 #### Successful Execution
 
@@ -607,7 +605,6 @@ Used to clear all participants from the current event.
 ```
 clear
 ```
-![Command](images/clear/clear-command.png)
 
 #### Successful Execution
 `Address book has been cleared!`
@@ -660,7 +657,6 @@ This is different from RSVP status, which records whether the participant said t
 ```
 checkin 3
 ```
-![Command](images/checkin/command.png)
 
 #### Successful Execution
 
@@ -906,7 +902,6 @@ Used to leave the current event and return to the event list.
 ```
 leave event
 ```
-![Command](images/leave-event/command.png)
 
 #### Successful Execution
 
