@@ -29,6 +29,7 @@ import static seedu.address.logic.commands.CommandTestUtil.VALID_RSVP_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_FRIEND;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_HUSBAND;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_ASSIGN_TEAM;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
@@ -37,6 +38,8 @@ import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSucces
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_THIRD_PERSON;
+
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
@@ -50,6 +53,7 @@ import seedu.address.model.person.GitHub;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.RsvpStatus;
+import seedu.address.model.person.Team;
 import seedu.address.model.tag.Tag;
 import seedu.address.testutil.EditPersonDescriptorBuilder;
 
@@ -234,5 +238,22 @@ public class EditCommandParserTest {
     @Test
     public void parse_invalidRsvpValue_failure() {
         assertParseFailure(parser, "1" + INVALID_RSVP_DESC, RsvpStatus.MESSAGE_CONSTRAINTS);
+    }
+
+    @Test
+    public void parse_teamFieldWithAssignPrefix_success() {
+        Index targetIndex = INDEX_FIRST_PERSON;
+        String userInput = targetIndex.getOneBased() + " " + PREFIX_ASSIGN_TEAM + "Alpha";
+
+        EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder().build();
+        descriptor.setTeam(Optional.of(new Team("Alpha")));
+        EditCommand expectedCommand = new EditCommand(targetIndex, descriptor);
+
+        assertParseSuccess(parser, userInput, expectedCommand);
+    }
+
+    @Test
+    public void parse_teamFieldWithLegacyPrefix_failure() {
+        assertParseFailure(parser, "1 xteam/Alpha", MESSAGE_INVALID_FORMAT);
     }
 }

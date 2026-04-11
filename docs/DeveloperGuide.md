@@ -200,7 +200,7 @@ The add participant feature is facilitated by `AddCommand`. It allows the user t
 The command follows these steps when executed:
 
 1. `AddressBookParser` receives the input and creates an `AddCommandParser`.
-2. `AddCommandParser` tokenises the input using `ArgumentTokenizer` and constructs a `Person` object from the parsed fields. Required fields are `n/`, `p/`, `e/`, and `a/`. Optional fields are `tm/`, `g/`, `r/`, and `t/`.
+2. `AddCommandParser` tokenises the input using `ArgumentTokenizer` and constructs a `Person` object from the parsed fields. Required fields are `n/`, `p/`, `e/`, and `a/`. Optional fields are `team/`, `g/`, `r/`, and `t/`.
 3. `AddCommand#execute()` checks that the app is in event participant mode. If not, a `CommandException` is thrown.
 4. `AddCommand#execute()` checks for duplicates via `Model#hasPerson()`. Duplicate detection is handled by `Person#isSamePerson()`, which returns true if two persons share the same name **and** either the same phone number or the same email address.
 5. `Model#addPerson()` is called, adding the participant to the active event's `AddressBook`.
@@ -301,7 +301,7 @@ The command follows these steps when executed:
 Notable behaviours:
 
 * Editing tags replaces all existing tags entirely. To clear all tags, use `t/` with no value.
-* Editing team replaces the existing team. To clear the team, use `tm/` with no value.
+* Editing team replaces the existing team. To clear the team, use `team/` with no value.
 * All other field constraints follow the same validation rules as `AddCommand`.
 
 #### Design Considerations
