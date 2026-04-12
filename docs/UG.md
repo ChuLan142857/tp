@@ -11,6 +11,9 @@ pageNav: 0
 - [About TeamEventPro](#1-about-teameventpro)
 - [Getting Started](#getting-started)
 - [Command Fundamentals](#command-fundamentals)
+  - [Prefix reference](#3-prefix-reference)
+  - [Index and list behavior](#4-index-and-list-behavior)
+  - [Common mistakes and quick fixes](#5-common-mistakes-and-quick-fixes)
 - [Common Commands](#common-commands)
   - [Help : `help`](#1-help-command)
   - [List : `list`](#2-list-command)
@@ -178,21 +181,26 @@ Most commands follow one of these patterns:
 
 ## 3. Prefix Reference
 
-| Prefix | Field | Accepts | Does not accept |
-| --- | --- | --- | --- |
-| `n/` | Name | Alphanumeric characters, spaces, hyphens (`-`), slashes (`/`), and apostrophes (`'`), e.g. `n/John Doe`, `n/John-Doe`, `n/John/Ong`, `n/John O'Neil` | Other special characters (for example `@`, `#`, `%`, `!`) |
-| `p/` | Phone | Digits only, at least 3 digits, e.g. `p/98765432` | Letters/symbols, e.g. `p/98A76`, `p/+6598765432` |
-| `e/` | Email | Valid `local-part@domain` format, at most **64 characters** (inclusive), e.g. `e/john@example.com` | Missing `@`, invalid format, or more than 64 characters |
-| `a/` | Address | Free-text address, at most **100 characters** (inclusive), first character cannot be whitespace, e.g. `a/311 Clementi Ave 2` | Blank (only spaces), or more than 100 characters |
-| `tm/` | Team (`add`/`edit`) | Alphanumeric team name, 1-15 chars, e.g. `tm/Alpha7` | Spaces/symbols/too-long text, e.g. `tm/Alpha Team`, `tm/Alpha-1` |
-| `team/` | Team (`assign`/`filter`) | Alphanumeric team name, 1-15 chars, e.g. `team/Alpha7` | Using `tm/` in `assign`/`filter`; invalid team format |
-| `g/` | GitHub username | GitHub-style username, e.g. `g/johndoe`, `g/john-doe` | Leading/trailing hyphen, spaces, e.g. `g/-john`, `g/john-`, `g/john doe` |
-| `r/` | RSVP status | `yes`, `no`, `pending` | Any other value, e.g. `r/maybe` |
-| `t/` | Tag | Alphanumeric tag, repeatable, e.g. `t/python t/ml` | Symbols/spaces, e.g. `t/machine-learning`, `t/data science` |
-| `d/` | Event date | `YYYY-MM-DD`, e.g. `d/2026-10-03` | Invalid date format, e.g. `d/03-10-2026` |
-| `l/` | Event location | Optional free text, e.g. `l/NUS COM1` |  |
-| `desc/` | Event description | Optional free text, e.g. `desc/Weekly meetup` |  |
-| `checkin/` | Check-in filter status | `yes`, `no` | Any other value, e.g. `checkin/maybe` |
+A prefix ends with `/` and starts a value; the value ends at the next prefix (after a space) or end of line (trimmed).
+Order is usually flexible. Spell each prefix exactly—`tm/` and `team/` differ on purpose.
+
+**Purpose** = why that data exists for organisers (not a full command list).
+
+| Prefix | Field | Purpose | Accepts | Does not accept |
+| --- | --- | --- | --- | --- |
+| `n/` | Name | Name of the participant | Letters, digits, spaces, `-`, `/`, `'`, e.g. `n/John O'Neil` | Symbols like `@`, `#`, `!` |
+| `p/` | Phone | Phone Number of the participant | Digits only, ≥3, e.g. `p/98765432` | Letters, `+`, spaces |
+| `e/` | Email | Email address of the participant | `local@domain`, ≤**64** chars | Bad format, too long |
+| `a/` | Address | Address of the participant | Text, ≤**100** chars, not blank/space-only | Too long, whitespace-only |
+| `tm/` | Team | Team of the participant / **edit** participant. | Alphanumeric, 1–15 chars, e.g. `tm/Alpha7` | Spaces, symbols, hyphens |
+| `team/` | Team | Team of the participant / **filter** (parser uses this keyword). | Same rules as `tm/`, e.g. `team/Alpha7` | Wrong prefix (`tm/`), invalid name |
+| `g/` | GitHub username | Optional link to the participant's GitHub. | e.g. `g/johndoe`, `g/john-doe` | Spaces, bad hyphens |
+| `r/` | RSVP status | To allow the organisers get an idea of who intend to attend. | `yes`, `no`, `pending` | e.g. `r/maybe` |
+| `t/` | Tag | Extra labels (skills, etc.); repeat `t/` for more. | Alphanumeric, e.g. `t/python t/ml` | Spaces/symbols in tag |
+| `d/` | Event date | When the event is. | `YYYY-MM-DD` | Other date shapes |
+| `l/` | Event location | Where it happens (optional). | Any text, e.g. `l/NUS COM1` |  |
+| `desc/` | Event description | Longer blurb (optional). | Any text |  |
+| `checkin/` | Check-in filter | Filter by **arrived** yes/no, not RSVP. | `yes`, `no` | e.g. `checkin/maybe` |
 
 For required fields, an empty prefix value is invalid unless explicitly stated otherwise.
 Use the exact prefix expected by each command. Prefixes are not interchangeable.
@@ -906,4 +914,40 @@ leave event
 #### Notes
 - Can only be used inside an event.
 - Ensure that there is no space after `event`.
+
+---
+
+# Known Issues
+
+## 4. A corrupted or unreadable `eventbook.json` can be overwritten on the next save
+
+TeamEventPro stores events and their participants together in `data/eventbook.json` (each event has a `participants`
+list). This issue applies when the app **fails to load that file at all**—for example the JSON is **syntactically
+invalid** or the file is incomplete, or **required** event or participant data cannot be converted into the app’s
+model (invalid name, phone, email, address, and similar). That is **not** the same as every typo in the file: some
+optional fields are adjusted without failing the load; that case is covered in the next issue.
+
+In that situation the application **does not stop**, and there is **no** blocking dialog that loading failed. 
+Startup continues with an **empty** event list in memory while the failure is recorded in the log. That design 
+avoids a hard crash, but it means the next successful command **saves** that in-memory state back to disk and
+can **overwrite** the original `eventbook.json`, which can **erase** your previous events and participants in one
+step.
+
+**What we recommend:** copy `data/eventbook.json` aside before you edit it by hand or if you think it may already be
+damaged. If the app has opened with an empty event list, avoid running commands until you **restore** a known-good
+copy of the file and **restart** TeamEventPro so it loads the repaired data from scratch.
+
+## 5. Some optional participant fields are silently normalised on load
+
+Not every bad value in a participant record prevents the file from loading. For **GitHub** and **RSVP status**, invalid
+strings are mapped to safe defaults instead of failing conversion: invalid GitHub becomes *no GitHub* (shown like an
+empty or “none” value in the UI), and an invalid `rsvpStatus` becomes **pending**.
+
+That leniency is intentional—it **reduces friction** for organisers when data is slightly wrong, and you can fix the
+participant inside the app. Required fields and other optional fields still fail fast if they are invalid.
+
+**What we recommend:** keep a **backup** of `eventbook.json` before manual JSON edits or risky imports. If RSVP or
+GitHub looks wrong after load, **edit** the participant in TeamEventPro or restore from backup rather than assuming the
+file still contains the old text. Using **commands or CSV import** instead of raw JSON helps keep values within the
+documented rules.
 
