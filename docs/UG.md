@@ -135,6 +135,7 @@ For macOS-specific setup guidance, follow the prescribed JDK instructions in the
 ## 3. First-time setup
 
 - On first launch, complete the onboarding tutorial.
+- **Sample data** is included on first launch so new users can explore the app with realistic example data before adding their own.
 - Use the command box at the bottom of the app to run commands.
 - Press Enter after each command.
 
@@ -159,6 +160,7 @@ Read this once before using [Event Commands](#event-commands) or [Participant Co
 ## 1. Command Notation
 
 - Words in `UPPER_CASE` are parameters to be supplied by the user.
+- **Square brackets `[` `]`** mean that part is **optional** in the written format. Anything **not** in brackets is **required** for that command (unless two format lines are given as alternatives, e.g. `import`).
 - Items followed by `...` can be used multiple times.
 - For prefixed arguments, parameter order usually does not matter unless stated otherwise.
 - Indexes refer to the numbers shown in the displayed list.
@@ -172,10 +174,10 @@ TeamEventPro operates in two modes:
 - **Outside an event**: event-level commands such as `addevent`, `editevent`, `deleteevent`, `enter event`, `list`, `search`.
 - **Inside an event**: participant-level commands such as `add`, `edit`, `delete`, `assign`, `filter`, `checkin`, `view`, `statistics`, `list`, `search`, `leave event`.
 
-Most commands follow one of these patterns:
-- `COMMAND [INDEX] [PREFIX/VALUE]...`
-- `COMMAND KEYWORD INDEX` (example: `enter event 1`)
-- `COMMAND` (example: `list`, `help`, `statistics`)
+Most commands follow one of these shapes:
+- `COMMAND` with no arguments (e.g. `list`, `help`, `statistics`).
+- `COMMAND INDEX …` or `COMMAND KEYWORD INDEX` when an index is required (e.g. `delete 2`, `enter event 1`).
+- `COMMAND` plus **required** prefixes without brackets and **optional** prefixes in `[` `]` (see each command’s Format line).
 
 ---
 
@@ -192,8 +194,8 @@ Order is usually flexible. Spell each prefix exactly—`tm/` and `team/` differ 
 | `p/` | Phone | Phone Number of the participant | Digits only, ≥3, e.g. `p/98765432` | Letters, `+`, spaces |
 | `e/` | Email | Email address of the participant | `local@domain`, ≤**64** chars | Bad format, too long |
 | `a/` | Address | Address of the participant | Text, ≤**100** chars, not blank/space-only | Too long, whitespace-only |
-| `tm/` | Team | Team of the participant / **edit** participant. | Alphanumeric, 1–15 chars, e.g. `tm/Alpha7` | Spaces, symbols, hyphens |
-| `team/` | Team | Team of the participant / **filter** (parser uses this keyword). | Same rules as `tm/`, e.g. `team/Alpha7` | Wrong prefix (`tm/`), invalid name |
+| `tm/` | Team | Participant’s team when using **`add`** or **`edit`**. | Alphanumeric, 1–15 chars, e.g. `tm/Alpha7` | Spaces, symbols, hyphens |
+| `team/` | Team | Team when using **`assign`** or **`filter`** (different keyword from `tm/`). | Same rules as `tm/`, e.g. `team/Alpha7` | Wrong prefix (`tm/`), invalid name |
 | `g/` | GitHub username | Optional link to the participant's GitHub. | e.g. `g/johndoe`, `g/john-doe` | Spaces, bad hyphens |
 | `r/` | RSVP status | To allow the organisers get an idea of who intend to attend. | `yes`, `no`, `pending` | e.g. `r/maybe` |
 | `t/` | Tag | Extra labels (skills, etc.); repeat `t/` for more. | Alphanumeric, e.g. `t/python t/ml` | Spaces/symbols in tag |
@@ -306,7 +308,9 @@ Inside an event: `Listed all participants`
 Used to search for matching events or participants depending on the current mode.
 
 #### Format
-`search [KEYWORD]...`
+`search KEYWORD [KEYWORD]...`
+
+At least one keyword is required; you may add more words to narrow the match.
 
 #### Example Usage
 Outside an event:
@@ -320,7 +324,7 @@ search Tech
 Inside an event:
 
 ```
-search [KEYWORD]...
+search John
 ```
 
 ![Command inside an event](images/search/participantcommand.png)
@@ -345,7 +349,7 @@ Inside an event: matching participants are shown in the participant list.
 Used to switch the application theme.
 
 #### Format
-`switchmode [dark|light]`
+`switchmode light|dark`
 
 #### Example Usage
 ```
@@ -379,7 +383,7 @@ This page describes commands that are primarily used while you are outside an ev
 Used to add an event to the event list by specifying the name, date, and optional details such as location and description.
 
 #### Format
-`addevent n/[EVENT NAME] d/[DATE] [l/LOCATION] [desc/DESCRIPTION]`
+`addevent n/EVENT_NAME d/DATE [l/LOCATION] [desc/DESCRIPTION]`
 
 #### Example Usage
 ```
@@ -407,7 +411,7 @@ addevent n/Tech Meetup 2026 d/2026-06-15 l/NUS Techno Edge desc/Annual tech netw
 Used to edit the details of an existing event in the event list.
 
 #### Format
-`editevent [INDEX] [n/EVENT NAME] [d/DATE] [l/LOCATION] [desc/DESCRIPTION]`
+`editevent INDEX [n/EVENT_NAME] [d/DATE] [l/LOCATION] [desc/DESCRIPTION]`
 
 #### Example Usage
 ```
@@ -433,7 +437,7 @@ editevent 1 n/Hack Night d/2026-08-20 l/NUS COM1 desc/Bring your laptop
 Used to delete an event from the event list. The participant list stored under that event is deleted together with it.
 
 #### Format
-`deleteevent [INDEX]`
+`deleteevent INDEX`
 
 #### Example Usage
 ```
@@ -461,7 +465,7 @@ deleteevent 1
 Used to enter an event and switch into participant-management mode for that event.
 
 #### Format
-`enter event [INDEX]`
+`enter event INDEX`
 
 #### Example Usage
 ```
@@ -521,7 +525,7 @@ See [Command Fundamentals](#command-fundamentals) for command syntax, prefix rul
 Used to add a participant to the currently entered event.
 
 #### Format
-`add n/[NAME] p/[PHONE] e/[EMAIL] a/[ADDRESS] [tm/TEAM] [g/GITHUB_USERNAME] [r/RSVP_STATUS] [t/TAG]...`
+`add n/NAME p/PHONE e/EMAIL a/ADDRESS [tm/TEAM] [g/GITHUB_USERNAME] [r/RSVP_STATUS] [t/TAG]...`
 
 #### Example Usage
 ```
@@ -548,7 +552,7 @@ add n/John Doe p/98765432 e/johnd@example.com a/311, Clementi Ave 2, #02-25 tm/D
 Used to edit the details of an existing participant in the current event.
 
 #### Format
-`edit [INDEX] [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [g/GITHUB_USERNAME] [r/RSVP_STATUS] [tm/TEAM] [t/TAG]...`
+`edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [g/GITHUB_USERNAME] [r/RSVP_STATUS] [tm/TEAM] [t/TAG]...`
 
 #### Example Usage
 ```
@@ -579,7 +583,7 @@ edit 1 p/91234567 e/johndoe@example.com
 Used to delete a participant from the current event.
 
 #### Format
-`delete [INDEX]`
+`delete INDEX`
 
 #### Example Usage
 ```
@@ -629,7 +633,7 @@ clear
 Used to assign a participant to a team.
 
 #### Format
-`assign [INDEX] team/[TEAM NAME]`
+`assign INDEX team/TEAM_NAME`
 
 #### Example Usage
 ```
@@ -653,7 +657,7 @@ assign 2 team/Alpha
 Used to mark a participant as checked in.
 
 #### Format
-`checkin [INDEX]`
+`checkin INDEX`
 
 #### Example Usage
 ```
@@ -680,10 +684,12 @@ Used to filter the participant list using one criterion at a time.
 
 #### Format
 
-- RSVP: `filter r/[RSVP_STATUS]`
-- Tag: `filter t/[TAG]`
-- Team: `filter team/[TEAM NAME]`
-- Check-in: `filter checkin/[yes|no]`
+Use exactly **one** of the following :
+
+- RSVP: `filter r/RSVP_STATUS`
+- Tag: `filter t/TAG`
+- Team: `filter team/TEAM_NAME`
+- Check-in: `filter checkin/yes` or `filter checkin/no`
 
 #### Example Usage
 
@@ -713,7 +719,7 @@ filter checkin/yes
 Used to show the details of a selected participant.
 
 #### Format
-`view [INDEX]`
+`view INDEX`
 
 #### Example Usage
 ```
