@@ -484,7 +484,7 @@ Used Claude (Claude Code) for:
 
 Used codex/cursor to support selected development and documentation tasks, including:
 * refining the User Guide and Developer Guide wording and structure.
-* checking the behavior of commands such as `list`, `search`, `switchmode`, `editevent`, and `deleteevent`.
+* checking the behavior of commands such as `list`, `search`, `switchtheme`, `editevent`, and `deleteevent`.
 * identifying possible edge cases, error-message issues, and documentation inconsistencies.
 * assisting with test checking, bug investigation, and troubleshooting during implementation.
 All AI-assisted output was reviewed, edited, and verified before being included in the final submission.
@@ -1180,15 +1180,15 @@ testers are expected to do more *exploratory* testing.
     1. Test case: `help abc` (extra arguments)<br>
        Expected: Error message. Help window not opened.
 
-1. Switch mode command
+1. Switch theme command
 
-    1. Test case: `switchmode dark`<br>
+    1. Test case: `switchtheme dark`<br>
        Expected: App theme switches to dark mode.
 
-    1. Test case: `switchmode light`<br>
+    1. Test case: `switchtheme light`<br>
        Expected: App theme switches to light mode.
 
-    1. Test case: `switchmode invalid`<br>
+    1. Test case: `switchtheme invalid`<br>
        Expected: Error message indicating valid values are `dark` or `light`.
 
 ---

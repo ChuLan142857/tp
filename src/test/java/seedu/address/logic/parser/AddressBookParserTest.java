@@ -116,14 +116,14 @@ public class AddressBookParserTest {
     }
 
     @Test
-    public void parseCommand_switchMode() throws Exception {
+    public void parseCommand_switchTheme() throws Exception {
         assertEquals(new SwitchModeCommand(seedu.address.commons.core.ThemeMode.DARK),
                 parser.parseCommand(SwitchModeCommand.COMMAND_WORD + " dark"));
         assertThrows(ParseException.class, String.format(MESSAGE_INVALID_COMMAND_FORMAT,
                         SwitchModeCommand.MESSAGE_USAGE), () ->
                         parser.parseCommand(SwitchModeCommand.COMMAND_WORD + " blue"));
         assertThrows(ParseException.class, MESSAGE_UNKNOWN_COMMAND, () ->
-                parser.parseCommand("switchMode light"));
+                parser.parseCommand("switchmode light"));
     }
 
     @Test

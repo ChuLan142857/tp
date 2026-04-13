@@ -10,7 +10,7 @@ import seedu.address.model.Model;
  */
 public class SwitchModeCommand extends Command {
 
-    public static final String COMMAND_WORD = "switchmode";
+    public static final String COMMAND_WORD = "switchtheme";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Switches the application theme.\n"
             + "Parameters: THEME (dark|light)\n"

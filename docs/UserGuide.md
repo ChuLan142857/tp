@@ -43,7 +43,7 @@ your event management tasks done faster than traditional GUI apps.
   - `checkin 1` : Marks the 1st applicant in the current list as checked in.
   - `assign 2 team/Alpha` : Assigns the 2nd applicant to team Alpha.
   - `delete 3` : Deletes the 3rd applicant shown in the current list.
-  - `switchmode light` : Switches the app to light mode.
+  - `switchtheme light` : Switches the app to light mode.
   - `leave` : Returns to the event list.
   - `exit` : Exits the app.
 6. Refer to the [Features](#features) below for details of each command.
@@ -80,11 +80,11 @@ Shows a message explaining how to access the help page.
 
 Format: `help`
 
-### Switching theme mode : `switchmode`
+### Switching theme mode : `switchtheme`
 
 Switches the application between dark mode and light mode.
 
-Format: `switchmode THEME`
+Format: `switchtheme THEME`
 
 - `THEME` must be either `dark` or `light`.
 - This command can be used in both the event list view and the participant list view.
@@ -93,8 +93,8 @@ Format: `switchmode THEME`
 
 Examples:
 
-- `switchmode dark`
-- `switchmode light`
+- `switchtheme dark`
+- `switchtheme light`
 
 ### Adding an event : `addevent`
 
@@ -114,21 +114,24 @@ Examples:
 
 ### Editing an event : `editevent`
 
-Edits an existing event in the event list. Existing values will be overwritten by the input values.
+Edits one or more selected fields of an existing event in the event list. Fields not specified in the command will remain unchanged.
 
 Format: `editevent INDEX [n/NAME] [d/DATE] [l/LOCATION] [desc/DESCRIPTION]`
 
 - Edits the event at the specified `INDEX`. The index refers to the index number shown in the displayed event list.
 - The index **must be a positive integer** 1, 2, 3, …
+- You only need to provide the field or fields you want to edit.
 - At least one optional field must be provided.
 - You must be in the event list view to use this command.
-- You can clear the location by typing `l/` with nothing after it.
-- You can clear the description by typing `desc/` with nothing after it.
+- You can clear the location by typing `l/` with no location text after it. Trailing spaces are ignored, so `l/ ` also clears the location.
+- You can clear the description by typing `desc/` with no description text after it. Trailing spaces are ignored, so `desc/ ` also clears the description.
 
 Examples:
 
 - `editevent 1 n/Tech Meetup 2026`
 - `editevent 2 d/2026-09-01 l/NUS Innovation 4.0`
+- `editevent 2 l/NUS COM2` — Updates only the event location.
+- `editevent 2 desc/Updated event description` — Updates only the event description.
 - `editevent 3 l/ desc/`
 
 ### Deleting an event : `deleteevent`
@@ -432,8 +435,7 @@ Furthermore, certain edits can cause TeamEventPro to behave in unexpected ways (
 
 1. **When using multiple screens**, if you move the application to a secondary screen, and later switch to using only the primary screen, the GUI may open off-screen. The remedy is to delete the `preferences.json` file created by the application before running the application again.
 2. **If you minimize the Help Window** and then run the `help` command (or use the `Help` menu, or the keyboard shortcut `F1`) again, the original Help Window will remain minimized, and no new Help Window will appear. The remedy is to manually restore the minimized Help Window.
-3. **Corrupt or unloadable `data/eventbook.json`:** if the file cannot be loaded (broken JSON or invalid required fields), the app still starts with an **empty** event list and **no** blocking warning; the next successful command may **overwrite** the file and wipe stored events and participants. **What we recommend:** back up the file before editing it manually; if your list is unexpectedly empty, close the app, restore a working copy of `eventbook.json`, and relaunch before using commands. See [Known Issues §4](UG.md#4-a-corrupted-or-unreadable-eventbookjson-can-be-overwritten-on-the-next-save) in the detailed user guide.
-4. **Invalid GitHub or RSVP values in saved JSON** are normalised (GitHub cleared, RSVP → pending) so the file can still load; auto-save may **persist** those defaults and drop the original strings without a warning. **Other** optional fields (e.g. team, tags) are **not** handled this way—invalid values there can still **fail loading** the whole file. **What we recommend:** back up before manual JSON edits; fix odd RSVP/GitHub in the app. See [Known Issues §5](UG.md#5-github-and-rsvp-are-silently-normalised-on-load-other-optional-fields-are-not) in the detailed user guide.
+3. **If the event list contains more than 1000 events**, behavior for event-index commands is unspecified. TeamEventPro is designed for small-to-medium event lists.
 
 ---
 
@@ -457,7 +459,7 @@ Furthermore, certain edits can cause TeamEventPro to behave in unexpected ways (
 | **Import**  | `import FILE_PATH` or `import list` e.g., `import data/participants.csv`, `import list`                                                                                                   |
 | **List**    | `list`                                                                                                                                                                                    |
 | **Search**  | `search KEYWORD [MORE_KEYWORDS]` e.g., `search tech meetup`                                                                                                                               |
-| **SwitchMode** | `switchmode THEME` e.g., `switchmode light`                                                                                                                                           |
+| **SwitchTheme** | `switchtheme THEME` e.g., `switchtheme light`                                                                                                                                        |
 | **Export**  | `export [FILE_PATH]` e.g., `export`, `export data/exports/hacknight.csv`                                                                                                                  |                                                                                                                               |
 | **Help**    | `help`                                                                                                                                                                                    |
 | **Exit**    | `exit`                                                                                                                                                                                    |

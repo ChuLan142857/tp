@@ -22,8 +22,16 @@ public class DeleteEventCommandParser implements Parser<DeleteEventCommand> {
             Index index = ParserUtil.parseIndex(args);
             return new DeleteEventCommand(index);
         } catch (ParseException pe) {
+            if (isPositiveIntegerLiteral(args)) {
+                throw new ParseException(DeleteEventCommand.MESSAGE_INVALID_EVENT_DISPLAYED_INDEX, pe);
+            }
             throw new ParseException(
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteEventCommand.MESSAGE_USAGE), pe);
         }
+    }
+
+    private boolean isPositiveIntegerLiteral(String args) {
+        String trimmedArgs = args.trim();
+        return trimmedArgs.matches("\\d+") && !trimmedArgs.matches("0+");
     }
 }

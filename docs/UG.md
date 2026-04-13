@@ -18,7 +18,7 @@ pageNav: 0
   - [Help : `help`](#1-help-command)
   - [List : `list`](#2-list-command)
   - [Search : `search`](#3-search-command)
-  - [Switch Mode : `switchmode`](#4-switch-mode-command)
+  - [Switch Theme : `switchtheme`](#4-switch-theme-command)
 - [Event Commands](#event-commands)
   - [Add Event : `addevent`](#cmd-addevent)
   - [Edit Event : `editevent`](#cmd-editevent)
@@ -98,7 +98,7 @@ The following commands can be used regardless of whether you are inside or outsi
 - `help`
 - `list`
 - `search`
-- `switchmode`
+- `switchtheme`
 
 Full details for these commands are in [Common Commands](#common-commands).
 
@@ -288,15 +288,11 @@ Outside an event:
 list
 ```
 
-![Command outside an event](images/list/eventcommand.png)
-
 Inside an event:
 
 ```
 list
 ```
-
-![Command inside an event](images/list/participantcommand.png)
 
 #### Successful Execution
 Outside an event: `Listed all events`
@@ -317,9 +313,7 @@ Inside an event: `Listed all participants`
 Used to search for matching events or participants depending on the current mode.
 
 #### Format
-`search KEYWORD [KEYWORD]...`
-
-At least one keyword is required; you may add more words to narrow the match.
+`search KEYWORD [MORE_KEYWORDS]`
 
 #### Example Usage
 Outside an event:
@@ -328,15 +322,11 @@ Outside an event:
 search Tech
 ```
 
-![Command outside an event](images/search/eventcommand.png)
-
 Inside an event:
 
 ```
-search John
+search John Doe
 ```
-
-![Command inside an event](images/search/participantcommand.png)
 
 #### Successful Execution
 Outside an event: matching events are shown in the event list.
@@ -350,22 +340,23 @@ Inside an event: matching participants are shown in the participant list.
 #### Notes
 - Can be used in any mode.
 - The results depend on the current mode.
+- Outside an event, `search` checks event name, date, location, and description.
+- Inside an event, `search` checks participant name, phone, address, email, team, GitHub username, and check-in status.
+- Matching is case-insensitive and works on substrings.
 
 ---
 
-## 4. Switch Mode Command
+## 4. Switch Theme Command
 
 Used to switch the application theme.
 
 #### Format
-`switchmode light|dark`
+`switchtheme THEME`
 
 #### Example Usage
 ```
-switchmode light
+switchtheme light
 ```
-
-![Command](images/switchmode/command.png)
 
 #### Successful Execution
 `Switched to light mode.`
@@ -418,17 +409,29 @@ addevent n/Tech Meetup 2026 d/2026-06-15 l/NUS Techno Edge desc/Annual tech netw
 ### 2.1 Edit Event Command
 <a id="cmd-editevent"></a>
 
-Used to edit the details of an existing event in the event list.
+Used to edit one or more selected details of an existing event in the event list.
 
 #### Format
-`editevent INDEX [n/EVENT_NAME] [d/DATE] [l/LOCATION] [desc/DESCRIPTION]`
+`editevent INDEX [n/EVENT NAME] [d/DATE] [l/LOCATION] [desc/DESCRIPTION]`
 
 #### Example Usage
+Edit multiple fields:
+
 ```
 editevent 1 n/Hack Night d/2026-08-20 l/NUS COM1 desc/Bring your laptop
 ```
 
-![Command](images/edit-event/command.png)
+Edit only the location:
+
+```
+editevent 1 l/NUS COM2
+```
+
+Edit only the description:
+
+```
+editevent 1 desc/Updated event description
+```
 
 #### Successful Execution
 
@@ -437,9 +440,10 @@ editevent 1 n/Hack Night d/2026-08-20 l/NUS COM1 desc/Bring your laptop
 #### Notes
 - Can only be used outside an event.
 - Index must be a positive integer.
+- You only need to provide the field or fields you want to edit. Fields not specified in the command will remain unchanged.
 - At least one field to edit must be provided.
-- Location can be cleared with `l/`.
-- Description can be cleared with `desc/`.
+- Location can be cleared with `l/` followed by no location text. Trailing spaces are ignored, so `l/ ` also clears the location.
+- Description can be cleared with `desc/` followed by no description text. Trailing spaces are ignored, so `desc/ ` also clears the description.
 
 ### 2.2 Delete Event Command
 <a id="cmd-deleteevent"></a>
@@ -453,8 +457,6 @@ Used to delete an event from the event list. The participant list stored under t
 ```
 deleteevent 1
 ```
-
-![Command](images/delete-event/command.png)
 
 #### Successful Execution
 
@@ -891,73 +893,3 @@ leave event
 #### Notes
 - Can only be used inside an event.
 - Ensure that there is no space after `event`.
-
----
-
-# Known Issues
-
-## 1. Participant command errors outside an event may show format errors first
-
-If a participant-related command such as `add`, `edit`, `delete`, `assign`, `checkin`, or `filter` is entered
-outside an event with an invalid format, the app may first show a command format error instead of telling the
-user to enter an event first.
-
-This happens because the command input is parsed before the app checks whether the user is currently inside an
-event. As a result, malformed input can fail at the parser stage before the mode-related validation is reached.
-
-## 2. Undo is not fully supported for some data-changing operations
-
-Some operations do not currently support undo correctly. Examples include `checkin`, `clear`, `delete`, and
-`deleteevent`.
-
-Once these commands are executed, there may be no built-in way to restore the previous state through an undo
-command. Users should therefore be careful when performing destructive or state-changing actions, especially
-when clearing participants or deleting events.
-
-## 3. Commands do not auto-clear after an error
-
-If a command fails, the command text may remain in the command box instead of clearing automatically.
-
-This means users may need to manually edit or remove the failed command before trying again. This is mainly a
-usability issue, but it can be slightly inconvenient when testing multiple command variations in a row.
-
-## 4. A corrupted or unreadable `eventbook.json` can be overwritten on the next save
-
-TeamEventPro stores events and their participants together in `data/eventbook.json` (each event has a `participants`
-list). This issue applies when the app **fails to load that file at all**—for example the JSON is **syntactically
-invalid** or the file is incomplete, or **required** event or participant data cannot be converted into the app’s
-model (invalid name, phone, email, address, and similar). That is **not** the same as every typo in the file: some
-optional fields are adjusted without failing the load; that case is covered in the next issue.
-
-In that situation the application **does not stop**, and there is **no** blocking dialog that loading failed. 
-Startup continues with an **empty** event list in memory while the failure is recorded in the log. That design 
-avoids a hard crash, but it means the next successful command **saves** that in-memory state back to disk and
-can **overwrite** the original `eventbook.json`, which can **erase** your previous events and participants in one
-step.
-
-**What we recommend:** copy `data/eventbook.json` aside before you edit it by hand or if you think it may already be
-damaged. If the app has opened with an empty event list, avoid running commands until you **restore** a known-good
-copy of the file and **restart** TeamEventPro so it loads the repaired data from scratch.
-
-## 5. Some optional participant fields are silently normalised on load
-
-Not every bad value in a participant record prevents the file from loading. For **GitHub** and **RSVP status**, invalid
-strings are mapped to safe defaults instead of failing conversion: invalid GitHub becomes *no GitHub* (shown like an
-empty or “none” value in the UI), and an invalid `rsvpStatus` becomes **pending**.
-
-That leniency is intentional—it **reduces friction** for organisers when data is slightly wrong, and you can fix the
-participant inside the app. Required fields and other optional fields still fail fast if they are invalid.
-
-**What we recommend:** keep a **backup** of `eventbook.json` before manual JSON edits or risky imports. If RSVP or
-GitHub looks wrong after load, **edit** the participant in TeamEventPro or restore from backup rather than assuming the
-file still contains the old text. Using **commands or CSV import** instead of raw JSON helps keep values within the
-documented rules.
-
-## 6. Phone numbers do not accept country codes or symbols
-
-The `p/` field only allows **digits** (at least three), with **no** plus sign, spaces, or dashes. That keeps parsing and
-storage simple and matches the current user guide, but it is **stricter than many people expect**: numbers such as
-`+65 9123 4567` or `+6591234567` are **rejected** even though they are realistic in everyday use.
-
-**What we recommend:** enter the **national** number without the country prefix (for example digits only, as in the
-command examples).
