@@ -11,6 +11,9 @@ pageNav: 0
 - [About TeamEventPro](#1-about-teameventpro)
 - [Getting Started](#getting-started)
 - [Command Fundamentals](#command-fundamentals)
+  - [Prefix reference](#3-prefix-reference)
+  - [Index and list behavior](#4-index-and-list-behavior)
+  - [Common mistakes and quick fixes](#5-common-mistakes-and-quick-fixes)
 - [Common Commands](#common-commands)
   - [Help : `help`](#1-help-command)
   - [List : `list`](#2-list-command)
@@ -35,6 +38,7 @@ pageNav: 0
   - [Import : `import`](#cmd-import)
   - [Export : `export`](#cmd-export)
   - [Leave Event : `leave event`](#cmd-leave-event)
+- [Known Issues](#known-issues)
 
 ---
 
@@ -132,7 +136,8 @@ For macOS-specific setup guidance, follow the prescribed JDK instructions in the
 ## 3. First-time setup
 
 - On first launch, complete the onboarding tutorial.
-- Use the command box at the bottom of the app to run commands.
+- **Sample data** is included on first launch so new users can explore the app with realistic example data before adding their own.
+- Use the command box at the top of the app to run commands.
 - Press Enter after each command.
 
 ---
@@ -156,8 +161,10 @@ Read this once before using [Event Commands](#event-commands) or [Participant Co
 ## 1. Command Notation
 
 - Words in `UPPER_CASE` are parameters to be supplied by the user.
+- **Square brackets `[` `]`** mean that part is **optional** in the written format. Anything **not** in brackets is **required** for that command (unless two format lines are given as alternatives, e.g. `import`).
 - Items followed by `...` can be used multiple times.
 - For prefixed arguments, parameter order usually does not matter unless stated otherwise.
+- Tags that are enclosed in square brackets are optional.
 - Indexes refer to the numbers shown in the displayed list.
 - Dates should follow the format `YYYY-MM-DD`.
 
@@ -169,30 +176,43 @@ TeamEventPro operates in two modes:
 - **Outside an event**: event-level commands such as `addevent`, `editevent`, `deleteevent`, `enter event`, `list`, `search`.
 - **Inside an event**: participant-level commands such as `add`, `edit`, `delete`, `assign`, `filter`, `checkin`, `view`, `statistics`, `list`, `search`, `leave event`.
 
-Most commands follow one of these patterns:
-- `COMMAND [INDEX] [PREFIX/VALUE]...`
-- `COMMAND KEYWORD INDEX` (example: `enter event 1`)
-- `COMMAND` (example: `list`, `help`, `statistics`)
+TeamEventPro tracks two different participant statuses:
+
+- **RSVP status** shows whether a participant said they will attend: `yes`, `no`, or `pending`.
+- **Check-in status** shows whether a participant has actually arrived at the event: `yes` or `no`.
+
+These two statuses are different. For example, a participant may have RSVP = `yes` but Check-in = `no` if they said they would attend but have not arrived yet.
+
+Most commands follow one of these shapes:
+- `COMMAND` with no arguments (e.g. `list`, `help`, `statistics`).
+- `COMMAND INDEX …` or `COMMAND KEYWORD INDEX` when an index is required (e.g. `delete 2`, `enter event 1`).
+- `COMMAND` plus **required** prefixes without brackets and **optional** prefixes in `[` `]` (see each command’s Format line).
+### RSVP vs Check-In
 
 ---
 
 ## 3. Prefix Reference
 
-| Prefix | Field | Accepts | Does not accept |
-| --- | --- | --- | --- |
-| `n/` | Name | Alphanumeric characters, spaces, hyphens (`-`), slashes (`/`), and apostrophes (`'`), e.g. `n/John Doe`, `n/John-Doe`, `n/John/Ong`, `n/John O'Neil` | Other special characters (for example `@`, `#`, `%`, `!`) |
-| `p/` | Phone | Digits only, at least 3 digits, e.g. `p/98765432` | Letters/symbols, e.g. `p/98A76`, `p/+6598765432` |
-| `e/` | Email | Standard email format, e.g. `e/john@example.com` | Missing `@` or invalid format, e.g. `e/johnexample.com` |
-| `a/` | Address | Free-text address, e.g. `a/311 Clementi Ave 2` |  |
-| `tm/` | Team (`add`/`edit`) | Alphanumeric team name, 1-15 chars, e.g. `tm/Alpha7` | Spaces/symbols/too-long text, e.g. `tm/Alpha Team`, `tm/Alpha-1` |
-| `team/` | Team (`assign`/`filter`) | Alphanumeric team name, 1-15 chars, e.g. `team/Alpha7` | Using `tm/` in `assign`/`filter`; invalid team format |
-| `g/` | GitHub username | GitHub-style username, e.g. `g/johndoe`, `g/john-doe` | Leading/trailing hyphen, spaces, e.g. `g/-john`, `g/john-`, `g/john doe` |
-| `r/` | RSVP status | `yes`, `no`, `pending` | Any other value, e.g. `r/maybe` |
-| `t/` | Tag | Alphanumeric tag, repeatable, e.g. `t/python t/ml` | Symbols/spaces, e.g. `t/machine-learning`, `t/data science` |
-| `d/` | Event date | `YYYY-MM-DD`, e.g. `d/2026-10-03` | Invalid date format, e.g. `d/03-10-2026` |
-| `l/` | Event location | Optional free text, e.g. `l/NUS COM1` |  |
-| `desc/` | Event description | Optional free text, e.g. `desc/Weekly meetup` |  |
-| `checkin/` | Check-in filter status | `yes`, `no` | Any other value, e.g. `checkin/maybe` |
+A prefix ends with `/` and starts a value; the value ends at the next prefix (after a space) or end of line (trimmed).
+Order is usually flexible. Spell each prefix exactly—`tm/` and `team/` differ on purpose.
+
+**Purpose** = why that data exists for organisers (not a full command list).
+
+| Prefix | Field | Purpose | Accepts | Does not accept |
+| --- | --- | --- | --- | --- |
+| `n/` | Name | Name of the participant | Letters, digits, spaces, `-`, `/`, `'`, e.g. `n/John O'Neil` | Symbols like `@`, `#`, `!` |
+| `p/` | Phone | Phone Number of the participant | Digits only, ≥3, e.g. `p/98765432` | Letters, `+`, spaces |
+| `e/` | Email | Email address of the participant | `local@domain`, ≤**64** chars | Bad format, too long |
+| `a/` | Address | Address of the participant | Text, ≤**100** chars, not blank/space-only | Too long, whitespace-only |
+| `tm/` | Team | Participant’s team when using **`add`** or **`edit`**. | Alphanumeric, 1–15 chars, e.g. `tm/Alpha7` | Spaces, symbols, hyphens |
+| `team/` | Team | Team when using **`assign`** or **`filter`** (different keyword from `tm/`). | Same rules as `tm/`, e.g. `team/Alpha7` | Wrong prefix (`tm/`), invalid name |
+| `g/` | GitHub username | Optional link to the participant's GitHub. | e.g. `g/johndoe`, `g/john-doe` | Spaces, bad hyphens |
+| `r/` | RSVP status | To allow the organisers get an idea of who intend to attend. | `yes`, `no`, `pending` | e.g. `r/maybe` |
+| `t/` | Tag | Extra labels (skills, etc.); repeat `t/` for more. | Alphanumeric, e.g. `t/python t/ml` | Spaces/symbols in tag |
+| `d/` | Event date | When the event is. | `YYYY-MM-DD` | Other date shapes |
+| `l/` | Event location | Where it happens (optional). | Any text, e.g. `l/NUS COM1` |  |
+| `desc/` | Event description | Longer blurb (optional). | Any text |  |
+| `checkin/` | Check-in filter | Filter by **arrived** yes/no, not RSVP. | `yes`, `no` | e.g. `checkin/maybe` |
 
 For required fields, an empty prefix value is invalid unless explicitly stated otherwise.
 Use the exact prefix expected by each command. Prefixes are not interchangeable.
@@ -243,7 +263,6 @@ Used to open the help window and view usage instructions.
 ```
 help
 ```
-![Command](images/help/command.png)
 
 #### Successful Execution
 Opens a new window containing the User Guide link.
@@ -364,7 +383,7 @@ This page describes commands that are primarily used while you are outside an ev
 Used to add an event to the event list by specifying the name, date, and optional details such as location and description.
 
 #### Format
-`addevent n/[EVENT NAME] d/[DATE] [l/LOCATION] [desc/DESCRIPTION]`
+`addevent n/EVENT_NAME d/DATE [l/LOCATION] [desc/DESCRIPTION]`
 
 #### Example Usage
 ```
@@ -380,7 +399,8 @@ addevent n/Tech Meetup 2026 d/2026-06-15 l/NUS Techno Edge desc/Annual tech netw
 - `NAME` must start with an alphanumeric character and can only contain alphanumeric characters and spaces. It must not be blank.
 - `DATE` must follow the format `YYYY-MM-DD` e.g. `2026-06-15`.
 - `LOCATION` and `DESCRIPTION` are optional.
-- Duplicate events with the same name are not allowed.
+- Event names are case-sensitive.
+- Duplicate-looking event names may still be valid because related sessions can happen at different locations or at different times on the same day.
 
 ---
 
@@ -457,13 +477,12 @@ deleteevent 1
 Used to enter an event and switch into participant-management mode for that event.
 
 #### Format
-`enter event [INDEX]`
+`enter event INDEX`
 
 #### Example Usage
 ```
 enter event 1
 ```
-![Command](images/enter-event/command.png)
 
 #### Successful Execution
 
@@ -517,7 +536,7 @@ See [Command Fundamentals](#command-fundamentals) for command syntax, prefix rul
 Used to add a participant to the currently entered event.
 
 #### Format
-`add n/[NAME] p/[PHONE] e/[EMAIL] a/[ADDRESS] [tm/TEAM] [g/GITHUB_USERNAME] [r/RSVP_STATUS] [t/TAG]...`
+`add n/NAME p/PHONE e/EMAIL a/ADDRESS [tm/TEAM] [g/GITHUB_USERNAME] [r/RSVP_STATUS] [t/TAG]...`
 
 #### Example Usage
 ```
@@ -534,6 +553,8 @@ add n/John Doe p/98765432 e/johnd@example.com a/311, Clementi Ave 2, #02-25 tm/D
 - `NAME` can contain alphanumeric characters (including accented characters e.g. José, Tomáš), spaces, apostrophes (`'`), hyphens (`-`), and forward slashes (`/`) e.g. `O'Brian`, `s/o Kumar`. Names cannot exceed 100 characters.
 - `RSVP_STATUS` must be `yes`, `no`, or `pending` (case-insensitive). Defaults to `pending` if not provided.
 - `TEAM` must be alphanumeric and at most 15 characters.
+- `EMAIL` must satisfy the app's email format rules and **must not exceed 64 characters** (inclusive).
+- `ADDRESS` must not be blank (after trimming) and **must not exceed 100 characters** (inclusive).
 - Two participants are considered duplicates if they share the same name and either the same phone number or the same email. Duplicate participants cannot be added to the same event.
 
 ### 1.2 Edit Command
@@ -542,7 +563,7 @@ add n/John Doe p/98765432 e/johnd@example.com a/311, Clementi Ave 2, #02-25 tm/D
 Used to edit the details of an existing participant in the current event.
 
 #### Format
-`edit [INDEX] [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [g/GITHUB_USERNAME] [r/RSVP_STATUS] [tm/TEAM] [t/TAG]...`
+`edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [g/GITHUB_USERNAME] [r/RSVP_STATUS] [tm/TEAM] [t/TAG]...`
 
 #### Example Usage
 ```
@@ -561,6 +582,8 @@ edit 1 p/91234567 e/johndoe@example.com
 - `NAME` follows the same constraints as the `add` command — alphanumeric characters (including accented), spaces, apostrophes, hyphens, and forward slashes. Cannot exceed 100 characters.
 - `RSVP_STATUS` must be `yes`, `no`, or `pending` (case-insensitive).
 - `TEAM` must be alphanumeric and at most 15 characters.
+- `EMAIL` follows the same rules as in `add` (valid format and at most 64 characters).
+- `ADDRESS` follows the same rules as in `add` (non-blank after trimming, at most 100 characters).
 - Clear all tags by typing `t/` with nothing after it.
 - Clear the team by typing `tm/` with nothing after it.
 - Editing a participant to match another participant's name and phone or email will be rejected as a duplicate.
@@ -571,7 +594,7 @@ edit 1 p/91234567 e/johndoe@example.com
 Used to delete a participant from the current event.
 
 #### Format
-`delete [INDEX]`
+`delete INDEX`
 
 #### Example Usage
 ```
@@ -600,7 +623,6 @@ Used to clear all participants from the current event.
 ```
 clear
 ```
-![Command](images/clear/clear-command.png)
 
 #### Successful Execution
 `Address book has been cleared!`
@@ -621,7 +643,7 @@ clear
 Used to assign a participant to a team.
 
 #### Format
-`assign [INDEX] team/[TEAM NAME]`
+`assign INDEX team/TEAM_NAME`
 
 #### Example Usage
 ```
@@ -642,16 +664,17 @@ assign 2 team/Alpha
 ### 2.2 Check-In Command
 <a id="cmd-checkin"></a>
 
-Used to mark a participant as checked in.
+Used to mark that a participant has physically arrived at the event.
+
+This is different from RSVP status, which records whether the participant said they would attend.
 
 #### Format
-`checkin [INDEX]`
+`checkin INDEX`
 
 #### Example Usage
 ```
 checkin 3
 ```
-![Command](images/checkin/command.png)
 
 #### Successful Execution
 
@@ -671,88 +694,28 @@ checkin 3
 Used to filter the participant list using one criterion at a time.
 
 #### Format
-<tabs>
-<tab header="RSVP">
 
-`filter r/[RSVP_STATUS]`
+Use exactly **one** of the following :
 
-</tab>
-<tab header="Tag">
-
-`filter t/[TAG]`
-
-</tab>
-<tab header="Team">
-
-`filter team/[TEAM NAME]`
-
-</tab>
-<tab header="Check-in">
-
-`filter checkin/[yes|no]`
-
-</tab>
-</tabs>
+- RSVP: `filter r/RSVP_STATUS`
+- Tag: `filter t/TAG`
+- Team: `filter team/TEAM_NAME`
+- Check-in: `filter checkin/yes` or `filter checkin/no`
 
 #### Example Usage
-<tabs>
-<tab header="RSVP">
 
 ```
 filter r/yes
-```
-![Command](images/filter/rsvp_command.png)
-
-</tab>
-<tab header="Tag">
-
-```
 filter t/python
-```
-![Command](images/filter/tag_command.png)
-
-</tab>
-<tab header="Team">
-
-```
 filter team/Alpha
-```
-![Command](images/filter/team_command.png)
-
-</tab>
-<tab header="Check-in">
-
-```
 filter checkin/yes
 ```
-![Command](images/filter/checkin_command.png)
-
-</tab>
-</tabs>
 
 #### Successful Execution
-<tabs>
-<tab header="RSVP">
+
+
 
 ![Result](images/filter/rsvp_output.png)
-
-</tab>
-<tab header="Tag">
-
-![Result](images/filter/tag_output.png)
-
-</tab>
-<tab header="Team">
-
-![Result](images/filter/team_output.png)
-
-</tab>
-<tab header="Check-in">
-
-![Result](images/filter/checkin_output.png)
-
-</tab>
-</tabs>
 
 #### Notes
 - Can only be used inside an event.
@@ -767,13 +730,12 @@ filter checkin/yes
 Used to show the details of a selected participant.
 
 #### Format
-`view [INDEX]`
+`view INDEX`
 
 #### Example Usage
 ```
 view 1
 ```
-![Command](images/view/command.png)
 
 #### Successful Execution
 ![Result](images/view/output.png)
@@ -797,7 +759,6 @@ Used to display the current event's participant statistics summary.
 ```
 statistics
 ```
-![Command](images/statistics/command.png)
 
 #### Successful Execution
 ![Result](images/statistics/output.png)
@@ -897,7 +858,6 @@ Used to leave the current event and return to the event list.
 ```
 leave event
 ```
-![Command](images/leave-event/command.png)
 
 #### Successful Execution
 

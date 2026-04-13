@@ -2,13 +2,16 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" styleClass="person-detail-pane">
+<ScrollPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" styleClass="person-detail-scroll"
+            fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" minHeight="0" maxHeight="Infinity">
+    <VBox styleClass="person-detail-pane">
     <padding>
         <Insets top="20" right="22" bottom="28" left="22"/>
     </padding>
@@ -26,8 +29,8 @@
                     </columnConstraints>
                     <Label text="PHONE" styleClass="detail-key" GridPane.columnIndex="0" GridPane.rowIndex="0"
                            GridPane.valignment="CENTER"/>
-                    <Label fx:id="phoneValue" styleClass="detail-value detail-value-accent" wrapText="true"
-                           GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.halignment="RIGHT"/>
+                    <Label fx:id="phoneValue" styleClass="detail-value detail-value-accent" maxWidth="Infinity"
+                           wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.halignment="RIGHT"/>
                 </GridPane>
                 <Region styleClass="detail-hairline"/>
             </VBox>
@@ -40,7 +43,7 @@
                     </columnConstraints>
                     <Label text="ADDRESS" styleClass="detail-key" GridPane.columnIndex="0" GridPane.rowIndex="0"
                            GridPane.valignment="TOP"/>
-                    <Label fx:id="addressValue" styleClass="detail-value" wrapText="true"
+                    <Label fx:id="addressValue" styleClass="detail-value" maxWidth="Infinity" wrapText="true"
                            GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.halignment="RIGHT"/>
                 </GridPane>
                 <Region styleClass="detail-hairline"/>
@@ -54,8 +57,8 @@
                     </columnConstraints>
                     <Label text="EMAIL" styleClass="detail-key" GridPane.columnIndex="0" GridPane.rowIndex="0"
                            GridPane.valignment="CENTER"/>
-                    <Label fx:id="emailValue" styleClass="detail-value detail-value-accent" wrapText="true"
-                           GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.halignment="RIGHT"/>
+                    <Label fx:id="emailValue" styleClass="detail-value detail-value-accent" maxWidth="Infinity"
+                           wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.halignment="RIGHT"/>
                 </GridPane>
                 <Region styleClass="detail-hairline"/>
             </VBox>
@@ -68,8 +71,8 @@
                     </columnConstraints>
                     <Label text="GITHUB" styleClass="detail-key" GridPane.columnIndex="0" GridPane.rowIndex="0"
                            GridPane.valignment="CENTER"/>
-                    <Label fx:id="githubValue" styleClass="detail-value detail-value-accent" wrapText="true"
-                           GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.halignment="RIGHT"/>
+                    <Label fx:id="githubValue" styleClass="detail-value detail-value-accent" maxWidth="Infinity"
+                           wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.halignment="RIGHT"/>
                 </GridPane>
                 <Region styleClass="detail-hairline"/>
             </VBox>
@@ -82,7 +85,7 @@
                     </columnConstraints>
                     <Label text="TEAM" styleClass="detail-key" GridPane.columnIndex="0" GridPane.rowIndex="0"
                            GridPane.valignment="CENTER"/>
-                    <Label fx:id="teamValue" styleClass="detail-chip team-pill" wrapText="true"
+                    <Label fx:id="teamValue" styleClass="detail-chip team-pill" maxWidth="Infinity" wrapText="true"
                            GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.halignment="RIGHT"/>
                 </GridPane>
                 <Region styleClass="detail-hairline"/>
@@ -96,7 +99,7 @@
                     </columnConstraints>
                     <Label text="RSVP" styleClass="detail-key" GridPane.columnIndex="0" GridPane.rowIndex="0"
                            GridPane.valignment="CENTER"/>
-                    <Label fx:id="rsvpValue" styleClass="detail-value" wrapText="true"
+                    <Label fx:id="rsvpValue" styleClass="detail-value" maxWidth="Infinity" wrapText="true"
                            GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.halignment="RIGHT"/>
                 </GridPane>
                 <Region styleClass="detail-hairline"/>
@@ -132,4 +135,5 @@
 
         </VBox>
     </VBox>
-</VBox>
+    </VBox>
+</ScrollPane>
