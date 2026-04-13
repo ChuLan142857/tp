@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<ScrollPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" styleClass="person-detail-scroll"
+            fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" minHeight="0" maxHeight="Infinity">
+    <VBox styleClass="person-detail-pane">
+    <padding>
+        <Insets top="20" right="22" bottom="28" left="22"/>
+    </padding>
+    <VBox spacing="20">
+        <Label fx:id="nameValue" styleClass="detail-name" maxWidth="Infinity" wrapText="true"/>
+        <Region styleClass="detail-hairline"/>
+
+        <VBox styleClass="detail-field-list" spacing="0">
+
+            <VBox styleClass="detail-row">
+                <GridPane hgap="20" vgap="4" styleClass="detail-row-grid">
+                    <columnConstraints>
+                        <ColumnConstraints minWidth="108" prefWidth="128" maxWidth="148"/>
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="0"/>
+                    </columnConstraints>
+                    <Label text="PHONE" styleClass="detail-key" GridPane.columnIndex="0" GridPane.rowIndex="0"
+                           GridPane.valignment="CENTER"/>
+                    <Label fx:id="phoneValue" styleClass="detail-value detail-value-accent" maxWidth="Infinity"
+                           wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.halignment="RIGHT"/>
+                </GridPane>
+                <Region styleClass="detail-hairline"/>
+            </VBox>
+
+            <VBox styleClass="detail-row">
+                <GridPane hgap="20" vgap="4" styleClass="detail-row-grid">
+                    <columnConstraints>
+                        <ColumnConstraints minWidth="108" prefWidth="128" maxWidth="148"/>
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="0"/>
+                    </columnConstraints>
+                    <Label text="ADDRESS" styleClass="detail-key" GridPane.columnIndex="0" GridPane.rowIndex="0"
+                           GridPane.valignment="TOP"/>
+                    <Label fx:id="addressValue" styleClass="detail-value" maxWidth="Infinity" wrapText="true"
+                           GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.halignment="RIGHT"/>
+                </GridPane>
+                <Region styleClass="detail-hairline"/>
+            </VBox>
+
+            <VBox styleClass="detail-row">
+                <GridPane hgap="20" vgap="4" styleClass="detail-row-grid">
+                    <columnConstraints>
+                        <ColumnConstraints minWidth="108" prefWidth="128" maxWidth="148"/>
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="0"/>
+                    </columnConstraints>
+                    <Label text="EMAIL" styleClass="detail-key" GridPane.columnIndex="0" GridPane.rowIndex="0"
+                           GridPane.valignment="CENTER"/>
+                    <Label fx:id="emailValue" styleClass="detail-value detail-value-accent" maxWidth="Infinity"
+                           wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.halignment="RIGHT"/>
+                </GridPane>
+                <Region styleClass="detail-hairline"/>
+            </VBox>
+
+            <VBox styleClass="detail-row">
+                <GridPane hgap="20" vgap="4" styleClass="detail-row-grid">
+                    <columnConstraints>
+                        <ColumnConstraints minWidth="108" prefWidth="128" maxWidth="148"/>
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="0"/>
+                    </columnConstraints>
+                    <Label text="GITHUB" styleClass="detail-key" GridPane.columnIndex="0" GridPane.rowIndex="0"
+                           GridPane.valignment="CENTER"/>
+                    <Label fx:id="githubValue" styleClass="detail-value detail-value-accent" maxWidth="Infinity"
+                           wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.halignment="RIGHT"/>
+                </GridPane>
+                <Region styleClass="detail-hairline"/>
+            </VBox>
+
+            <VBox fx:id="teamRow" styleClass="detail-row">
+                <GridPane hgap="20" vgap="4" styleClass="detail-row-grid">
+                    <columnConstraints>
+                        <ColumnConstraints minWidth="108" prefWidth="128" maxWidth="148"/>
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="0"/>
+                    </columnConstraints>
+                    <Label text="TEAM" styleClass="detail-key" GridPane.columnIndex="0" GridPane.rowIndex="0"
+                           GridPane.valignment="CENTER"/>
+                    <Label fx:id="teamValue" styleClass="detail-chip team-pill" maxWidth="Infinity" wrapText="true"
+                           GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.halignment="RIGHT"/>
+                </GridPane>
+                <Region styleClass="detail-hairline"/>
+            </VBox>
+
+            <VBox styleClass="detail-row">
+                <GridPane hgap="20" vgap="4" styleClass="detail-row-grid">
+                    <columnConstraints>
+                        <ColumnConstraints minWidth="108" prefWidth="128" maxWidth="148"/>
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="0"/>
+                    </columnConstraints>
+                    <Label text="RSVP" styleClass="detail-key" GridPane.columnIndex="0" GridPane.rowIndex="0"
+                           GridPane.valignment="CENTER"/>
+                    <Label fx:id="rsvpValue" styleClass="detail-value" maxWidth="Infinity" wrapText="true"
+                           GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.halignment="RIGHT"/>
+                </GridPane>
+                <Region styleClass="detail-hairline"/>
+            </VBox>
+
+            <VBox styleClass="detail-row">
+                <GridPane hgap="20" vgap="4" styleClass="detail-row-grid">
+                    <columnConstraints>
+                        <ColumnConstraints minWidth="108" prefWidth="128" maxWidth="148"/>
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="0"/>
+                    </columnConstraints>
+                    <Label text="STATUS" styleClass="detail-key" GridPane.columnIndex="0" GridPane.rowIndex="0"
+                           GridPane.valignment="CENTER"/>
+                    <Label fx:id="attendanceValue" styleClass="status-label" wrapText="false"
+                           GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.halignment="RIGHT"/>
+                </GridPane>
+                <Region styleClass="detail-hairline"/>
+            </VBox>
+
+            <VBox styleClass="detail-row">
+                <GridPane hgap="20" vgap="10" styleClass="detail-row-grid">
+                    <columnConstraints>
+                        <ColumnConstraints minWidth="108" prefWidth="128" maxWidth="148"/>
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="0"/>
+                    </columnConstraints>
+                    <Label text="TAGS" styleClass="detail-key" GridPane.columnIndex="0" GridPane.rowIndex="0"
+                           GridPane.valignment="TOP"/>
+                    <FlowPane fx:id="tagsFlow" alignment="TOP_RIGHT" columnHalignment="RIGHT" hgap="8" vgap="8"
+                              prefWrapLength="340" GridPane.columnIndex="1" GridPane.rowIndex="0"
+                              GridPane.halignment="RIGHT" GridPane.valignment="TOP"/>
+                </GridPane>
+            </VBox>
+
+        </VBox>
+    </VBox>
+    </VBox>
+</ScrollPane>
