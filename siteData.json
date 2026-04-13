@@ -131,7 +131,7 @@
       "headingKeywords": {}
     },
     {
-      "src": "UG.md",
+      "src": "UserGuide.md",
       "title": "User Guide",
       "headings": {
         "teameventpro-user-guide": "TeamEventPro User Guide",
@@ -193,41 +193,6 @@
         "4-a-corrupted-or-unreadable-eventbook-json-can-be-overwritten-on-the-next-save": "4. A corrupted or unreadable eventbook.json can be overwritten on the next save",
         "5-some-optional-participant-fields-are-silently-normalised-on-load": "5. Some optional participant fields are silently normalised on load",
         "6-phone-numbers-do-not-accept-country-codes-or-symbols": "6. Phone numbers do not accept country codes or symbols"
-      },
-      "headingKeywords": {}
-    },
-    {
-      "src": "UserGuide.md",
-      "headings": {
-        "layout-default-md-title-and-quot-user-guide-and-quot-pagenav-3": "layout: default.md\ntitle: &quot;User Guide&quot;\npageNav: 3",
-        "teameventpro-user-guide": "TeamEventPro User Guide",
-        "teameventpro-is-a-desktop-app-for-managing-tech-meetup-attendees-optimized-for-use-via-a-command-line-interface-cli-while-still-having-the-benefits-of-a-graphical-user-interface-gui-if-you-can-type-fast-teameventpro-can-get-your-event-management-tasks-done-faster-than-traditional-gui-apps": "TeamEventPro is a desktop app for managing tech meetup attendees,\noptimized for use via a Command Line Interface (CLI) while still having the benefits\nof a Graphical User Interface (GUI). If you can type fast, TeamEventPro can get\nyour event management tasks done faster than traditional GUI apps.",
-        "quick-start": "Quick start",
-        "features": "Features",
-        "viewing-help-help": "Viewing help : help",
-        "switching-theme-mode-switchtheme": "Switching theme mode : switchtheme",
-        "adding-an-event-addevent": "Adding an event : addevent",
-        "editing-an-event-editevent": "Editing an event : editevent",
-        "deleting-an-event-deleteevent": "Deleting an event : deleteevent",
-        "entering-an-event-enter": "Entering an event : enter",
-        "leaving-an-event-leave": "Leaving an event : leave",
-        "adding-an-applicant-add": "Adding an applicant: add",
-        "listing-all-events-or-applicants-list": "Listing all events or applicants : list",
-        "importing-applicants-from-csv-import": "Importing applicants from CSV : import",
-        "exporting-applicants-to-csv-export": "Exporting applicants to CSV : export",
-        "editing-an-applicant-edit": "Editing an applicant : edit",
-        "assigning-a-team-assign": "Assigning a team : assign",
-        "filtering-applicants-filter": "Filtering applicants : filter",
-        "checking-in-an-applicant-checkin": "Checking in an applicant : checkin",
-        "searching-events-or-applicants-search": "Searching events or applicants : search",
-        "deleting-an-applicant-delete": "Deleting an applicant : delete",
-        "clearing-all-entries-clear": "Clearing all entries : clear",
-        "exiting-the-program-exit": "Exiting the program : exit",
-        "saving-the-data": "Saving the data",
-        "editing-the-data-file": "Editing the data file",
-        "faq": "FAQ",
-        "known-issues": "Known issues",
-        "command-summary": "Command summary"
       },
       "headingKeywords": {}
     },
