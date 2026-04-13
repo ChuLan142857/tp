@@ -194,7 +194,6 @@ Most commands follow one of these shapes:
 ## 3. Prefix Reference
 
 A prefix ends with `/` and starts a value; the value ends at the next prefix (after a space) or end of line (trimmed).
-Order is usually flexible. Spell each prefix exactly—`tm/` and `team/` differ on purpose.
 
 **Purpose** = why that data exists for organisers (not a full command list).
 
@@ -204,7 +203,6 @@ Order is usually flexible. Spell each prefix exactly—`tm/` and `team/` differ 
 | `p/` | Phone | Phone Number of the participant | Digits only, ≥3, e.g. `p/98765432` | Letters, `+`, spaces |
 | `e/` | Email | Email address of the participant | `local@domain`, ≤**64** chars | Bad format, too long |
 | `a/` | Address | Address of the participant | Text, ≤**100** chars, not blank/space-only | Too long, whitespace-only |
-| `tm/` | Team | Participant’s team when using **`add`** or **`edit`**. | Alphanumeric, 1–15 chars, e.g. `tm/Alpha7` | Spaces, symbols, hyphens |
 | `team/` | Team | Team when using **`assign`** or **`filter`** (different keyword from `tm/`). | Same rules as `tm/`, e.g. `team/Alpha7` | Wrong prefix (`tm/`), invalid name |
 | `g/` | GitHub username | Optional link to the participant's GitHub. | e.g. `g/johndoe`, `g/john-doe` | Spaces, bad hyphens |
 | `r/` | RSVP status | To allow the organisers get an idea of who intend to attend. | `yes`, `no`, `pending` | e.g. `r/maybe` |
@@ -536,7 +534,7 @@ See [Command Fundamentals](#command-fundamentals) for command syntax, prefix rul
 Used to add a participant to the currently entered event.
 
 #### Format
-`add n/NAME p/PHONE e/EMAIL a/ADDRESS [tm/TEAM] [g/GITHUB_USERNAME] [r/RSVP_STATUS] [t/TAG]...`
+`add n/NAME p/PHONE e/EMAIL a/ADDRESS [team/TEAM] [g/GITHUB_USERNAME] [r/RSVP_STATUS] [t/TAG]...`
 
 #### Example Usage
 ```
@@ -563,7 +561,7 @@ add n/John Doe p/98765432 e/johnd@example.com a/311, Clementi Ave 2, #02-25 team
 Used to edit the details of an existing participant in the current event.
 
 #### Format
-`edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [g/GITHUB_USERNAME] [r/RSVP_STATUS] [tm/TEAM] [t/TAG]...`
+`edit INDEX n/NAME p/PHONE e/EMAIL a/ADDRESS [g/GITHUB_USERNAME] [r/RSVP_STATUS] [team/TEAM] [t/TAG]...`
 
 #### Example Usage
 ```
